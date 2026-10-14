@@ -1,0 +1,28 @@
+@theme {
+  --color-dark: #14151a;
+  --color-dark-2: #212329;
+  --color-accent: #ff6a1f;
+  --color-accent-2: #ffb703;
+  --color-light: #f7f6f3;
+  --color-ink: #17181c;
+  --color-muted: #666a73;
+  --color-line: #e8e6e0;
+}
+
+/* fonts are loaded by next/font, these just give them Tailwind names */
+@theme inline {
+  --font-heading: var(--font-nunito), sans-serif;
+  --font-body: var(--font-nunito), sans-serif;
+}
+/* the brand gradient lives here, so every button follows the palette */
+@utility bg-brand {
+  background-image: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
+}
+@utility text-brand {
+  background-image: linear-gradient(90deg, var(--color-accent-2), var(--color-accent), var(--color-accent-2));
+  background-size: 250%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 5s linear infinite;
+}

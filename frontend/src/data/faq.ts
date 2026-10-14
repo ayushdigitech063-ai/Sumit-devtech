@@ -1,0 +1,6 @@
+export const faqs = [
+  { q: "How much does a website cost?", a: "Website cost depends on the scope and complexity - a high-conversion business site starts differently from a full-scale eCommerce storefront or a custom React web application. We provide detailed, itemized proposals with zero hidden costs. We believe in 100% transparent, value-driven pricing." },
+  { q: "How long does website development take?", a: "Standard professional websites are typically delivered in 5-7 working days. More sophisticated platforms, such as multi-vendor eCommerce stores or custom SaaS dashboards, take approximately 2-4 weeks. We always establish clear milestone roadmaps before development begins." },
+  { q: "Can I update the website content after it goes live?", a: "Yes, absolutely. All our websites are built with intuitive content management capabilities. You can easily modify text, images, blogs, and products without any programming knowledge. We also provide full 1-on-1 walkthrough training." },
+  { q: "Does my website rank on Google automatically?", a: "Every website we develop is engineered with complete on-page technical SEO: semantic HTML5 schema, OpenGraph tags, automated XML sitemaps, fast TTFB, and Core Web Vitals optimization. To achieve top rankings for competitive keywords, we also offer dedicated organic SEO and conversion growth services." },
+];
