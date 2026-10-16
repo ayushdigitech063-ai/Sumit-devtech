@@ -16,6 +16,7 @@ export default function Faq() {
 
   return (
     <Section id="faq" light>
+      <div className="mx-auto w-full max-w-[1100px] px-6">
       <div className="grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal className="lg:sticky lg:top-28">
           <div className="relative overflow-hidden rounded-32px" style={{ aspectRatio: "4 / 4.4" }}>
@@ -71,7 +72,7 @@ export default function Faq() {
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <p className="pb-6 pl-4.25rem pr-6 text-muted">{f.a}</p>
+                      <p className="pb-6 pl-4 pr-3 text-muted">{f.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -79,6 +80,7 @@ export default function Faq() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </Section>
   );

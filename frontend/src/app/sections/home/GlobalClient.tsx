@@ -11,7 +11,7 @@ export default function GlobalClient() {
       <div className="pointer-events-none absolute -right-40 top-1/2 h-560px w-560px -translate-y-1/2 animate-[spin_40s_linear_infinite] rounded-full border border-dashed border-white/15" />
       <div className="pointer-events-none absolute -right-20 top-1/2 h-360px w-360px -translate-y-1/2 animate-[spin_28s_linear_infinite_reverse] rounded-full border border-accent/30" />
 
-      <div className="relative">
+      <div className="mx-auto w-full max-w-[1100px] px-6">
         <SectionHeading
           dark
           label="Worldwide"

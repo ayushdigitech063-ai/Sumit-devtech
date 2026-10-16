@@ -7,6 +7,7 @@ import Button from "../../ui/Button";
 export default function Articles() {
   return (
     <Section id="articles">
+      <div className="mx-auto w-full max-w-[1100px] px-6">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
           label="Technology & Digital Insights"
@@ -40,6 +41,7 @@ export default function Articles() {
           </div> */}
         </div>
       </Reveal>
+      </div>
     </Section>
   );
 }

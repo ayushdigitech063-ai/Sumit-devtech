@@ -8,10 +8,11 @@ export default function WhyLead() {
   return (
     <Section id="why-we-lead">
       <SectionHeading
+      center
         label="Why We Lead"
         title={<>Leading Website Design & Development Company in <span className="text-brand">Jaipur, India</span></>}
       />
-      <div className="grid items-start gap-12 lg:grid-cols-[1.25fr_0.75fr]">
+      <div className="mx-auto mt-12 grid w-full max-w-5xl gap-4 sm:mt-14 md:gap-5">
         <div className="grid gap-5 sm:grid-cols-2">
           {whyLead.map((f, i) => {
             const Icon = f.icon;
@@ -31,7 +32,7 @@ export default function WhyLead() {
           })}
         </div>
 
-        <Reveal className="relative">
+        {/* <Reveal className="relative">
           <div className="relative `h-[280px] w-full` overflow-hidden `rounded-[32px]`" style={{aspectRatio : "4/3"}}>
             <Image
               src={`${IMG}/about-image.webp`}
@@ -49,7 +50,7 @@ export default function WhyLead() {
               </div>
             ))}
           </div>
-        </Reveal>
+        </Reveal> */}
       </div>
     </Section>
   );
