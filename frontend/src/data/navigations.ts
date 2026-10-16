@@ -1,9 +1,9 @@
 export const navLinks = [
-  { label: "Home", href: "#" },
-  { label: "About Company", href: "#" },
+  { label: "Home", href: "/" },
+  { label: "About Company", href: "/about-company" },
   { label: "Our Services", href: "#", mega: true },
   { label: "Testimonials", href: "#" },
-  { label: "Contact Us", href: "#" },
+  { label: "Contact Us", href: "/contact-us" },
   { label: "Blogs", href: "#" },
 ];
 
@@ -37,12 +37,12 @@ export const serviceMenu = [
 ];
 
 export const quickLinks = [
-  { label: "Home", href: "#" },
-  { label: "About Company", href: "#" },
+  { label: "Home", href: "/" },
+  { label: "About Company", href: "/about-company" },
   { label: "Our Services", href: "#" },
   { label: "Meet Our Team", href: "#" },
   { label: "Latest Blog", href: "#" },
-  { label: "Contact Us", href: "#" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const footerServices = [

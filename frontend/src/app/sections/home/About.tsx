@@ -13,14 +13,15 @@ import { cn } from "@/lib/utils";
 export default function About() {
   return (
     <Section id="about">
-      <SectionHeading
-        center
-        label="Who We Are"
-        title={<>Website Design & Development Company in <span className="text-brand">Mansarovar, Jaipur</span></>}
-      />
+      <div className="mx-auto w-full max-w-[1100px] px-6">
+        <SectionHeading
+          center
+          label="Who We Are"
+          title={<>Website Design & Development Company in <span className="text-brand">Mansarovar, Jaipur</span></>}
+        />
 
-      {/* text + image */}
-      <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+        {/* text + image */}
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <Reveal>
           <p className="mb-9 text-base leading-relaxed text-ink/75 md:text-lg">{aboutIntro}</p>
 
@@ -41,7 +42,7 @@ export default function About() {
           </div>
 
           <Link
-            href="/"
+            href="/about-company"
             className="group inline-flex items-center gap-2 rounded-full border-2 border-accent px-7 py-3 font-semibold text-accent transition duration-300 hover:bg-accent hover:text-white"
           >
             Know more About us
@@ -102,6 +103,7 @@ export default function About() {
           );
         })}
       </div>
+    </div>
     </Section>
   );
 }

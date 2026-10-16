@@ -63,13 +63,15 @@ export default function Industries() {
 
   return (
     <Section id="industries">
-      <SectionHeading
-        label="Industries"
-        title={<>We Serve <span className="text-brand">All Industries</span></>}
-        text="We stay ahead in technology by understanding the unique challenges and goals of every industry we work with."
-      />
+      <div className="mx-auto w-full max-w-[1100px] px-6">
+        <SectionHeading
+          center
+          label="Industries"
+          title={<>We Serve <span className="text-brand">All Industries</span></>}
+          text="We stay ahead in technology by understanding the unique challenges and goals of every industry we work with."
+        />
 
-      <div className="relative">
+        <div className="relative">
         {industries.map((ind, i) => {
           const Icon = ind.icon;
           return (
@@ -125,6 +127,7 @@ export default function Industries() {
             </div>
           );
         })}
+      </div>
       </div>
     </Section>
   );

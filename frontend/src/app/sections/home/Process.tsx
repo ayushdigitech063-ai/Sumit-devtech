@@ -7,6 +7,7 @@ import { process } from "@/data/process";
 export default function Process() {
   return (
     <Section id="process" light>
+       <div className="mx-auto w-full max-w-[1100px] px-6">
       <SectionHeading
         center
         label="Work Process"
@@ -14,7 +15,6 @@ export default function Process() {
         text="We don't jump straight into designing. Every project goes through a proper process - so nothing gets missed, and you know what's happening at every step."
       />
       <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="absolute left-[12%] right-[12%] top-88px hidden border-t-2 border-dashed border-accent/40 lg:block" />
         {process.map((p, i) => (
           <Reveal key={p.title} delay={i * 0.12}>
             <div className="group relative h-full rounded-3xl bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/15">
@@ -29,6 +29,7 @@ export default function Process() {
             </div>
           </Reveal>
         ))}
+      </div>
       </div>
     </Section>
   );

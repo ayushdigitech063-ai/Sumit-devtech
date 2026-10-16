@@ -23,9 +23,11 @@ export default function Testimonials() {
 
   return (
     <Section id="testimonials" dark>
+      <div className="mx-auto w-full max-w-[1100px] px-6">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
           dark
+          center
           label="Testimonials"
           title={<>What Our Clients <span className="text-brand">Say About Us</span></>}
           text="We work hard to deliver exceptional ROI and scalable growth. Read why our clients recommend us for performance marketing and SEO."
@@ -73,7 +75,7 @@ export default function Testimonials() {
           {testimonials.map((t) => (
             <figure
               key={t.name}
-              className="flex `w-[250px]` shrink-0 snap-start flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition duration-300 hover:-translate-y-2 hover:border-accent `sm:w-[290px]`"
+              className="flex w-[250px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition duration-300 hover:-translate-y-2 hover:border-accent"
             >
               <div>
                 <Stars />
@@ -91,6 +93,7 @@ export default function Testimonials() {
             </figure>
           ))}
         </div>
+      </div>
       </div>
     </Section>
   );
