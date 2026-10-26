@@ -5,11 +5,11 @@ import { clients } from "@/data/clients";
 
 function Logo({ name, logo }: { name: string; logo: string }) {
   return (
-    <div className="grid h-20 w-48 shrink-0 place-items-center rounded-2xl border border-line bg-white p-4 opacity-70 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0">
+    <div className="grid h-20 w-48 shrink-0 place-items-center rounded-2xl border border-line bg-white p-4 opacity-100 transition duration-300 hover:opacity-100">
       <Image src={logo} alt={name} width={140} height={50} unoptimized className="max-h-12 w-auto object-contain" />
     </div>
   );
-}
+} 
 
 export default function ClientsMarquee() {
   const half = Math.ceil(clients.length / 2);

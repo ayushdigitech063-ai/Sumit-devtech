@@ -24,12 +24,10 @@ export const techTabs: { label: string; items: Tech[] }[] = [
     { name: "JavaScript", icon: icon("javascript.svg") },
   ]},
   { label: "Digital Marketing", items: [
-    { name: "SEO" }, { name: "Google Ads" }, { name: "Social Media" }, { name: "Content Marketing" }, { name: "Analytics" },
+    { name: "SEO", icon: icon("Search-Engine-Optimization.svg") }, { name: "Google Ads", icon: icon("ads.svg") }, { name: "Social Media ", icon : icon('instagram.svg') }, { name: "Content Marketing",icon: icon("content-writing.svg") }
   ]},
   { label: "API Services", items: [
-    { name: "REST APIs" }, { name: "Payment Gateways" }, { name: "CRM Integration" }, { name: "Third-party Integrations" },
+    { name: "REST APIs" , icon : icon("api.svg")}, { name: "Payment Gateways", icon : icon("paypal.svg") }
   ]},
-  { label: "On Demand Solution", items: [
-    { name: "Custom Software" }, { name: "White-label Development" }, { name: "Dedicated Developers" }, { name: "Business Systems" },
-  ]},
+  
 ];

@@ -7,6 +7,7 @@ import GlobalClient from "./sections/home/GlobalClient";
 import Industries from "./sections/home/Industries";
 import Process from "./sections/home/Process";
 import Projects from "./sections/home/Projects";
+import HomeProcessSection from "./sections/home/SDLCProcessSection";
 import ServicesTabs from "./sections/home/ServicesTabs";
 import Team from "./sections/home/Team";
 import Technology from "./sections/home/technology";
@@ -20,6 +21,7 @@ export default function Home() {
    <Hero />
    <About />
    <ServicesTabs />
+   <HomeProcessSection />
    <WhyLead />
    <WhyChoose />
    <Projects />

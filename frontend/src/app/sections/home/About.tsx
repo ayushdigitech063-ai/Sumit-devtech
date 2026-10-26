@@ -79,22 +79,21 @@ export default function About() {
           const Icon = s.icon;
           const orange = i % 2 === 0;
           return (
-            <Reveal key={s.label} delay={i * 0.1} className="h-full">
+            <Reveal key={s.label} delay={i * 0.1}>
               <div
                 className={cn(
-                  "group relative h-full overflow-hidden rounded-3xl p-5 text-white transition duration-300 hover:-translate-y-2 hover:shadow-2xl md:p-8 bg-dark hover:shadow-black/30 "
+                  "group relative h-45 w-55 overflow-hidden rounded-3xl p-5 text-white transition duration-300 hover:-translate-y-2 hover:shadow-2xl md:p-5 bg-dark hover:shadow-black/30 "
                 )}
               >
-                <span className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full `border-[18px] border-white/10" />
                 <span className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[150%]" />
                 <Icon
                   strokeWidth={1.5}
                   className={cn(
-                    "relative mb-5 h-9 w-9 transition duration-300 group-hover:-translate-y-1 group-hover:-rotate-6 md:mb-7 md:h-12 md:w-12",
+                    "relative mb-4 h-4 w-4 transition duration-300 group-hover:-translate-y-1 group-hover:-rotate-6 md:mb-7 md:h-7 md:w-7",
                     orange ? "text-white" : "text-accent"
                   )}
                 />
-                <b className="relative block font-heading text-3xl font-extrabold md:text-5xl">
+                <b className="relative block font-heading text-3xl font-extrabold md:text-3xl">
                   <CountUp to={s.value} suffix={s.suffix} />
                 </b>
                 <p className="relative mt-1 text-xs text-white/80 md:text-base">{s.label}</p>

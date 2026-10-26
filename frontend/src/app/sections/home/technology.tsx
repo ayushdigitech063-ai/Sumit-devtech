@@ -27,7 +27,7 @@ export default function Technology() {
             onClick={() => setActive(i)}
             className={cn(
               "rounded-full px-6 py-2.5 text-sm font-semibold transition",
-              i === active ? "bg-brand text-white shadow-lg shadow-accent/30" : "bg-light text-muted hover:bg-accent/10 hover:text-accent"
+              i === active ? "bg-brand text-white shadow-lg shadow-accent/30" : "bg-light text-dark hover:bg-accent/10 hover:text-accent"
             )}
           >
             {t.label}
@@ -48,7 +48,7 @@ export default function Technology() {
             item.icon ? (
               <div
                 key={item.name}
-                className="group flex w-40 flex-col items-center gap-3 rounded-3xl border border-line bg-white p-6 grayscale transition duration-300 hover:-translate-y-2 hover:border-accent hover:shadow-xl hover:shadow-accent/15 hover:grayscale-0"
+                className="group flex w-40 flex-col items-center gap-3 rounded-3xl border border-line bg-white p-6 transition duration-300 hover:-translate-y-2 hover:border-accent hover:shadow-xl hover:shadow-accent/15"
               >
                 <Image src={item.icon} alt={item.name} width={56} height={56} unoptimized className="h-14 w-14 object-contain" />
                 <span className="text-sm font-semibold">{item.name}</span>

@@ -23,13 +23,24 @@ export default function ExitIntentModal() {
     };
     const onLeave = (e: MouseEvent) => { if (e.clientY <= 0) show(); };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    
+  const onOpen = () => {
+    sessionStorage.setItem("exit-popup", "1"); 
+    setSent(false);                         
+    setOpen(true);
+  };
+
+
+
     const timer = setTimeout(show, 60000);
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("keydown", onKey);
+     window.addEventListener("open-quote-modal", onOpen);
     return () => {
       clearTimeout(timer);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("open-quote-modal", onOpen);
     };
   }, []);
 

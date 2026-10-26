@@ -5,13 +5,15 @@ type Props = {
   href: string;
   variant?: "primary" | "outline" | "light";
   className?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   children: React.ReactNode;
 };
 
-export default function Button({ href, variant = "primary", className, children }: Props) {
+export default function Button({ href, variant = "primary", className, onClick, children }: Props) {
   return (
     <Link
       href={href}
+       onClick={onClick}
       className={cn(
         "inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold transition duration-300 hover:-translate-y-1",
         variant === "primary" && "bg-brand text-white shadow-lg shadow-accent/30",

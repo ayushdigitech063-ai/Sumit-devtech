@@ -11,7 +11,7 @@ export default function JourneySection () {
         <SectionHeading  
         center
         label="Our journey"
-        title={<>We Started in 2016. <span className="text-brand">We're Still Growing.</span></>}
+        title={<>We Started in 2016. <span className="text-brand">We&apos;re Still Growing.</span></>}
         text="Three brands built over 8+ years. Same founder, same team, same work ethic throughout." />
         
     {/* Timeline */}
