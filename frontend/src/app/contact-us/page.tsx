@@ -283,7 +283,7 @@ export default function ContactUsPage() {
                   <fieldset>
                     <legend className={labelCls}>Services</legend>
                     <div className="grid gap-2.5 sm:grid-cols-2">
-                      {services.map((s) => (
+                      {/* {services.map((s) => (
                         <label
                           key={s}
                           className="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm transition hover:border-accent has-[:checked]:border-accent has-[:checked]:bg-accent/5"
@@ -296,7 +296,19 @@ export default function ContactUsPage() {
                           />
                           {s}
                         </label>
-                      ))}
+                      ))} */}
+                      <select
+                        name="countryCode"
+                        defaultValue="+91"
+                        aria-label="Country code"
+                        className={`${fieldCls} !w-[545px]`}
+                      >
+                        {services.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </fieldset>
 

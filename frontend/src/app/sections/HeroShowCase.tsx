@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Code2, ShoppingCart, TrendingUp, MonitorSmartphone } from "lucide-react";
+import { Code2, TrendingUp, Smartphone, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SCENES = [
   { id: "dev", label: "Development", icon: Code2, url: "yourbusiness.com" },
-  { id: "shop", label: "E-Commerce", icon: ShoppingCart, url: "mystore.in/shop" },
+  { id: "shop", label: "App Development", icon: Smartphone, url: "yourapp.com/launch" },
   { id: "seo", label: "SEO", icon: TrendingUp, url: "google.com/search" },
-  { id: "resp", label: "Responsive", icon: MonitorSmartphone, url: "yourbusiness.com" },
+  { id: "resp", label: "Marketing & Security", icon: ShieldCheck, url: "yourbusiness.com/dashboard" },
 ];
 const DURATION = 6500; // ms per scene
 
@@ -52,7 +52,7 @@ export default function HeroShowcase() {
                 {on && (
                   <motion.span
                     key={active}
-                    className="absolute bottom-0 left-0 `h-[3px]` bg-brand"
+                    className="absolute bottom-0 left-0 h-[3px] bg-brand"
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ duration: DURATION / 1000, ease: "linear" }}
@@ -64,7 +64,7 @@ export default function HeroShowcase() {
         </div>
 
         {/* stage */}
-        <div className="relative `h-[300px]` overflow-hidden rounded-2xl bg-dark/70 p-4">
+        <div className="relative h-[300px] overflow-hidden rounded-2xl bg-dark/70 p-4">
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
@@ -75,9 +75,9 @@ export default function HeroShowcase() {
               transition={{ duration: 0.4 }}
             >
               {active === 0 && <DevScene />}
-              {active === 1 && <ShopScene />}
+              {active === 1 && <AppScene />}
               {active === 2 && <SeoScene />}
-              {active === 3 && <ResponsiveScene />}
+              {active === 3 && <MarketingSecurityScene />}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -145,87 +145,103 @@ function DevScene() {
   );
 }
 
-/* ---------- Scene 2: e-commerce ---------- */
-const PRODUCTS = [
-  { e: "👟", n: "Runner Pro", p: "₹2,499" },
-  { e: "⌚", n: "Smart Watch", p: "₹3,999" },
-  { e: "🎧", n: "Studio Buds", p: "₹1,799" },
+/*  2: app development  */
+const APP_ROWS = [
+  { e: "🛒", n: "Orders", v: "24 new" },
+  { e: "💬", n: "Messages", v: "8 unread" },
+  { e: "📍", n: "Live tracking", v: "On the way" },
 ];
-
-function ShopScene() {
+const APP_STEPS = [
+  "UI/UX design approved",
+  "iOS & Android build",
+  "APIs & payments integrated",
+  "Published to stores",
+];
+function AppScene() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const ts = [
-      setTimeout(() => setStep(1), 1800),
-      setTimeout(() => setStep(2), 3100),
-      setTimeout(() => setStep(3), 4600),
-    ];
+    const ts = [1000, 2000, 3000, 4000].map((ms, i) => setTimeout(() => setStep(i + 1), ms));
     return () => ts.forEach(clearTimeout);
   }, []);
 
-  const cart = Math.min(step, 2);
-
   return (
-    <div className="relative flex h-full flex-col">
-      <div className="mb-3 flex items-center justify-between">
-        <b className="font-heading text-sm">My Store</b>
-        <div className="relative">
-          <ShoppingCart size={18} />
-          <motion.span
-            key={cart}
-            initial={{ scale: 1.9 }}
-            animate={{ scale: 1 }}
-            className="absolute -right-2 -top-2 grid h-4 w-4 place-items-center rounded-full bg-accent text-[10px] font-bold"
-          >
-            {cart}
-          </motion.span>
+    <div className="relative flex h-full items-center gap-4 sm:gap-5">
+      {/* phone mockup */}
+      <motion.div
+        initial={{ opacity: 0, y: 24, rotate: -3 }}
+        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 14 }}
+        className="flex h-full w-[112px] shrink-0 flex-col rounded-[22px] border-2 border-white/25 bg-dark-2 p-2 sm:w-[132px]"
+      >
+        <span className="mx-auto mb-2 h-1 w-10 rounded-full bg-white/20" />
+        <div className="rounded-lg bg-brand p-2 text-[10px] font-bold text-white">
+          Hi, Rahul 👋
+          <span className="block font-normal opacity-80">Today&apos;s overview</span>
         </div>
-      </div>
-
-      <div className="grid flex-1 grid-cols-3 gap-3">
-        {PRODUCTS.map((p, i) => {
-          const added = (i === 0 && step >= 1) || (i === 1 && step >= 2);
-          return (
+        <div className="mt-2 flex-1 space-y-1.5">
+          {APP_ROWS.map((r, i) => (
             <motion.div
-              key={p.n}
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.15, duration: 0.5 }}
-              className="flex flex-col rounded-xl border border-white/10 bg-white/5 p-2.5"
+              key={r.n}
+              initial={{ opacity: 0, x: -14 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 + i * 0.25 }}
+              className="flex items-center gap-1.5 rounded-lg bg-white/5 px-1.5 py-1.5"
             >
-              <div className="grid flex-1 place-items-center rounded-lg `bg-gradient-to-br` from-accent/25 to-accent-2/10 text-4xl">
-                {p.e}
+              <span className="text-sm">{r.e}</span>
+              <div className="leading-tight">
+                <p className="text-[10px] font-semibold">{r.n}</p>
+                <p className="text-[9px] text-white/50">{r.v}</p>
               </div>
-              <p className="mt-2 text-xs font-semibold">{p.n}</p>
-              <p className="text-[11px] text-white/50">{p.p}</p>
-              <motion.button
-                key={String(added)}
-                animate={added ? { scale: [1, 0.88, 1] } : {}}
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-2 grid grid-cols-3 gap-1">
+          <span className="h-1.5 rounded-full bg-accent" />
+          <span className="h-1.5 rounded-full bg-white/20" />
+          <span className="h-1.5 rounded-full bg-white/20" />
+        </div>
+      </motion.div>
+
+      {/* build pipeline */}
+      <div className="flex-1 space-y-2.5">
+        <p className="text-xs font-semibold text-white/50">Build pipeline</p>
+        {APP_STEPS.map((s, i) => {
+          const done = step > i;
+          const active = step === i;
+          return (
+            <div key={s} className="flex items-center gap-2">
+              <motion.span
+                key={String(done)}
+                animate={done ? { scale: [1, 1.3, 1] } : {}}
                 className={cn(
-                  "mt-2 rounded-lg py-1.5 text-[11px] font-bold",
-                  added ? "bg-green-500 text-white" : "bg-brand text-white"
+                  "grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold",
+                  done ? "bg-green-500 text-white" : active ? "animate-pulse bg-accent/30 text-accent" : "bg-white/10 text-white/30"
                 )}
               >
-                {added ? "Added ✓" : "Add to cart"}
-              </motion.button>
-            </motion.div>
+                {done ? "✓" : i + 1}
+              </motion.span>
+              <span className={cn("text-[11px] leading-tight sm:text-xs", done ? "text-white" : "text-white/50")}>
+                {s}
+              </span>
+            </div>
           );
         })}
       </div>
 
-      {step === 3 && (
+      {step === 4 && (
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="absolute inset-x-6 bottom-1 rounded-xl bg-white px-4 py-2.5 text-center text-xs font-bold text-ink shadow-2xl"
+          className="absolute inset-x-3 bottom-0 rounded-xl bg-white px-4 py-2.5 text-center text-xs font-bold text-ink shadow-2xl"
         >
-          🎉 Order placed · Payment received
+          🚀 App live on Play Store &amp; App Store · 4.8★
         </motion.div>
       )}
     </div>
   );
 }
+
 
 /* ---------- Scene 3: SEO ---------- */
 const KEYWORDS = [
@@ -304,52 +320,87 @@ function SeoScene() {
   );
 }
 
-/* ---------- Scene 4: responsive ---------- */
-function Screen({ className, cards }: { className: string; cards: number }) {
-  return (
-    <div className={cn("overflow-hidden rounded-lg border border-white/25 bg-dark-2 p-1.5", className)}>
-      <div className="h-1/3 rounded bg-brand opacity-90" />
-      <div className="mt-1.5 h-1.5 w-2/3 rounded bg-white/30" />
-      <div className="mt-1 h-1.5 w-1/2 rounded bg-white/15" />
-      <div className="mt-1.5 grid gap-1" style={{ gridTemplateColumns: `repeat(${cards}, 1fr)` }}>
-        {Array.from({ length: cards }).map((_, i) => (
-          <div key={i} className="h-5 rounded bg-white/10" />
-        ))}
-      </div>
-    </div>
-  );
-}
+/*  marketing */
 
-function ResponsiveScene() {
-  const devices = [
-    { cls: "h-28 w-48", cards: 3, label: "Desktop" },
-    { cls: "h-28 w-20", cards: 2, label: "Tablet" },
-    { cls: "h-24 w-12", cards: 1, label: "Mobile" },
-  ];
+const CAMPAIGN = [
+  { k: "SEO", v: 82 },
+  { k: "Ads", v: 64 },
+  { k: "Social", v: 48 },
+];
+const SECURITY = ["SSL certificate active", "Malware scan clean", "Daily cloud backup"];
+
+function MarketingSecurityScene() {
+  const [checked, setChecked] = useState(0);
+
+  useEffect(() => {
+    const ts = SECURITY.map((_, i) => setTimeout(() => setChecked(i + 1), 1400 + i * 700));
+    return () => ts.forEach(clearTimeout);
+  }, []);
+
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-6">
-      <div className="flex items-end justify-center gap-5">
-        {devices.map((d, i) => (
-          <motion.div
-            key={d.label}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.2 + i * 0.35, type: "spring", stiffness: 140, damping: 14 }}
-            className="flex flex-col items-center gap-2"
-          >
-            <Screen className={d.cls} cards={d.cards} />
-            <span className="text-[11px] text-white/50">{d.label}</span>
-          </motion.div>
-        ))}
+    <div className="grid h-full grid-cols-2 gap-3">
+      {/* marketing */}
+      <div className="flex flex-col rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="flex items-center justify-between gap-1">
+          <p className="text-[11px] font-semibold text-white/60">Campaign leads</p>
+          <span className="text-[10px] font-bold text-green-400">↑ 3.4x ROI</span>
+        </div>
+        <motion.b
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-1 font-heading text-2xl text-accent-2"
+        >
+          1,240
+        </motion.b>
+        <div className="mt-3 flex h-[120px] items-end gap-2">
+          {CAMPAIGN.map((c, i) => (
+            <div key={c.k} className="flex flex-1 flex-col items-center gap-1">
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: c.v * 1.2 }}
+                transition={{ delay: 0.3 + i * 0.2, duration: 0.8, ease: "easeOut" }}
+                className="w-full rounded-t-md bg-brand"
+              />
+              <span className="text-[10px] text-white/55">{c.k}</span>
+            </div>
+          ))}
+        </div>
       </div>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold"
-      >
-        One design · <span className="text-accent">every screen</span>
-      </motion.p>
+
+      {/* security */}
+      <div className="flex flex-col items-center rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="relative grid h-16 w-16 place-items-center">
+          <motion.span
+            className="absolute inset-0 rounded-full border-2 border-accent/60"
+            animate={{ scale: [1, 1.5], opacity: [0.7, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+          />
+          <div className="grid h-14 w-14 place-items-center rounded-full bg-green-500/15 text-green-400">
+            <ShieldCheck size={28} />
+          </div>
+        </div>
+        <p className="mt-2 text-xs font-bold">Site protected</p>
+        <p className="text-[10px] text-white/50">1,284 threats blocked</p>
+
+        <ul className="mt-3 w-full space-y-1.5">
+          {SECURITY.map((s, i) => {
+            const ok = checked > i;
+            return (
+              <motion.li
+                key={s}
+                initial={{ opacity: 0, x: 14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 + i * 0.25 }}
+                className="flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-1 text-[10px]"
+              >
+                <span className={cn("font-bold", ok ? "text-green-400" : "text-white/30")}>{ok ? "✓" : "•"}</span>
+                <span className={ok ? "text-white/85" : "text-white/45"}>{s}</span>
+              </motion.li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

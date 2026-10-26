@@ -19,7 +19,7 @@ export default function Process() {
           <Reveal key={p.title} delay={i * 0.12}>
             <div className="group relative h-full rounded-3xl bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/15">
               <div className="relative mb-5 overflow-hidden rounded-2xl" style={{ aspectRatio: "4 / 3" }}>
-                <Image src={p.image} alt={p.title} fill sizes="(min-width:1024px) 280px, 90vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                <Image src={p.image} alt={p.title} fill sizes="(min-width:1024px) 280px, 90vw" className="object-contain transition duration-700 group-hover:scale-105" />
                 <span className="absolute left-3 top-3 grid h-11 w-11 place-items-center rounded-full bg-brand font-heading font-extrabold text-white">
                   0{i + 1}
                 </span>

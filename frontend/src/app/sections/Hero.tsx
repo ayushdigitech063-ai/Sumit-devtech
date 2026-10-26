@@ -3,12 +3,14 @@ import Container from "../ui/Container";
 import Button from "../ui/Button";
 import WordReveal from "../animation/WordReveal";
 import HeroShowcase from "./HeroShowCase";
+import { label } from "framer-motion/client";
 
 const stats = [
   { value: "500+", label: "Happy clients" },
   { value: "1000+", label: "Projects done" },
   { value: "4.9★", label: "Google rating" },
 ];
+
 
 export default function Hero() {
   return (
@@ -29,14 +31,18 @@ export default function Hero() {
             <span>Now booking projects · Jaipur, India</span>
           </span>
 
-          <h1 className="text-5xl font-extrabold md:text-6xl xl:text-7xl">
-            <WordReveal text="We Build Websites That" />
-            <span className="mr-[0.22em] inline-block overflow-hidden pb-[0.14em] align-top">
-              <span className="inline-block text-brand">Convert Visitors</span>
-            </span>
-            <br />
-            <WordReveal text="Into Customers." delay={0.5} />
-          </h1>
+            <WordReveal
+              text="Everything you need to Grow Digitally"
+              dynamicTexts={[
+                "Website Development",
+                "App Development",
+                "Search Engine Optimization",
+                "Marketing & Security",
+              ]}
+              interval={6500}
+              className="text-4xl md:text-5xl tracking-tight"
+              highlightClassName="text-orange-500"
+            />
 
           <p className="mb-8 mt-6 max-w-xl text-lg text-white/70">
             Fast, beautiful, SEO-ready websites, apps and digital marketing —
@@ -44,8 +50,8 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button href="/">Get Free Consultation →</Button>
-            <Button href="/" variant="outline">
+            <Button href="/contact">Get Free Consultation →</Button>
+            <Button href="/project" variant="outline">
               View Portfolio
             </Button>
           </div>

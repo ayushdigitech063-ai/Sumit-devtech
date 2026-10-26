@@ -27,18 +27,18 @@ export default function AboutBanner() {
       <div className="absolute inset-0 -z-10 `bg-gradient-to-t` from-[#071426] via-transparent to-[#071426]/20" />
 
       {/* Banner content */}
-      <div className="mx-auto flex `min-h-[680px]` `max-w-[1280px]` items-center px-5 pb-16 pt-28 sm:px-8 `lg:min-h-[760px]` lg:px-12 lg:pb-20">
+      <div className="mx-auto flex min-h-[680px] max-w-[1280px] items-center px-5 pb-16 pt-28 sm:px-8 lg:min-h-[760px] lg:px-12 lg:pb-20">
         <div className="w-full `max-w-[1150px]`">
           {/* Label */}
           <div className="mb-5 flex items-center gap-3">
-            <span className="`h-[2px]` w-8 bg-[#ffa20b]" />
+            <span className="h-[2px] w-8 bg-[#ffa20b]" />
             <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#ffad19] sm:text-xs">
               About Sumit DevTech
             </span>
           </div>
 
           {/* Heading */}
-          <h1 className="`max-w-[750px]` text-4xl font-extrabold leading-[1.12] tracking-tight sm:text-5xl md:text-6xl lg:text-[68px] ml-9">
+          <h1 className="text-4xl font-extrabold leading-[1.12] tracking-tight sm:text-5xl md:text-6xl lg:text-[68px] ml-9">
             Your Trusted Partner
             <br />
             in{" "}
@@ -49,7 +49,7 @@ export default function AboutBanner() {
           </h1>
 
           {/* Description */}
-          <p className="mt-7 `max-w-[540px]` text-sm leading-7 text-slate-300 sm:text-base sm:leading-8 ml-9">
+          <p className="mt-7 max-w-[540px] text-sm leading-7 text-slate-300 sm:text-base sm:leading-8 ml-9">
             We help businesses embrace the future with cutting-edge AI
             solutions, innovative strategies, and technology-driven
             transformation that unlocks measurable growth and lasting
@@ -71,7 +71,7 @@ export default function AboutBanner() {
           </div>
 
           {/* Statistics */}
-          <div className="mt-10 grid `max-w-[850px]` grid-cols-2 gap-x-5 gap-y-6 border-y border-white/15 py-6 sm:mt-12 sm:grid-cols-4 sm:gap-8 sm:py-7 ml-9">
+          <div className="mt-10 grid max-w-[850px] grid-cols-2 gap-x-5 gap-y-6 border-y border-white/15 py-6 sm:mt-12 sm:grid-cols-4 sm:gap-8 sm:py-7 ml-9">
             {stats.map((stat) => (
               <div key={stat.label}>
                 <p className="text-3xl font-extrabold tracking-tight sm:text-4xl">

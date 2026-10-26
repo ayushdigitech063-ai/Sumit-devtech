@@ -1,40 +1,45 @@
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About Company", href: "/about-company" },
   { label: "Our Services", href: "#", mega: true },
-  { label: "Testimonials", href: "#" },
+  {label : "Packages", href: "#"},
+  {label : "Career", href: "/career"},
+  {label : "Knowledge Hub" , href : "#", dropdown : true},
   { label: "Contact Us", href: "/contact-us" },
-  { label: "Blogs", href: "#" },
 ];
 
 export const serviceMenu = [
   {
     title: "Web Designing",
     items: [
-      { label: "Web Design Services", desc: "All interface design solutions", href: "#" },
-      { label: "Responsive Design", desc: "Optimized for all screen sizes", href: "#" },
-      { label: "Dynamic Web Design", desc: "Interactive & database-driven", href: "#" },
+      { label: "Web Design Services", desc: "All interface design solutions", href: "/website-design" },
+      { label: "Responsive Design", desc: "Optimized for all screen sizes", href: "/responsive-website-design" },
+      { label: "Dynamic Web Design", desc: "Interactive & database-driven", href: "/dynamic-website-design" },
     ],
   },
   {
     title: "Web Development",
     items: [
-      { label: "ReactJS Development", desc: "Modern SPA & high speed", href: "#" },
-      { label: "WordPress Development", desc: "CMS & blog setup", href: "#" },
-      { label: "PHP Development", desc: "Robust & secure backend", href: "#" },
-      { label: "Shopify Development", desc: "E-commerce storefronts", href: "#" },
+      { label: "ReactJS Development", desc: "Modern SPA & high speed", href: "/reactjs-website-development" },
+      { label: "WordPress Development", desc: "CMS & blog setup", href: "/wordpress-website-development" },
+      { label: "PHP Development", desc: "Robust & secure backend", href: "/php-website-development" },
+      { label: "Shopify Development", desc: "E-commerce storefronts", href: "/shopify-website-development" },
     ],
   },
   {
     title: "Marketing & Security",
     items: [
-      { label: "Digital Marketing", desc: "SEO, content & campaigns", href: "#" },
-      { label: "Website Maintenance", desc: "Content updates & bug fixes", href: "#" },
-      { label: "Hosting Support", desc: "24/7 server & site care", href: "#" },
-      { label: "E-Commerce Development", desc: "Custom online stores", href: "#" },
+      { label: "Digital Marketing", desc: "SEO, content & campaigns", href: "/digital-marketing-services" },
+      { label: "Website Maintenance", desc: "Content updates & bug fixes", href: "/website-maintenance" },
+      { label: "Hosting Support", desc: "24/7 server & site care", href: "/maintenance-hosting-support" },
+      { label: "E-Commerce Development", desc: "Custom online stores", href: "/ecommerce-website-development" },
     ],
   },
 ];
+export const knowledgeHub =[
+   {label : "Testimonial" , href : "#"},
+     {label : "Blog" , href : "#"},
+       {label : "About Company" , href : "/about-company"},
+]
 
 export const quickLinks = [
   { label: "Home", href: "/" },

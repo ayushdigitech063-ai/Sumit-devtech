@@ -5,7 +5,7 @@ import Topbar from "./component/Topbar";
 import Header from "./component/Header";
 import Footer from "./component/Footer";
 import WhatsAppButton from "./component/WhatsUpButton";
-import ExitIntentModal from "./component/ExitIntentModal";
+import ExitIntentModal from "./modal/page";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sumitdevtech.com"),
