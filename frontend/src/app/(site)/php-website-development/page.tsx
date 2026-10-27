@@ -8,7 +8,7 @@ import {
   StatsSection,
   IndustriesSection,
   FaqSection,
-} from "../sections/website-design-section";
+} from "@/app/sections/website-design-section";
 
 export const metadata: Metadata = {
   title: "PHP Website Development Services | Custom Laravel & MySQL Backends",

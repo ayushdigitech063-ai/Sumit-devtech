@@ -8,7 +8,7 @@ import {
   StatsSection,
   IndustriesSection,
   FaqSection,
-} from "../../sections/website-design-section";
+} from "@/app/sections/website-design-section";
 
 export const metadata: Metadata = {
   title: "Website Maintenance Services | 24/7 Security & Support",
