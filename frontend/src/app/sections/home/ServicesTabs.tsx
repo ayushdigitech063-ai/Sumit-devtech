@@ -1,17 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import {  ChevronRight } from "lucide-react";
 import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
-import Button from "../../ui/Button";
 import { homeServices } from "@/data/home";
 import { cn } from "@/lib/utils";
 
-const DURATION = 4000; // ms each service stays on screen
-const TICK = 100;
-const chips = ["Custom Code", "SEO Ready", "Mobile First"];
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function ServicesTabs() {
@@ -32,21 +27,6 @@ export default function ServicesTabs() {
     setActive(i);
   };
 
-  // auto-advance (pauses while hovering / focused)
-  useEffect(() => {
-    if (paused || reduce) return;
-    const id = setInterval(() => {
-      elapsed.current += TICK;
-      if (elapsed.current >= DURATION) {
-        elapsed.current = 0;
-        setProgress(0);
-        setActive((a) => (a + 1) % total);
-      } else {
-        setProgress(elapsed.current / DURATION);
-      }
-    }, TICK);
-    return () => clearInterval(id);
-  }, [paused, reduce, total]);
 
   // keep the active pill centred in the mobile scroll row (never scrolls the page)
   useEffect(() => {
@@ -59,46 +39,7 @@ export default function ServicesTabs() {
     });
   }, [active]);
 
-  const item = (n: number) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: {
-      duration: 0.4,
-      delay: 0.05 + n * 0.07,
-      ease: "easeOut" as const,
-    },
-  });
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleCards = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        if (visibleCards.length > 0) {
-          const index = cardsRef.current.findIndex(
-            (card) => card === visibleCards[0].target,
-          );
-
-          if (index !== -1) {
-            setActive(index);
-          }
-        }
-      },
-      {
-        root: null,
-        rootMargin: "-20% 0px -40% 0px",
-        threshold: [0, 0.25, 0.5, 0.75],
-      },
-    );
-
-    cardsRef.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
-
-    return () => observer.disconnect();
-  }, []);
+ 
 
   return (
     <Section id="services" dark>
@@ -118,8 +59,6 @@ export default function ServicesTabs() {
       <div
         className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[258px_minmax(0,1fr)] lg:gap-6"
         onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
       >
         {/* tabs */}
         <div
@@ -137,6 +76,8 @@ export default function ServicesTabs() {
                   cardsRef.current[i] = el;
                 }}
                 type="button"
+                onMouseEnter={() => select(i)}
+                onClick={() => select(i)}
                 onFocus={() => select(i)}
                 aria-selected={on}
                 className={cn(
@@ -200,12 +141,11 @@ export default function ServicesTabs() {
                 key={x.title}
                 type="button"
                 onMouseEnter={() => {
-                  setActive(i);
+                  select(i);
                   setProgress(0);
                   elapsed.current = 0;
                 }}
                 onFocus={() => select(i)}
-                aria-pressed={on}
                 className={cn(
                   "group relative flex `min-h-[125px]` flex-col items-center justify-center rounded-2xl border px-3 py-5 text-center transition-all duration-300",
                   on

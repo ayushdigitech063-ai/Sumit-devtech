@@ -1,7 +1,7 @@
 export const navLinks = [
   { label: "Home", href: "/" },
   { label: "Our Services", href: "#", mega: true },
-  {label : "Packages", href: "#"},
+  {label : "Packages", href: "/packages"},
   {label : "Career", href: "/career"},
   {label : "Knowledge Hub" , href : "#", dropdown : true},
   { label: "Contact Us", href: "/contact-us" },
@@ -36,8 +36,8 @@ export const serviceMenu = [
   },
 ];
 export const knowledgeHub =[
-   {label : "Testimonial" , href : "#"},
-     {label : "Blog" , href : "#"},
+   {label : "Testimonials" , href : "/testimonial"},
+     {label : "Blog" , href : "/blogs"},
        {label : "About Company" , href : "/about-company"},
 ]
 
@@ -46,7 +46,7 @@ export const quickLinks = [
   { label: "About Company", href: "/about-company" },
   { label: "Our Services", href: "#" },
   { label: "Meet Our Team", href: "#" },
-  { label: "Latest Blog", href: "#" },
+  { label: "Latest Blog", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
