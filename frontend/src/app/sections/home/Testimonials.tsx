@@ -1,6 +1,6 @@
 "use client";
-import { useRef } from "react";
-import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Star } from "lucide-react";
 import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
 import Reveal from "../../animation/Reveal";
@@ -19,7 +19,38 @@ function Stars() {
 
 export default function Testimonials() {
   const ref = useRef<HTMLDivElement>(null);
-  const scroll = (dir: number) => ref.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+ useEffect(() => {
+  const container = ref.current;
+  if (!container) return;
+
+  let isHovered = false;
+  let animationFrameId: number;
+
+  const onMouseEnter = () => { isHovered = true; };
+  const onMouseLeave = () => { isHovered = false; };
+
+  container.addEventListener("mouseenter", onMouseEnter);
+  container.addEventListener("mouseleave", onMouseLeave);
+
+  const scrollStep = () => {
+    if (!isHovered && container) {
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 2) {
+        container.scrollLeft = 0;
+      } else {
+        container.scrollLeft += 1;
+      }
+    }
+    animationFrameId = requestAnimationFrame(scrollStep);
+  };
+
+  animationFrameId = requestAnimationFrame(scrollStep);
+
+  return () => {
+    cancelAnimationFrame(animationFrameId);
+    container.removeEventListener("mouseenter", onMouseEnter);
+    container.removeEventListener("mouseleave", onMouseLeave);
+  };
+}, []);
 
   return (
     <Section id="testimonials" dark>
@@ -32,22 +63,6 @@ export default function Testimonials() {
           title={<>What Our Clients <span className="text-brand">Say About Us</span></>}
           text="We work hard to deliver exceptional ROI and scalable growth. Read why our clients recommend us for performance marketing and SEO."
         />
-        <div className="mb-12 flex gap-3">
-          <button
-            onClick={() => scroll(-1)}
-            aria-label="Previous"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/30 transition hover:border-transparent hover:bg-brand md:h-12 md:w-12"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <button
-            onClick={() => scroll(1)}
-            aria-label="Next"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/30 transition hover:border-transparent hover:bg-brand md:h-12 md:w-12"
-          >
-            <ArrowRight size={18} />
-          </button>
-        </div>
       </div>
 
       <div className="grid items-stretch gap-6 lg:grid-cols-[240px_1fr]">
@@ -70,7 +85,7 @@ export default function Testimonials() {
 
         <div
           ref={ref}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 scrollbar-none"
+          className="flex gap-4 overflow-x-auto pb-2 scrollbar-none"
         >
           {testimonials.map((t) => (
             <figure
