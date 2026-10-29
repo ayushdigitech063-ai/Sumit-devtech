@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const maintenanceHostingSupportData: ServicePageData = {
   hero: {
     badge: "Managed Hosting & Infrastructure Support",
-    title: "High-Availability Cloud Hosting and Expert",
+    title: "Reliable Cloud Hosting with",
     highlight: "24/7 DevOps Care",
     description:
-      "We provide fully managed cloud hosting, optimized server administration, enterprise CDN acceleration, and round-the-clock technical support engineered for 99.99% uptime and bulletproof security.",
+      "We deliver secure, fully managed cloud hosting with optimized servers, CDN acceleration, and 24/7 support.",
     chips: [
       { id: "chip-1", label: "Managed AWS & VPS Cloud" },
       { id: "chip-2", label: "Cloudflare CDN & Edge Caching" },

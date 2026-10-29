@@ -109,17 +109,8 @@ export default function HeroSection({
   };
 
   return (
-    <section className="relative overflow-hidden bg-dark text-white md:pt-15 md:pb-28">
-      {/* Background radial gradient glow & grid */}
-      {/* <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,rgba(255,106,31,0.22),transparent_70%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"
-      /> */}
-
+    <section className="relative overflow-hidden bg-dark text-white md:pt-15 md:pb-8">
+ 
       <Container>
         <div className="mx-auto max-w-[1100px] max-h-[545px]">
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
@@ -141,7 +132,7 @@ export default function HeroSection({
               {/* H1 Heading */}
               <motion.h1
                 variants={itemVariants}
-                className="font-extrabold tracking-tight sm:text-3xl md:text-5xl leading-[1.08]"
+                className="font-bold tracking-tight sm:text-xl md:text-5xl leading-[1.08]"
               >
                 {title}
               </motion.h1>

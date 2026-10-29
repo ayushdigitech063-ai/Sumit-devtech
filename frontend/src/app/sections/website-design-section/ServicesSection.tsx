@@ -79,9 +79,6 @@ export default function ServicesSection({
                   <span className="font-heading text-2xl font-black text-brand tracking-tight">
                     {service.number}
                   </span>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-light border border-line text-dark transition-all duration-300 group-hover:bg-accent group-hover:border-accent group-hover:text-white group-hover:rotate-45">
-                    <ArrowUpRight size={17} />
-                  </span>
                 </div>
 
                 {/* Service Title */}
@@ -107,15 +104,6 @@ export default function ServicesSection({
                     </span>
                   ))}
                 </div>
-
-                {/* Action Link */}
-                <Link
-                  href={service.href}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-accent hover:text-accent-2 transition-colors"
-                >
-                  Learn More
-                  <ArrowUpRight size={13} />
-                </Link>
               </div>
             </motion.div>
           ))}

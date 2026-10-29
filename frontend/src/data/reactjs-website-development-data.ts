@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const reactjsWebsiteDevelopmentData: ServicePageData = {
   hero: {
     badge: "React.js & Next.js Development Services",
-    title: "High-Performance React & Next.js Apps That",
-    highlight: "Scale Seamlessly",
+    title: "Scalable React &",
+    highlight: "Next.js Apps",
     description:
-      "We architect lightning-fast, reactive single-page applications and Next.js full-stack platforms engineered for peak speed, dynamic user interactions, and robust enterprise scalability.",
+      "We build high-performance SPAs and Next.js platforms with seamless interactions, blazing speed, and enterprise scalability.",
     chips: [
       { id: "chip-1", label: "React 19 & Next.js 15" },
       { id: "chip-2", label: "Server-Side Rendering (SSR)" },

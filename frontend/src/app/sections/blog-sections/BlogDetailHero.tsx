@@ -37,7 +37,7 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl sm:text-3xl md:text-5xl font-extrabold tracking-tight leading-[1.12] text-white mb-6"
+            className="sm:text-3xl md:text-4xl font-bold tracking-tight leading-[1.12] text-white mb-6"
           >
             {post.title}
           </motion.h1>

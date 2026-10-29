@@ -4,6 +4,7 @@ import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
 import Reveal from "../../animation/Reveal";
 import { team } from "@/data/team";
+import Button from "@/app/ui/Button";
 
 export default function Team() {
   return (
@@ -11,7 +12,12 @@ export default function Team() {
       <SectionHeading
         center
         label="Our Team"
-        title={<>Meet The Experts Behind <span className="text-brand">Our Success</span></>}
+        title={
+          <>
+            Meet The Experts Behind{" "}
+            <span className="text-brand">Our Success</span>
+          </>
+        }
         text="Our team of passionate developers, managers, and digital strategists work together to deliver innovative solutions that drive real results."
       />
       <div className="mx-auto max-w-4xl">
@@ -19,7 +25,10 @@ export default function Team() {
           {team.map((m, i) => (
             <Reveal key={m.name} delay={i * 0.12}>
               <div className="group mx-auto w-full `max-w-[300px]` overflow-hidden rounded-3xl bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/15 md:max-w-none">
-                <div className="relative overflow-hidden bg-dark" style={{ aspectRatio: "1 / 1" }}>
+                <div
+                  className="relative overflow-hidden bg-dark"
+                  style={{ aspectRatio: "1 / 1" }}
+                >
                   <Image
                     src={m.image}
                     alt={`${m.name} - ${m.role}`}
@@ -31,36 +40,19 @@ export default function Team() {
                 </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold">{m.name}</h3>
-                  <p className="mb-2 text-xs font-semibold text-accent md:text-sm">{m.role}</p>
-                  <p className="mb-4 text-[13px] leading-relaxed text-muted">{m.bio}</p>
-                  {/* <div className="flex gap-2">
-                    {m.linkedin && (
-                      <a
-                        href={m.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="LinkedIn"
-                        className="grid h-9 w-9 place-items-center rounded-full bg-light transition hover:bg-brand hover:text-white"
-                      >
-                        <FaLinkedinIn size={15} />
-                      </a>
-                    )}
-                    {m.instagram && (
-                      <a
-                        href={m.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Instagram"
-                        className="grid h-9 w-9 place-items-center rounded-full bg-light transition hover:bg-brand hover:text-white"
-                      >
-                        <FaInstagram size={15} />
-                      </a>
-                    )}
-                  </div> */}
+                  <p className="mb-2 text-xs font-semibold text-accent md:text-sm">
+                    {m.role}
+                  </p>
+                  <p className="mb-4 text-[13px] leading-relaxed text-muted">
+                    {m.bio}
+                  </p>
                 </div>
               </div>
             </Reveal>
           ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Button href="/our-team">View all team members &rarr;</Button>
         </div>
       </div>
     </Section>

@@ -44,19 +44,17 @@ export const knowledgeHub =[
 export const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About Company", href: "/about-company" },
-  { label: "Our Services", href: "#" },
-  { label: "Meet Our Team", href: "#" },
+  { label: "Meet Our Team", href: "/our-team" },
   { label: "Latest Blog", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const footerServices = [
-  { label: "Dynamic Website Design", href: "#" },
-  { label: "Static Website Design", href: "#" },
-  { label: "E-Commerce Development", href: "#" },
-  { label: "WordPress Website Development", href: "#" },
-  { label: "Shopify Development", href: "#" },
-  { label: "PHP Development", href: "#" },
-  { label: "ReactJS Development", href: "#" },
-  { label: "Custom Website Design", href: "#" },
+  { label: "Dynamic Website Design", href: "/dynamic-website-design" },
+  { label: "Static Website Design", href: "/website-design" },
+  { label: "E-Commerce Development", href: "/ecommerce-website-development" },
+  { label: "WordPress Website Development", href: "/wordpress-website-development" },
+  { label: "Shopify Development", href: "/shopify-website-development" },
+  { label: "PHP Development", href: "/php-website-development" },
+  { label: "ReactJS Development", href: "/reactjs-website-development"},
 ];

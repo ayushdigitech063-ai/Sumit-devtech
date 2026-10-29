@@ -35,9 +35,9 @@ export default function Header() {
                   <div className="grid grid-cols-3 gap-8 rounded-b-2xl border border-white/10 bg-dark-2 p-3 shadow-2xl">
                     {serviceMenu.map((g) => (
                       <div key={g.title}>
-                        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-accent">{g.title}</p>
+                        <p className="mb-2 text-xs font-bold uppercase tracking-widest text-accent">{g.title}</p>
                         {g.items.map((i) => (
-                          <Link key={i.label} href={i.href} className="block rounded-xl p-3 transition hover:bg-white/5">
+                          <Link key={i.label} href={i.href} className="block rounded-xl p-2 transition hover:bg-white/5">
                             <span className="block font-semibold">{i.label}</span>
                             <span className="text-xs text-white/50">{i.desc}</span>
                           </Link>

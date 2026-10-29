@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import Container from "@/app/ui/Container";
@@ -34,7 +35,7 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
 
               <motion.h1
                 {...fadeUp(reduce, 1)}
-                className="mt-6 font-heading text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+                className="mt-6 font-bold tracking-tight sm:text-3xl lg:text-5xl"
               >
                 {data.hero.title} <span className="text-accent">{data.hero.highlight}</span>
               </motion.h1>
@@ -159,13 +160,13 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                     <span className="rounded-full bg-dark/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-dark/70">
                       {job.department}
                     </span>
-                    <a
-                      href={applyHref(job)}
+                    <Link
+                      href={`/career/${job.slug}#apply`}
                       aria-label={`Apply for ${job.title}`}
                       className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 text-dark transition group-hover:border-dark group-hover:bg-dark group-hover:text-white"
                     >
                       <ArrowUpRight size={18} />
-                    </a>
+                    </Link>
                   </div>
 
                   <h3 className="mt-5 font-heading text-2xl font-bold">{job.title}</h3>
@@ -181,12 +182,12 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                     ))}
                   </ul>
 
-                  <a
-                    href={applyHref(job)}
+                  <Link
+                    href={`/career/${job.slug}#apply`}
                     className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-dark"
                   >
                     Apply now <ArrowRight size={15} className="transition group-hover:translate-x-1" />
-                  </a>
+                  </Link>
                 </motion.article>
               ))}
             </div>

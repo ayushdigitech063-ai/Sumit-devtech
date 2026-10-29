@@ -6,7 +6,7 @@ export const websiteMaintenanceData: ServicePageData = {
     title: "Keep Your Website Fast, Secure, and Always",
     highlight: "Bug-Free",
     description:
-      "We provide proactive website maintenance plans featuring weekly security updates, real-time uptime monitoring, rapid bug fixes, content updates, and automated off-site backups so you can focus on growing your business.",
+      "We keep your website secure and reliable with regular updates, monitoring, backups, and fast fixes.",
     chips: [
       { id: "chip-1", label: "24/7 Uptime Monitoring" },
       { id: "chip-2", label: "Weekly Core & Plugin Updates" },

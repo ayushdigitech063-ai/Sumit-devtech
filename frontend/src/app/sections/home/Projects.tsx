@@ -15,7 +15,7 @@ export default function Projects() {
           {projects.slice(0, 6).map((p, i) => (
             <Reveal key={p.title} delay={(i % 3) * 0.1}>
               <a
-                href="/"
+                href={p.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View Live Project"
@@ -48,7 +48,7 @@ export default function Projects() {
         </div>
       </div>
       <div className="mt-12 text-center">
-        <Button href="/">View All Projects &rarr;</Button>
+        <Button href="/all-projects">View All Projects &rarr;</Button>
       </div>
     </Section>
   );

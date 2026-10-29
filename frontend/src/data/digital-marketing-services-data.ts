@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const digitalMarketingServicesData: ServicePageData = {
   hero: {
     badge: "Digital Marketing & Growth Agency",
-    title: "Data-Driven Digital Marketing That Generates",
-    highlight: "Qualified Leads",
+    title: "Digital Marketing That",
+    highlight: "Drives Qualified Leads",
     description:
-      "We build high-converting growth engines powered by precision SEO, profitable Google & Meta ad campaigns, conversion rate optimization, and transparent revenue analytics that maximize your ROI.",
+      "We drive growth through SEO, paid ads, conversion optimization, and ROI-focused analytics.",
     chips: [
       { id: "chip-1", label: "Technical & On-Page SEO" },
       { id: "chip-2", label: "Google & Meta Paid Ads" },

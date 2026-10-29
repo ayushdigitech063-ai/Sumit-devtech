@@ -44,7 +44,7 @@ function StatCounter({ numericValue, suffix = "", decimals = 0, label }: StatCou
 
   return (
     <div className="space-y-1">
-      <div className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight text-white">
+      <div className="font-heading text-3xl sm:text-3xl lg:text-5xl font-black tracking-tight text-white">
         <span ref={ref}>{formatted}</span>
         <span className="text-accent">{suffix}</span>
       </div>
@@ -120,7 +120,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
               {/* H1 Heading with highlighted last words */}
               <motion.h1
                 variants={itemVariants}
-                className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[56px] leading-[1.08] text-white"
+                className="text-4xl font-bold tracking-tight sm:text-3xl md:text-3xl lg:text-5xl leading-[1.08] text-white"
               >
                 {title} <span className="text-brand">{highlight}</span>
               </motion.h1>

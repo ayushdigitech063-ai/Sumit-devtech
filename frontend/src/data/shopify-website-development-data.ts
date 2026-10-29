@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const shopifyWebsiteDevelopmentData: ServicePageData = {
   hero: {
     badge: "Shopify & Shopify Plus Development",
-    title: "High-Converting Shopify Stores Built to",
-    highlight: "Scale Your Sales",
+    title: "Shopify Stores Built to",
+    highlight: "Boost Sales",
     description:
-      "We build bespoke Shopify and Shopify Plus e-commerce storefronts, custom Liquid themes, and headless shopping experiences engineered to maximize average order value and checkout conversions.",
+      "We build custom Shopify and Shopify Plus stores that boost sales and conversions.",
     chips: [
       { id: "chip-1", label: "Custom Liquid & Online Store 2.0" },
       { id: "chip-2", label: "Shopify Plus Enterprise" },

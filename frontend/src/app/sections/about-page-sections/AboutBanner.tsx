@@ -12,7 +12,7 @@ const stats = [
 
 export default function AboutBanner() {
   return (
-    <section className="relative isolate min-h-[680px] overflow-hidden bg-[#091426] text-white">
+    <section className="relative isolate overflow-hidden bg-dark text-white pt-28 pb-20 md:pt-15 md:pb-18 border-b border-white/10">
       {/* Background image */}
       <div
         className="absolute inset-0 -z-30 bg-cover bg-center"
@@ -22,66 +22,50 @@ export default function AboutBanner() {
       />
 
       {/* Dark image overlays */}
-      <div className="absolute inset-0 -z-20 bg-[#071426]/70" />
-      <div className="absolute inset-0 -z-10 `bg-gradient-to-r` from-[#071426]/95 via-[#071426]/80 to-[#071426]/35" />
-      <div className="absolute inset-0 -z-10 `bg-gradient-to-t` from-[#071426] via-transparent to-[#071426]/20" />
-
+      <div className="absolute inset-0 -z-20 bg-[#071426]/75" />
+    
       {/* Banner content */}
-      <div className="mx-auto flex min-h-[680px] max-w-[1280px] items-center px-5 pb-16 pt-28 sm:px-8 lg:min-h-[760px] lg:px-12 lg:pb-20">
-        <div className="w-full `max-w-[1150px]`">
-          {/* Label */}
-          <div className="mb-5 flex items-center gap-3">
-            <span className="h-[2px] w-8 bg-[#ffa20b]" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#ffad19] sm:text-xs">
-              About Sumit DevTech
+      <div className="mx-auto w-full max-w-[1100px] px-6">
+        <div className="max-w-3xl">
+          {/* Label / Eyebrow */}
+          <div className="mb-6 inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md shadow-sm">
+              <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-400" />
+              <span>About Sumit DevTech</span>
             </span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl font-extrabold leading-[1.12] tracking-tight sm:text-5xl md:text-6xl lg:text-[68px] ml-9">
-            Your Trusted Partner
-            <br />
-            in{" "}
-            <span className="relative inline-block text-[#ffa20b]">
-              Digital Innovation
-              <span className="absolute -bottom-2 left-0 h-[3px] w-full bg-linear-to-r from-[#ffa20b] to-transparent" />
-            </span>
+          <h1 className="font-bold tracking-tight sm:text-3xl md:text-3xl lg:text-5xl leading-[1.08] text-white">
+            Your Trusted Partner in{" "}
+            <span className="text-brand">Digital Innovation</span>
           </h1>
 
           {/* Description */}
-          <p className="mt-7 max-w-[540px] text-sm leading-7 text-slate-300 sm:text-base sm:leading-8 ml-9">
-            We help businesses embrace the future with cutting-edge AI
-            solutions, innovative strategies, and technology-driven
-            transformation that unlocks measurable growth and lasting
-            competitive advantage.
+          <p className="mt-6 max-w-xl text-base text-white/80 sm:text-lg sm:leading-relaxed">
+            We drive business growth through innovative web architecture, smart strategies, and technology-driven solutions.
           </p>
 
           {/* Buttons */}
-          <div className="mt-8 flex flex-wrap gap-3 ml-9">
+          <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              href="/"
-              className="group inline-flex min-h-11 items-center gap-2 rounded-md bg-brand from-[#ff9f0a] to-[#ffb20b] px-5 py-3 text-xs font-bold text-[#101827] transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/20 sm:text-sm"
+              href="/contact-us"
+              className="inline-flex items-center gap-2.5 rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-accent/25 transition duration-300 hover:-translate-y-1"
             >
               Get Free Consultation
-              <ArrowRight
-                size={16}
-                className="transition-transform group-hover:translate-x-1"
-              />
+              <ArrowRight size={16} />
             </Link>
           </div>
 
           {/* Statistics */}
-          <div className="mt-10 grid max-w-[850px] grid-cols-2 gap-x-5 gap-y-6 border-y border-white/15 py-6 sm:mt-12 sm:grid-cols-4 sm:gap-8 sm:py-7 ml-9">
+          <div className="mt-12 grid max-w-2xl grid-cols-2 gap-4 border-t border-white/10 pt-8 sm:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                  {stat.value}
-                  <span className="text-[#ffa20b]">{stat.suffix}</span>
-                </p>
-
-                <p className="mt-2 text-[9px] font-semibold tracking-[0.13em] text-slate-400 sm:text-[10px] sm:tracking-[0.16em]">
-                  {stat.label}
-                </p>
+              <div key={stat.label} className="space-y-1">
+                <div className="font-heading text-3xl lg:text-4xl font-black tracking-tight text-white">
+                  <span>{stat.value}</span>
+                  <span className="text-accent">{stat.suffix}</span>
+                </div>
+                <div className="text-xs font-medium text-white/70">{stat.label}</div>
               </div>
             ))}
           </div>
