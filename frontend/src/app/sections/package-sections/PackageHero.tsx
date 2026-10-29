@@ -10,7 +10,7 @@ export default function PackageHero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden bg-dark text-white pt-28 pb-16 md:pt-25 md:pb-20 border-b border-white/10">
+    <section className="relative overflow-hidden bg-dark text-white pt-28 pb-16 md:pt-25 md:pb-30 border-b border-white/10">
 
       <Container>
         <div className="mx-auto w-full max-w-[1100px] text-center">
@@ -32,7 +32,7 @@ export default function PackageHero() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.05 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.08] text-white"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.08] text-white"
           >
             Website &amp; Digital Engineering <br className="hidden sm:inline" />
             <span className="text-brand">Packages &amp; Pricing</span>

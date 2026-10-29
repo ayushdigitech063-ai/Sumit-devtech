@@ -131,15 +131,6 @@ export default function ProjectsSection({ data }: ProjectsSectionProps) {
               Showing <span className="font-bold text-ink">{filteredProjects.length}</span> of{" "}
               <span className="font-bold text-ink">{items.length}</span> projects
             </div>
-            {activeCategory !== "See All" && (
-              <button
-                type="button"
-                onClick={() => handleSelectCategory("See All")}
-                className="text-xs font-bold uppercase tracking-wider text-accent hover:underline"
-              >
-                Clear Filter
-              </button>
-            )}
           </div>
 
           {/* Bento Gallery Grid */}

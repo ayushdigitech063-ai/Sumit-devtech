@@ -18,7 +18,7 @@ export default function TestimonialHero() {
               Verified Client Feedback
             </span>
 
-            <h1 className="text-4xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="sm:text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight">
               Trusted by Founders &amp; <span className="text-brand">Global Enterprises</span>
             </h1>
 

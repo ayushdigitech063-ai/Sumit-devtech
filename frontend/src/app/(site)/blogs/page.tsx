@@ -30,7 +30,7 @@ export default function BlogsPage() {
   return (
     <>
       {/* Blog Page Hero Banner */}
-      <section className="relative overflow-hidden bg-dark text-white pt-28 pb-16 md:pt-20 md:pb-25 border-b border-white/10">
+      <section className="relative overflow-hidden bg-dark text-white pt-28 pb-16 md:pt-35 md:pb-45 border-b border-white/10">
         
         <Container>
           <div className="mx-auto w-full max-w-[1100px] text-center">
@@ -39,7 +39,7 @@ export default function BlogsPage() {
               Insights, Tutorials &amp; Engineering
             </span>
 
-            <h1 className="text-3xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-3xl sm:text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight">
               Technology &amp; Digital <span className="text-brand">Articles</span>
             </h1>
 

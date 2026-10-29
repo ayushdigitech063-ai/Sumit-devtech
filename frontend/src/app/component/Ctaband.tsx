@@ -19,7 +19,7 @@ export default function Ctaband() {
       <Container className="relative">
         <Reveal>
           <span className="mb-4 inline-block text-xs font-bold uppercase tracking-[0.16em] text-accent">Let’s work together</span>
-          <h2 className="mx-auto max-w-3xl text-3xl font-extrabold md:text-5xl text-brand">
+          <h2 className="mx-auto max-w-3xl text-3xl font-bold md:text-5xl text-brand">
             Have a Project in Mind? Let’s Build Something Amazing!
           </h2>
           <p className="mx-auto mb-9 mt-5 max-w-2xl text-lg">

@@ -336,8 +336,8 @@ export const responsiveFaqData: FaqItem[] = [
 export const responsiveWebsiteDesignData: ServicePageData = {
   hero: {
     badge: "Responsive Website Design Services",
-    title: "Mobile-First, Fluid Web Designs That",
-    highlight: "Adapt Flawlessly",
+    title: "Responsive Designs That",
+    highlight: "Adapt Seamlessly",
     description: "Deliver frictionless, high-converting browsing experiences across smartphones, tablets, laptops, and 4K displays. Engineered with fluid grids, touch ergonomics, and sub-second mobile speeds.",
     chips: heroFeatureChips,
     primaryCta: { label: "Get Responsive Quote", href: "/contact-us" },

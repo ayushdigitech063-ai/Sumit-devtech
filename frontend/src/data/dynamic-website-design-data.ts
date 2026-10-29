@@ -277,9 +277,9 @@ export const faqData: FaqItem[] = [
 export const dynamicWebsiteDesignData: ServicePageData = {
   hero: {
     badge: "Dynamic Website Design Service",
-    title: "Database-Driven Websites That Update in Real Time and",
-    highlight: "Grow With You",
-    description: "We build fast, interactive dynamic websites and custom CMS portals with seamless database integration, personalized user experiences, and content you can update in minutes.",
+    title: "Real-Time Websites That",
+    highlight: "Scale with You",
+    description: "We build fast, dynamic websites with custom CMS, database integration, and easy content management.",
     chips: heroFeatureChips,
     primaryCta: { label: "Get Dynamic Quote", href: "/contact-us" },
     secondaryCta: { label: "Explore Features", href: "#web-design-services" },

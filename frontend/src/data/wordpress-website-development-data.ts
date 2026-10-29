@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const wordpressWebsiteDevelopmentData: ServicePageData = {
   hero: {
     badge: "WordPress Development Services",
-    title: "Custom, High-Security WordPress Sites That",
-    highlight: "Drive Growth",
+    title: "Secure, Growth-Driven",
+    highlight: "WordPress Sites",
     description:
-      "We design and build bespoke WordPress websites, custom Gutenberg block systems, and scalable WooCommerce stores engineered for intuitive content control, bulletproof security, and top SEO rankings.",
+      "We build secure, SEO-friendly WordPress and WooCommerce sites with custom blocks and easy content management.",
     chips: [
       { id: "chip-1", label: "Custom Theme Engineering" },
       { id: "chip-2", label: "Gutenberg Block Systems" },

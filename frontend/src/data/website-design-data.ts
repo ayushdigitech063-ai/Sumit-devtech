@@ -336,9 +336,9 @@ export const faqData: FaqItem[] = [
 export const websiteDesignData: ServicePageData = {
   hero: {
     badge: "Website Design Service",
-    title: "Bespoke Website Designs That Turn Visitors Into",
-    highlight: "Loyal Clients",
-    description: "We engineer custom, mobile-responsive web interfaces that harmonize visual elegance with strategic conversion architecture. Fast, accessible, and tailored to elevate your brand presence.",
+    title: "Custom Web Designs That",
+    highlight: "Convert Visitors",
+    description: "We create elegant, responsive websites optimized for speed, accessibility, and conversions.",
     chips: heroFeatureChips,
     primaryCta: { label: "Get Free Design Quote", href: "/contact-us" },
     secondaryCta: { label: "Explore Services", href: "#web-design-services" },

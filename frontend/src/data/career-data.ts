@@ -3,6 +3,7 @@
 
 export type Opening = {
   id: string;
+  slug: string;
   title: string;
   department: string;
   location: string;
@@ -11,6 +12,7 @@ export type Opening = {
   summary: string;
   responsibilities: string[];
   requirements: string[];
+  niceToHave?: string[];
 };
 
 export type Perk = {
@@ -113,6 +115,7 @@ export const careerData: CareerData = {
   openings: [
     {
       id: "nextjs-developer",
+      slug: "nextjs-react-developer",
       title: "Next.js / React Developer",
       department: "Development",
       location: "Jaipur (Mansarovar)",
@@ -133,6 +136,7 @@ export const careerData: CareerData = {
     },
     {
       id: "wordpress-developer",
+      slug: "wordpress-developer",
       title: "WordPress Developer",
       department: "Development",
       location: "Jaipur (Mansarovar)",
@@ -153,6 +157,7 @@ export const careerData: CareerData = {
     },
     {
       id: "ui-ux-designer",
+      slug: "ui-ux-designer",
       title: "UI/UX Designer",
       department: "Design",
       location: "Jaipur (Mansarovar)",
@@ -173,6 +178,7 @@ export const careerData: CareerData = {
     },
     {
       id: "seo-executive",
+      slug: "seo-executive",
       title: "SEO Executive",
       department: "Marketing",
       location: "Jaipur (Mansarovar)",
@@ -193,6 +199,7 @@ export const careerData: CareerData = {
     },
     {
       id: "business-development",
+      slug: "business-development-executive",
       title: "Business Development Executive",
       department: "Sales",
       location: "Jaipur (Mansarovar)",
@@ -213,6 +220,7 @@ export const careerData: CareerData = {
     },
     {
       id: "web-intern",
+      slug: "web-development-intern",
       title: "Web Development Intern",
       department: "Development",
       location: "Jaipur (Mansarovar)",

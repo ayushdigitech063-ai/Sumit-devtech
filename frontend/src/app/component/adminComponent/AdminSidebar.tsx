@@ -4,13 +4,25 @@ import { usePathname } from "next/navigation";
 import { LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { adminNav } from "@/data/admin-navigation";
+import { useAdminSession } from "./AdminSession";
 
 type Props = { open: boolean; onClose: () => void };
 
 export default function AdminSidebar({ open, onClose }: Props) {
+  const { user, logout } = useAdminSession();
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .filter(Boolean)
+        .map((p) => p[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2) || "AD"
+    : "AD";
 
   return (
     <>
@@ -59,14 +71,19 @@ export default function AdminSidebar({ open, onClose }: Props) {
         </nav>
 
         <div className="mt-auto flex items-center gap-3 rounded-2xl bg-white/10 p-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand text-sm font-bold text-white">AD</span>
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand text-sm font-bold text-white">{initials}</span>
           <div className="min-w-0 flex-1 text-sm font-bold text-white">
-            Admin
-            <div className="truncate text-xs font-semibold text-white/70">admin@yourdomain.com</div>
+            <div className="truncate">{user?.name || "Admin"}</div>
+            <div className="truncate text-xs font-semibold text-white/70">{user?.email || "admin@yourdomain.com"}</div>
           </div>
-          <Link href="/admin/login" aria-label="Sign out" className="grid h-9 w-9 place-items-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white">
+          <button
+            type="button"
+            onClick={() => logout()}
+            aria-label="Sign out"
+            className="grid h-9 w-9 place-items-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white"
+          >
             <LogOut size={18} />
-          </Link>
+          </button>
         </div>
       </aside>
     </>

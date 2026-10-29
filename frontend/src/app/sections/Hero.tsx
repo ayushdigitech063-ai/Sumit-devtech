@@ -18,8 +18,6 @@ export default function Hero() {
       id="top"
       className="relative overflow-hidden bg-dark py-16 pb-8 text-white"
     >
-      {/* background layers */}
-      <div className="pointer-events-none absolute inset-0 animate-grid bg-[linear-gradient(#ffffff0d_1px,transparent_1px),linear-gradient(90deg,#ffffff0d_1px,transparent_1px)] `bg-[size:52px_52px]` `[mask-image:radial-gradient(circle_at_60%_40%,#000,transparent_72%)]`" />
       <div className="pointer-events-none absolute -right-24 -top-44 `h-[520px] w-[520px]` animate-blob rounded-full bg-accent opacity-50 blur-[90px]" />
       <div className="pointer-events-none absolute -bottom-40 -left-24 `h-[420px] w-[420px]` animate-blob rounded-full bg-accent-2 opacity-40 blur-[90px] [animation-delay:-6s]" />
 

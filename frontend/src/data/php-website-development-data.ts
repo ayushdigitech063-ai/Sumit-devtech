@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const phpWebsiteDevelopmentData: ServicePageData = {
   hero: {
     badge: "PHP & Laravel Web Development",
-    title: "Robust, Enterprise-Grade PHP Solutions That",
-    highlight: "Power Your Core",
+    title: "Scalable PHP Solutions for",
+    highlight: "Your Business",
     description:
-      "We engineer custom PHP 8+ web applications, secure enterprise portals, and high-velocity Laravel systems built with clean MVC architecture, relational database mastery, and resilient backend APIs.",
+      "We build secure PHP and Laravel applications with scalable APIs and clean architecture.",
     chips: [
       { id: "chip-1", label: "PHP 8.3 & Laravel 11" },
       { id: "chip-2", label: "Custom MySQL & PostgreSQL" },

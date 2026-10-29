@@ -3,10 +3,10 @@ import { ServicePageData } from "@/types/service-page";
 export const ecommerceWebsiteDevelopmentData: ServicePageData = {
   hero: {
     badge: "E-Commerce Development Solutions",
-    title: "Custom E-Commerce Websites Engineered to",
-    highlight: "Maximize Conversions",
+    title: "Custom E-Commerce Stores That",
+    highlight: "Convert",
     description:
-      "We build high-converting, scalable e-commerce storefronts and custom shopping portals featuring frictionless checkout funnels, instant search filtering, multi-currency support, and seamless ERP/CRM integrations.",
+      "We build scalable e-commerce stores with seamless checkout, smart search, multi-currency support, and ERP/CRM integration.",
     chips: [
       { id: "chip-1", label: "Custom Carts & Checkout" },
       { id: "chip-2", label: "Multi-Currency & Global Pay" },
