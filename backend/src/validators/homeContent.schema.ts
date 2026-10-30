@@ -100,3 +100,21 @@ export const updateWhyChooseSchema = z.object({
     ).optional()
   ),
 });
+
+
+export const updateHomeProjectsSchema = z.object({
+  tagline: z.string().min(1).max(100).optional(),
+  heading: z.string().min(1).max(250).optional(),
+  buttonText: z.string().min(1).max(100).optional(),
+  projects: z.preprocess(
+    parseJsonField,
+    z.array(
+      z.object({
+        title: z.string().min(1, "Project title required hai").max(150),
+        category: z.string().min(1, "Category required hai").max(100),
+        domain: z.string().max(200).optional(),
+        projectUrl: z.string().max(500).optional(),
+      })
+    ).optional()
+  ),
+});
