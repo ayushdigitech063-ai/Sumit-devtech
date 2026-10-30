@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { HeroBanner } from "../models/HeroBanner";
+import { HomeProjectSection } from "../models/HomeProject";
 import { About } from "../models/About";
 import { WorkProcess } from "../models/WorkProcess";
 import { WhyLead } from "../models/WhyLead";
@@ -10,6 +11,7 @@ import {
   updateWorkProcessSchema,
   updateWhyLeadSchema,
   updateWhyChooseSchema,
+  updateHomeProjectsSchema,
 } from "../validators/homeContent.schema";
 import { uploadToCloudinary, deleteFromCloudinary } from "../config/cloudinary";
 
@@ -201,9 +203,7 @@ export async function updateWhyLead(req: Request, res: Response, next: NextFunct
   }
 }
 
-// ==========================================
-// 5. WHY CHOOSE (Cards with Multiple Images)
-// ==========================================
+
 
 export async function getWhyChoose(_req: Request, res: Response, next: NextFunction) {
   try {
@@ -298,6 +298,105 @@ export async function updateWhyChoose(req: Request, res: Response, next: NextFun
       success: true,
       message: "Why choose section updated successfully.",
       data: choose,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export async function getHomeProjects(_req: Request, res: Response, next: NextFunction) {
+  try {
+    let sectionData = await HomeProjectSection.findOne();
+    if (!sectionData) {
+      sectionData = await HomeProjectSection.create({
+        tagline: "OUR PROJECTS",
+        heading: "Check Out Our Work",
+        buttonText: "View All Projects",
+        projects: [],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: sectionData,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateHomeProjects(req: Request, res: Response, next: NextFunction) {
+  try {
+    const parsed = updateHomeProjectsSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid home projects data.",
+        errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
+      });
+    }
+
+    let section: any = await HomeProjectSection.findOne();
+    if (!section) {
+      section = await HomeProjectSection.create({
+        tagline: "OUR PROJECTS",
+        heading: "Check Out Our Work",
+        buttonText: "View All Projects",
+        projects: [],
+      });
+    }
+
+    // Top-level text fields
+    if (parsed.data.tagline !== undefined) section.tagline = parsed.data.tagline;
+    if (parsed.data.heading !== undefined) section.heading = parsed.data.heading;
+    if (parsed.data.buttonText !== undefined) section.buttonText = parsed.data.buttonText;
+
+    const files = (req.files as Express.Multer.File[]) || [];
+    const incomingProjects = parsed.data.projects || [];
+
+    // Agar projects aaye hain request me toh unhe update / map karein
+    if (incomingProjects.length > 0) {
+      const updatedProjects = [];
+
+      for (let i = 0; i < incomingProjects.length; i++) {
+        const incoming = incomingProjects[i];
+        const existing = section.projects?.[i] || {};
+
+        let image = existing.image || { url: "", publicId: "" };
+
+        // Check if a new file is uploaded for this card
+        const file = files.find((f) => f.fieldname === `projectImage_${i}`);
+        if (file) {
+          if (image.publicId && typeof image.publicId === "string" && image.publicId.trim() !== "") {
+            await deleteFromCloudinary(image.publicId);
+          }
+          const uploaded = await uploadToCloudinary(file.buffer, "portfolio");
+          image = {
+            url: uploaded.url,
+            publicId: uploaded.publicId,
+          };
+        }
+
+        updatedProjects.push({
+          title: incoming.title ?? existing.title ?? "",
+          category: incoming.category ?? existing.category ?? "",
+          domain: incoming.domain ?? existing.domain ?? "",
+          projectUrl: incoming.projectUrl ?? existing.projectUrl ?? "",
+          image,
+        });
+      }
+
+      section.projects = updatedProjects;
+    }
+
+    section.markModified("projects");
+    await section.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Projects section updated successfully.",
+      data: section,
     });
   } catch (err) {
     next(err);

@@ -10,6 +10,8 @@ import {
   updateWhyLead,
   getWhyChoose,
   updateWhyChoose,
+  getHomeProjects,     
+  updateHomeProjects,
 } from "../controllers/homeContent.controller";
 import { requireAuth } from "../middelwares/auth";
 import { handleUpload } from "../middelwares/upload";
@@ -35,5 +37,8 @@ router.put("/why-lead", requireAuth, updateWhyLead);
 // 5. Why Choose (4 Cards with Images)
 router.get("/why-choose", getWhyChoose);
 router.put("/why-choose", requireAuth, handleUpload, updateWhyChoose);
+
+router.get("/projects", getHomeProjects);
+router.put("/projects", requireAuth, handleUpload, updateHomeProjects);
 
 export default router;

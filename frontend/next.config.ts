@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -12,13 +11,11 @@ const nextConfig: NextConfig = {
       },
     },
   },
-   images: {
-    remotePatterns: [{ protocol: "https", hostname: "sumitdevtech.com" }],
-  },
-  async rewrites() {
-    const backend = process.env.BACKEND_URL;
-    if (!backend) return [];
-    return [{ source: "/api/:path*", destination: `${backend}/api/:path*` }];
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "sumitdevtech.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
   },
 };
 
