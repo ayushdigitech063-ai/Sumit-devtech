@@ -37,7 +37,7 @@ function AnimatedMetric({ item }: { item: StatItem }) {
     : Math.floor(displayValue).toString();
 
   return (
-    <span ref={ref} className="font-heading text-4xl sm:text-5xl lg:text-6xl font-black text-brand tracking-tight">
+    <span ref={ref} className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand tracking-tight">
       {formatted}
       <span>{item.suffix}</span>
     </span>
@@ -49,7 +49,7 @@ export default function StatsSection({ data, stats: statsProp }: StatsSectionPro
   const stats = data?.items ?? statsProp ?? [];
 
   return (
-    <section className="relative bg-dark-2 text-white md:py-15 border-y border-white/10 overflow-hidden">
+    <section className="relative bg-[#141826] text-white md:py-16 border-y border-white/10 overflow-hidden">
       {/* Background Subtle Gradient Grid */}
       <div
         aria-hidden="true"
@@ -73,10 +73,10 @@ export default function StatsSection({ data, stats: statsProp }: StatsSectionPro
                 className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm"
               >
                 <AnimatedMetric item={stat} />
-                <div className="text-base font-bold text-white mt-2">
+                <div className="text-base font-semibold text-white/90 mt-2">
                   {stat.label}
                 </div>
-                <div className="text-xs text-white/50 mt-1">
+                <div className="text-xs text-white/60 mt-1.5 leading-relaxed">
                   {stat.subtext}
                 </div>
               </motion.div>

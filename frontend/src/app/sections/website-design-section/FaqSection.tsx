@@ -50,7 +50,7 @@ export default function FaqSection({
   };
 
   return (
-    <section className="relative bg-white md:py-18 overflow-hidden border-t border-line">
+    <section className="relative bg-white md:py-20 overflow-hidden border-t border-line/60">
       <Container>
         <div className="mx-auto w-full max-w-[1100px]">
           <SectionHeading

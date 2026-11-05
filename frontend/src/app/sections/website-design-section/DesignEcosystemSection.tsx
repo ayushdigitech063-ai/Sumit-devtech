@@ -210,7 +210,7 @@ function EcosystemItem({
           delay: reduceMotion ? 0 : index * 0.07,
           ease: [0.16, 1, 0.3, 1],
         }}
-        className="group relative flex h-full items-start gap-4 overflow-hidden rounded-2xl border border-white/10 bg-dark/80 p-5 shadow-xl backdrop-blur-xl transition-colors duration-300 hover:border-accent/50 hover:bg-white/[0.04]"
+        className="group relative flex h-full items-start gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-xl hover:shadow-accent/10 border-line/70"
       >
         {/* Glow in the corner, brighter on hover */}
         <div
@@ -218,7 +218,7 @@ function EcosystemItem({
           className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-accent/10 blur-2xl transition duration-500 group-hover:bg-accent/25"
         />
 
-        <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-accent transition duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-dark">
+        <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-[#f7f6f3] text-accent transition duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-white group-hover:border-accent">
           <Icon size={22} />
         </div>
 
@@ -235,11 +235,11 @@ function EcosystemItem({
             )} */}
           </div>
 
-          <h3 className="mt-0.5 font-heading text-lg font-bold leading-snug tracking-tight text-white transition-colors group-hover:text-accent-2">
+          <h3 className="mt-0.5 font-heading text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-accent">
             {card.title}
           </h3>
 
-          <p className="mt-1.5 text-[13px] leading-relaxed text-white/60">
+          <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
             {card.description}
           </p>
         </div>
@@ -288,7 +288,7 @@ export default function DesignEcosystemSection({
   const rows = Math.min(Math.max(Math.ceil(cards.length / 2), 1), 6);
 
   return (
-    <section className="relative overflow-hidden border-t border-white/5 bg-dark-2/95 text-white md:py-15">
+    <section className="relative overflow-hidden border-t border-line/60 bg-[#f7f6f3] text-ink md:py-20">
       {/* Background soft ambient accents */}
       <div
         aria-hidden="true"
@@ -303,7 +303,6 @@ export default function DesignEcosystemSection({
         <div className="mx-auto w-full max-w-[1200px]">
           <SectionHeading
             center
-            dark
             label={label}
             title={title}
             text={text}

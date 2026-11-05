@@ -49,7 +49,7 @@ export default function ServicesSection({
   const services = data?.items ?? servicesProp ?? [];
 
   return (
-    <section id={id} className="relative bg-light md:py-18 overflow-hidden">
+    <section id={id} className="relative bg-white md:py-20 overflow-hidden">
       <Container>
         <div className="mx-auto w-full max-w-[1100px]">
           <SectionHeading

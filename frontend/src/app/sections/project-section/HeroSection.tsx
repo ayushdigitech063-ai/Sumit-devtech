@@ -9,6 +9,7 @@ import { ProjectPageData } from "@/data/projects-data";
 
 export interface HeroSectionProps {
   data?: ProjectPageData["hero"];
+  descProp?: string;
 }
 
 interface StatCounterProps {
@@ -44,7 +45,7 @@ function StatCounter({ numericValue, suffix = "", decimals = 0, label }: StatCou
 
   return (
     <div className="space-y-1">
-      <div className="font-heading text-3xl sm:text-3xl lg:text-5xl font-black tracking-tight text-white">
+      <div className="font-heading text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
         <span ref={ref}>{formatted}</span>
         <span className="text-accent">{suffix}</span>
       </div>
@@ -53,15 +54,19 @@ function StatCounter({ numericValue, suffix = "", decimals = 0, label }: StatCou
   );
 }
 
-export default function HeroSection({ data }: HeroSectionProps) {
+export default function HeroSection({ data, descProp }: HeroSectionProps = {}) {
   const shouldReduceMotion = useReducedMotion();
 
-  const badge = data?.badge ?? "Portfolio & Case Studies";
-  const title = data?.title ?? "Our Work & Impactful";
-  const highlight = data?.highlight ?? "Projects";
-  const subtitle =
+  const title = data?.title ?? (
+    <>
+      Transforming Vision Into High-Impact <span className="text-brand">Digital Realities</span>
+    </>
+  );
+
+  const description =
     data?.subtitle ??
-    "Explore how we transform complex business challenges into sleek, high-converting digital products, cloud platforms, and modern web applications.";
+    descProp ??
+    "From venture-backed startups to enterprise industry leaders, we build responsive, high-velocity websites, custom cloud applications, and conversion-focused digital systems engineered for business growth.";
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -84,7 +89,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative overflow-hidden bg-dark text-white pt-28 pb-20 md:pt-22 md:pb-23  border-b border-white/10">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-40 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
       {/* Background radial gradient glow & grid */}
       <div
         aria-hidden="true"
@@ -96,10 +101,14 @@ export default function HeroSection({ data }: HeroSectionProps) {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-15 bg-[linear-gradient(#ffffff0d_1px,transparent_1px),linear-gradient(90deg,#ffffff0d_1px,transparent_1px)] bg-[size:52px_52px] [mask-image:radial-gradient(circle_at_60%_40%,#000,transparent_75%)] animate-grid -z-10"
+        className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden -z-10"
+        style={{
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
       />
 
-      <Container>
+      <Container className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[1100px]">
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
             {/* Left Column: Heading, Subtitle & Count-up Stats */}
@@ -109,131 +118,70 @@ export default function HeroSection({ data }: HeroSectionProps) {
               animate="visible"
               className="lg:col-span-7 text-left"
             >
-              {/* Chip with pulsating green dot */}
+              {/* Top Trust Badge */}
               <motion.div variants={itemVariants} className="mb-6 inline-flex items-center gap-2">
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md shadow-sm">
-                  <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-400" />
-                  <span>{badge}</span>
+                  <Sparkles size={13} className="text-accent" />
+                  <span>Verified Case Studies &amp; Client Deployments</span>
                 </span>
               </motion.div>
 
-              {/* H1 Heading with highlighted last words */}
+              {/* H1 Heading */}
               <motion.h1
                 variants={itemVariants}
-                className="text-4xl font-bold tracking-tight sm:text-3xl md:text-3xl lg:text-5xl leading-[1.08] text-white"
+                className="font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.12] text-white"
               >
-                {title} <span className="text-brand">{highlight}</span>
+                {title}
               </motion.h1>
 
-              {/* Subtitle with bright readable contrast (>= 75% white) */}
+              {/* Description */}
               <motion.p
                 variants={itemVariants}
-                className="mt-6 max-w-xl text-base text-white/80 sm:text-lg sm:leading-relaxed"
+                className="mt-6 max-w-xl text-base sm:text-lg md:text-xl text-white/80 leading-relaxed font-normal"
               >
-                {subtitle}
+                {description}
               </motion.p>
 
-              {/* Action Buttons */}
+              {/* CTAs */}
               <motion.div variants={itemVariants} className="mt-8 flex flex-wrap items-center gap-4">
                 <Button href="/contact-us" variant="primary" className="gap-2.5 shadow-xl shadow-accent/25">
                   Start Your Project
                   <ArrowRight size={16} />
                 </Button>
                 <a
-                  href="#projects-catalog"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white/90 backdrop-blur-md transition duration-300 hover:border-white/40 hover:bg-white/10 hover:-translate-y-0.5"
+                  href="#projects-showcase"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-md transition duration-300 hover:border-white/40 hover:bg-white/10"
                 >
                   Explore Work
                 </a>
               </motion.div>
-
-              {/* Stats Row with Count-Up Numbers */}
-              <motion.div
-                variants={itemVariants}
-                className="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-8"
-              >
-                <StatCounter numericValue={500} suffix="+" label="Delivered Sites" />
-                <StatCounter numericValue={100} suffix="%" label="Tested Delivery" />
-                <StatCounter numericValue={4.9} suffix="★" decimals={1} label="Client Rating" />
-              </motion.div>
             </motion.div>
 
-            {/* Right Column: Floating Glass Mini-Cards */}
+            {/* Right Column: Key Guarantees */}
             <motion.div
-              initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="relative lg:col-span-5"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="lg:col-span-5 flex flex-col gap-4"
             >
-              {/* Ambient Background Glow */}
-              <div
-                aria-hidden="true"
-                className="absolute -inset-4 rounded-3xl bg-linear-to-r from-accent/20 to-accent-2/15 blur-2xl -z-10"
-              />
-
-              {/* Floating Glass Showcase Window */}
-              <div className="animate-float overflow-hidden rounded-[28px] border border-white/20 bg-white/[0.08] p-6 shadow-2xl backdrop-blur-xl">
-                {/* Window Bar */}
-                <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-rose-500/80" />
-                    <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-                    <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-xl bg-accent/20 text-accent">
+                    <Zap size={20} />
                   </div>
-                  <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3.5 py-1 text-[11px] text-white/70">
-                    <Lock size={11} className="text-accent" />
-                    <span>sumitdevtech.com/projects</span>
-                  </div>
-                  <div className="h-3 w-3" />
+                  <h4 className="font-heading font-bold text-white text-lg">Sub-Second Speed</h4>
                 </div>
-
-                {/* Showcase Cards Grid */}
-                <div className="space-y-3.5">
-                  {/* Mini Card 1 */}
-                  <div className="rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-md">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-accent">
-                        <Zap size={14} /> Full-Stack Architecture
-                      </span>
-                      <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                        100% Production SLA
-                      </span>
-                    </div>
-                    <div className="h-2 w-3/4 rounded-full bg-white/30 mb-2" />
-                    <div className="h-1.5 w-full rounded-full bg-white/15" />
-                  </div>
-
-                  {/* Mini Card 2: 2 Column Sub-Metrics */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-transparent p-3.5">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/20 text-accent mb-2">
-                        <Monitor size={15} />
-                      </div>
-                      <div className="text-xs font-extrabold text-white">Next.js 15 App</div>
-                      <div className="text-[10px] text-white/60">Sub-second Paint</div>
-                    </div>
-                    <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-transparent p-3.5">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-2/20 text-accent-2 mb-2">
-                        <ShieldCheck size={15} />
-                      </div>
-                      <div className="text-xs font-extrabold text-white">Zero-Trust WAF</div>
-                      <div className="text-[10px] text-white/60">Hardened Security</div>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-sm text-white/70">Optimized for Google Core Web Vitals with 90+ Lighthouse score guarantee.</p>
               </div>
 
-              {/* Floating Mini-Badge (Bottom Left) */}
-              <div className="absolute -bottom-4 -left-4 rounded-xl border border-white/20 bg-dark-2/95 px-4 py-2.5 shadow-xl backdrop-blur-xl sm:-left-6">
-                <div className="flex items-center gap-2.5 text-xs font-bold text-white">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/20 text-accent">
-                    <Sparkles size={15} />
-                  </span>
-                  <div>
-                    <div className="leading-tight">Case Studies Verified</div>
-                    <div className="text-[10px] font-normal text-white/60">6 Industry Categories</div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-xl bg-emerald-400/20 text-emerald-400">
+                    <ShieldCheck size={20} />
                   </div>
+                  <h4 className="font-heading font-bold text-white text-lg">100% Code Ownership</h4>
                 </div>
+                <p className="text-sm text-white/70">Zero platform lock-in. Full access to source code, IP, and deployment keys.</p>
               </div>
             </motion.div>
           </div>

@@ -44,7 +44,7 @@ function StatCounter({ numericValue, suffix = "", decimals = 0, label }: StatCou
 
   return (
     <div className="space-y-1">
-      <div className="font-heading text-3xl sm:text-3xl lg:text-5xl font-black tracking-tight text-white">
+      <div className="font-heading text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
         <span ref={ref}>{formatted}</span>
         <span className="text-accent">{suffix}</span>
       </div>
@@ -80,7 +80,7 @@ export default function HeroSection({
   };
 
   return (
-    <section className="relative overflow-hidden bg-dark text-white pt-28 pb-25 md:pt-28 md:pb-35 border-b border-white/10">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-40 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
       {/* Background radial gradient glow & grid */}
       <div
         aria-hidden="true"
@@ -92,10 +92,14 @@ export default function HeroSection({
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-15 bg-[linear-gradient(#ffffff0d_1px,transparent_1px),linear-gradient(90deg,#ffffff0d_1px,transparent_1px)] bg-[size:52px_52px] [mask-image:radial-gradient(circle_at_60%_40%,#000,transparent_75%)] animate-grid -z-10"
+        className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden -z-10"
+        style={{
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
       />
 
-      <Container>
+      <Container className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[900px] text-center">
           <motion.div
             variants={containerVariants}
@@ -111,18 +115,18 @@ export default function HeroSection({
               </span>
             </motion.div>
 
-            {/* H1 Heading with highlighted last words */}
+            {/* H1 Heading matching Home typography */}
             <motion.h1
               variants={itemVariants}
-              className="text-4xl font-bold tracking-tight sm:text-3xl md:text-3xl lg:text-5xl leading-[1.08] text-white"
+              className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-bold tracking-tight leading-[1.12] text-white"
             >
               Every Project We Have <span className="text-brand">Delivered</span>
             </motion.h1>
 
-            {/* Subtitle with bright readable contrast */}
+            {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="mt-6 max-w-2xl text-base text-white/80 sm:text-lg sm:leading-relaxed"
+              className="mt-6 max-w-2xl text-base sm:text-lg md:text-xl text-white/80 leading-relaxed font-normal"
             >
               Browse our complete portfolio of live client solutions, corporate portals, booking platforms, and high-converting e-commerce web applications.
             </motion.p>
@@ -146,4 +150,3 @@ export default function HeroSection({
     </section>
   );
 }
-

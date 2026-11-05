@@ -48,25 +48,23 @@ export default function HeroSection({
   const shouldReduceMotion = useReducedMotion();
 
   const badge = data?.badge ?? badgeProp ?? "Website Design Service";
-  const title = titleProp ?? (
-    data ? (
-      <>
-        {data.title}{" "}
-        {data.highlight && <span className="text-brand">{data.highlight}</span>}
-      </>
-    ) : (
-      <>
-        Bespoke Website Designs That Turn Visitors Into{" "}
-        <span className="text-brand">Loyal Clients</span>
-      </>
-    )
+  const title = data?.title ?? titleProp ?? (
+    <>
+      Modern Website Design That <span className="text-brand">Engages &amp; Converts</span>
+    </>
   );
   const description =
     data?.description ??
     descProp ??
-    "We engineer custom, mobile-responsive web interfaces that harmonize visual elegance with strategic conversion architecture. Fast, accessible, and tailored to elevate your brand presence.";
-  const featureChips = data?.chips ?? chipsProp ?? [];
-  const primaryCtaText = data?.primaryCta?.label ?? primaryCtaTextProp ?? "Get Free Design Quote";
+    "We create visually stunning, lightning-fast, and conversion-optimized websites tailored to your brand identity and business objectives.";
+
+  const featureChips = data?.chips ?? chipsProp ?? [
+    { icon: "Sparkles", label: "Custom UI/UX" },
+    { icon: "Zap", label: "Sub-Second Load" },
+    { icon: "ShieldCheck", label: "SEO Optimized" },
+  ];
+
+  const primaryCtaText = data?.primaryCta?.label ?? primaryCtaTextProp ?? "Get Free Quote";
   const primaryCtaHref = data?.primaryCta?.href ?? primaryCtaHrefProp ?? "/contact-us";
   const secondaryCtaText = data?.secondaryCta?.label ?? secondaryCtaTextProp ?? "Explore Services";
   const secondaryCtaHref = data?.secondaryCta?.href ?? secondaryCtaHrefProp ?? "#web-design-services";
@@ -97,22 +95,21 @@ export default function HeroSection({
     },
   };
 
-  const floatVariants = {
-    animate: {
-      y: shouldReduceMotion ? 0 : [-6, 6, -6],
-      transition: {
-        duration: 5,
-        repeat: Infinity,
-        ease: "easeInOut" as const,
-      },
-    },
-  };
-
   return (
-    <section className="relative overflow-hidden bg-dark text-white md:pt-15 md:pb-8">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-44 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
+      {/* Ambient background lighting */}
+      <div className="pointer-events-none absolute right-0 -top-32 h-[520px] w-[520px] animate-blob rounded-full bg-accent/25 opacity-70 blur-[130px] overflow-hidden" />
+      <div className="pointer-events-none absolute -bottom-32 -left-16 h-[460px] w-[460px] animate-blob rounded-full bg-amber-400/20 opacity-60 blur-[120px]" />
+      <div 
+        className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden -z-10"
+        style={{
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
  
-      <Container>
-        <div className="mx-auto max-w-[1100px] max-h-[545px]">
+      <Container className="relative z-10 w-full">
+        <div className="mx-auto max-w-[1100px]">
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
             {/* Left Column: Copy & CTAs */}
             <motion.div
@@ -122,189 +119,93 @@ export default function HeroSection({
               className="lg:col-span-7"
             >
               {/* Small Badge */}
-              <motion.div variants={itemVariants} className="mb-5 inline-flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-accent backdrop-blur-md">
-                  <Sparkles size={14} className="text-accent-2" />
+              <motion.div variants={itemVariants} className="mb-6 inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                   {badge}
                 </span>
               </motion.div>
 
-              {/* H1 Heading */}
+              {/* H1 Heading matching Home & Packages typography */}
               <motion.h1
                 variants={itemVariants}
-                className="font-bold tracking-tight sm:text-xl md:text-5xl leading-[1.08]"
+                className="font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.15] text-white"
               >
                 {title}
               </motion.h1>
 
-              {/* Short Paragraph */}
+              {/* Paragraph */}
               <motion.p
                 variants={itemVariants}
-                className="mt-6 max-w-2xl text-base text-white/70 text-lg sm:leading-relaxed"
+                className="mt-6 max-w-xl text-base sm:text-lg text-white/75 leading-relaxed font-normal"
               >
                 {description}
               </motion.p>
 
               {/* Feature Chips */}
-              <motion.div variants={itemVariants} className="mt-7 flex flex-wrap gap-2.5">
-                {featureChips.map((chip) => (
-                  <span
-                    key={chip.id}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-sm"
-                  >
-                    <CheckCircle2 size={13} className="text-accent" />
-                    {chip.label}
-                  </span>
-                ))}
-              </motion.div>
+              {featureChips.length > 0 && (
+                <motion.div variants={itemVariants} className="mt-6 flex flex-wrap items-center gap-2.5">
+                  {featureChips.map((chip, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80"
+                    >
+                      <Sparkles size={12} className="text-brand" />
+                      {chip.label}
+                    </span>
+                  ))}
+                </motion.div>
+              )}
 
-              {/* Action Buttons */}
+              {/* CTAs */}
               <motion.div variants={itemVariants} className="mt-8 flex flex-wrap items-center gap-4">
-                <Button href={primaryCtaHref} variant="primary" className="gap-2.5 shadow-lg shadow-accent/25">
+                <Button href={primaryCtaHref} variant="primary" className="gap-2.5 shadow-xl shadow-accent/25">
                   {primaryCtaText}
                   <ArrowRight size={16} />
                 </Button>
-                <Link
-                  href={secondaryCtaHref}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white/90 backdrop-blur-md transition duration-300 hover:border-white/40 hover:bg-white/10 hover:-translate-y-0.5"
-                >
+                <Button href={secondaryCtaHref} variant="outline" className="border-white/20 text-white hover:bg-white/10">
                   {secondaryCtaText}
-                </Link>
-              </motion.div>
-
-              {/* Trust Proof Row */}
-              <motion.div
-                variants={itemVariants}
-                className="mt-7 grid grid-cols-2 gap-4 border-t border-white/10 pt-8 sm:grid-cols-4"
-              >
-                {trustItems.map((item) => (
-                  <div key={item.id} className="space-y-1">
-                    <div className="text-xl font-extrabold text-white sm:text-2xl">{item.value}</div>
-                    <div className="text-xs font-medium text-white/50">{item.label}</div>
-                  </div>
-                ))}
+                </Button>
               </motion.div>
             </motion.div>
 
-            {/* Right Column: Visual Mockup or Custom visual prop */}
-            {visual ? (
-              <motion.div
-                initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="relative lg:col-span-5"
-              >
-                {visual}
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="relative lg:col-span-5"
-              >
-                {/* Ambient Background Glow */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -inset-4 rounded-3xl bg-linear-to-r from-accent/20 to-accent-2/15 blur-2xl -z-10"
-                />
-
-                {/* Browser Mockup Window */}
-                <div className="overflow-hidden rounded-2xl border border-white/15 bg-dark-2/90 shadow-2xl backdrop-blur-xl">
-                  {/* Window Header */}
-                  <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
-                    </div>
-                    <div className="flex items-center gap-2 rounded-md bg-white/5 px-3 py-1 text-[11px] text-white/50">
-                      <Monitor size={12} className="text-accent" />
-                      <span>{previewUrl}</span>
-                    </div>
-                    <div className="h-2.5 w-2.5" />
+            {/* Right Column: Visual Interactive Glass Preview */}
+            <div className="lg:col-span-5">
+              {visual ?? (
+                <div className="relative rounded-3xl border border-white/15 bg-white/[0.04] p-7 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden group">
+                  {/* Glowing corner aura */}
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-accent/20 blur-3xl group-hover:bg-accent/35 transition-all duration-500" />
+                  
+                  {/* Browser bar */}
+                  <div className="flex items-center gap-2 pb-5 border-b border-white/10 text-xs text-white/60">
+                    <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                    <span className="h-3 w-3 rounded-full bg-amber-500/80" />
+                    <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                    <span className="ml-2 font-mono text-[11px] truncate text-white/50">{previewUrl}</span>
                   </div>
 
-                  {/* Mockup Canvas */}
-                  <div className="relative p-5 space-y-4">
-                    {/* Hero inside mockup */}
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="h-2 w-16 rounded-full bg-accent/60" />
-                        <span className="h-2 w-8 rounded-full bg-white/20" />
-                      </div>
-                      <div className="h-3.5 w-3/4 rounded-md bg-white/80 mb-2" />
-                      <div className="h-2 w-full rounded bg-white/20 mb-1" />
-                      <div className="h-2 w-2/3 rounded bg-white/20" />
+                  {/* Main Visual Showcase */}
+                  <div className="py-8 space-y-5 text-center relative z-10">
+                    <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-accent/20 to-accent-2/10 border border-accent/30 text-accent mb-1 shadow-lg shadow-accent/15">
+                      <Monitor size={36} />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-bold text-xl text-white tracking-tight">{floatingBadge1Title}</h3>
+                      <p className="mt-1.5 text-xs text-white/70 max-w-xs mx-auto leading-relaxed">{floatingBadge1Sub}</p>
                     </div>
 
-                    {/* Mockup 2-column cards */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/10 to-transparent p-3.5 space-y-2">
-                        <div className="h-7 w-7 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
-                          <Zap size={14} />
-                        </div>
-                        <div className="h-2.5 w-16 rounded bg-white/70" />
-                        <div className="h-2 w-20 rounded bg-white/30" />
+                    {/* Secondary mini floating metric tile */}
+                    <div className="pt-4 border-t border-white/10 flex items-center justify-between text-left px-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-2 w-2 rounded-full bg-emerald-400" />
+                        <span className="text-xs font-semibold text-white/90">{floatingBadge2Title}</span>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/10 to-transparent p-3.5 space-y-2">
-                        <div className="h-7 w-7 rounded-lg bg-accent-2/20 flex items-center justify-center text-accent-2">
-                          <ShieldCheck size={14} />
-                        </div>
-                        <div className="h-2.5 w-16 rounded bg-white/70" />
-                        <div className="h-2 w-20 rounded bg-white/30" />
-                      </div>
-                    </div>
-
-                    {/* Progress Metric Simulation */}
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
-                      <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
-                        <span className="text-white/75">UX Optimization</span>
-                        <span className="text-accent font-bold">100% Score</span>
-                      </div>
-                      <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full w-full rounded-full bg-brand" />
-                      </div>
+                      <span className="text-[11px] text-accent font-medium">{floatingBadge2Sub}</span>
                     </div>
                   </div>
                 </div>
-
-                {/* Floating Badge 1 */}
-                <motion.div
-                  variants={floatVariants}
-                  animate="animate"
-                  className="absolute -bottom-5 -left-4 rounded-xl border border-white/20 bg-dark-2/95 px-4 py-2.5 shadow-xl backdrop-blur-xl sm:-left-6"
-                >
-                  <div className="flex items-center gap-2.5 text-xs font-bold text-white">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
-                      <Smartphone size={15} />
-                    </span>
-                    <div>
-                      <div className="leading-tight">{floatingBadge1Title}</div>
-                      <div className="text-[10px] font-normal text-white/50">{floatingBadge1Sub}</div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Floating Badge 2 */}
-                <motion.div
-                  variants={floatVariants}
-                  animate="animate"
-                  transition={{ delay: 1 }}
-                  className="absolute -top-5 -right-3 rounded-xl border border-white/20 bg-dark-2/95 px-4 py-2.5 shadow-xl backdrop-blur-xl sm:-right-5"
-                >
-                  <div className="flex items-center gap-2.5 text-xs font-bold text-white">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/20 text-accent">
-                      <Sparkles size={15} />
-                    </span>
-                    <div>
-                      <div className="leading-tight">{floatingBadge2Title}</div>
-                      <div className="text-[10px] font-normal text-white/50">{floatingBadge2Sub}</div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </Container>

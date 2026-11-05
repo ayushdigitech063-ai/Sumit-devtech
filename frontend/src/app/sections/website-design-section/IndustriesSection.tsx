@@ -52,7 +52,7 @@ export default function IndustriesSection({
   const items = data?.items ?? itemsProp ?? [];
 
   return (
-    <section className="relative bg-light md:py-18 overflow-hidden">
+    <section className="relative bg-[#f7f6f3] md:py-20 overflow-hidden">
       <Container>
         <div className="mx-auto w-full max-w-[1100px]">
           <SectionHeading

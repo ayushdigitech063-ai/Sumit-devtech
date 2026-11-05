@@ -5,14 +5,13 @@ import ClientsMarquee from "../sections/home/ClientsMarquee";
 import Faq from "../sections/home/Faq";
 import GlobalClient from "../sections/home/GlobalClient";
 import Industries from "../sections/home/Industries";
-import Process from "../sections/home/Process";
 import Projects from "../sections/home/Projects";
+import RealBusinesses from "../sections/home/RealBusinesses";
 import HomeProcessSection from "../sections/home/SDLCProcessSection";
 import ServicesTabs from "../sections/home/ServicesTabs";
 import Team from "../sections/home/Team";
 import Technology from "../sections/home/technology";
 import Testimonials from "../sections/home/Testimonials";
-import WhyChoose from "../sections/home/WhyChoose";
 import WhyLead from "../sections/home/WhyLead";
 
 export default function Home() {
@@ -23,11 +22,10 @@ export default function Home() {
    <ServicesTabs />
    <HomeProcessSection />
    <WhyLead />
-   <WhyChoose />
+   <RealBusinesses />
    <Projects />
    <ClientsMarquee />
    <Industries />
-   <Process />
    <Testimonials />
    <Technology />
    <Team />

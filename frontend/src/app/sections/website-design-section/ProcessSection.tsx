@@ -53,7 +53,7 @@ export default function ProcessSection({
   const scaleY = useTransform(scrollYProgress, [0, 1], [0.1, 1]);
 
   return (
-    <section ref={sectionRef} className="relative bg-dark text-white md:py-18 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-[#10131e] text-white md:py-24 overflow-hidden">
       {/* Background glow elements */}
       <div
         aria-hidden="true"

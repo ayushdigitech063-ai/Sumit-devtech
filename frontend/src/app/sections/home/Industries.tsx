@@ -62,12 +62,12 @@ export default function Industries() {
   }, [shouldReduceMotion]);
 
   return (
-    <Section id="industries">
+    <Section id="industries" className="font-sans">
       <div className="mx-auto w-full max-w-[1100px] px-6">
         <SectionHeading
           center
           label="Industries"
-          title={<>We Serve <span className="text-brand">All Industries</span></>}
+          title={<span className="font-sans font-bold">We Serve <span className="text-orange-500 font-bold">All Industries</span></span>}
           text="We stay ahead in technology by understanding the unique challenges and goals of every industry we work with."
         />
 
@@ -110,7 +110,7 @@ export default function Industries() {
                 </span>
 
                 <div>
-                  <h3 className="mb-2 text-xl font-extrabold text-ink md:text-3xl">{ind.name}</h3>
+                  <h3 className="mb-2 text-xl font-bold font-sans text-ink md:text-3xl">{ind.name}</h3>
                   <p className="max-w-2xl text-sm leading-relaxed text-muted md:text-base">{ind.text}</p>
                   <Link
                     href="/contact"
@@ -120,7 +120,7 @@ export default function Industries() {
                   </Link>
                 </div>
 
-                <span className="hidden select-none font-heading text-6xl font-extrabold text-ink/10 md:block lg:text-7xl">
+                <span className="hidden select-none font-sans text-6xl font-bold font-sans text-ink/10 md:block lg:text-7xl">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </motion.div>

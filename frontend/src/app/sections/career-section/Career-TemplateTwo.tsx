@@ -1,92 +1,154 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, ArrowRight, MapPin, Briefcase, Clock, Sparkles, CheckCircle2, Mail, MessageSquare, ChevronDown } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import Container from "@/app/ui/Container";
 import SectionHeading from "@/app/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { careerData, applyHref, CAREERS_EMAIL, type CareerData } from "@/data/career-data";
-import { PerkIcon, JobMeta, getDepartments, fadeUp } from "./Career-Shared";
+import { PerkIcon, getDepartments, fadeUp } from "./Career-Shared";
 
-// Template 2 - Dark: split hero with stat tiles, numbered perks, job cards in a grid
+// Template 2 - Managed light theme: white / off-white cream sections with modern cards
 export default function CareerTemplateTwo({ data = careerData }: { data?: CareerData }) {
   const reduce = useReducedMotion();
   const departments = getDepartments(data.openings);
   const [dept, setDept] = useState("All");
+  const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setResumeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const jobs = dept === "All" ? data.openings : data.openings.filter((o) => o.department === dept);
 
   return (
-    <main className="bg-dark text-white">
+    <main className="bg-white text-ink">
       {/* ---------- Hero ---------- */}
-      <section className="relative overflow-hidden pb-20 pt-32 md:pb-24 md:pt-28">
-        <Container>
-          <div className="relative mx-auto grid max-w-[1200px] items-center gap-14 lg:grid-cols-2">
-            <div>
-              <motion.span
-                {...fadeUp(reduce)}
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent"
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-40 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
+        {/* Background ambient lighting blooms matching Package Hero */}
+        <div 
+          className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden z-0"
+          style={{
+            backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <div className="pointer-events-none absolute right-0 -top-32 h-[520px] w-[520px] animate-blob rounded-full bg-accent/25 opacity-70 blur-[130px] overflow-hidden" />
+        <div className="pointer-events-none absolute -bottom-32 -left-16 h-[460px] w-[460px] animate-blob rounded-full bg-amber-400/20 opacity-60 blur-[120px]" />
+        <div className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 h-[350px] w-[600px] rounded-full bg-blue-500/15 blur-[140px]" />
+
+        <Container className="relative z-10 w-full">
+          <div className="relative mx-auto max-w-[1000px] text-center flex flex-col items-center">
+            <motion.span
+              {...fadeUp(reduce)}
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              {data.hero.badge}
+            </motion.span>
+
+            <motion.h1
+              {...fadeUp(reduce, 1)}
+              className="mt-6 font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.75rem] font-bold tracking-tight leading-[1.12] text-white max-w-4xl"
+            >
+              {data.hero.title} <span className="text-brand">{data.hero.highlight}</span>
+            </motion.h1>
+
+            <motion.p {...fadeUp(reduce, 2)} className="mt-6 max-w-2xl text-base sm:text-lg md:text-xl font-normal leading-relaxed text-white/80">
+              {data.hero.text}
+            </motion.p>
+
+            <motion.div {...fadeUp(reduce, 3)} className="mt-9 flex flex-wrap justify-center items-center gap-4 relative">
+              <a
+                href="#openings"
+                className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-heading font-bold text-white shadow-lg shadow-accent/25 hover:shadow-accent/40 transition hover:scale-105"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                {data.hero.badge}
-              </motion.span>
+                See open roles <ArrowRight size={16} />
+              </a>
 
-              <motion.h1
-                {...fadeUp(reduce, 1)}
-                className="mt-6 font-bold tracking-tight sm:text-3xl lg:text-5xl"
-              >
-                {data.hero.title} <span className="text-accent">{data.hero.highlight}</span>
-              </motion.h1>
-
-              <motion.p {...fadeUp(reduce, 2)} className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-                {data.hero.text}
-              </motion.p>
-
-              <motion.div {...fadeUp(reduce, 3)} className="mt-9 flex flex-wrap gap-3">
-                <a
-                  href="#openings"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-dark transition hover:opacity-90"
+              {/* Resume Dropdown Button with WhatsApp & Email options */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setResumeDropdownOpen((prev) => !prev)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-heading font-semibold text-white/90 backdrop-blur-md transition hover:border-white/40 hover:bg-white/10"
                 >
-                  See open roles <ArrowRight size={16} />
-                </a>
-                <a
-                  href={applyHref()}
-                  className="inline-flex items-center rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold transition hover:border-accent hover:text-accent"
-                >
-                  Send your resume
-                </a>
-              </motion.div>
-            </div>
+                  <span>Send your resume</span>
+                  <ChevronDown
+                    size={15}
+                    className={`transition-transform duration-200 ${resumeDropdownOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
 
-            {/* Stat tiles, the second column sits lower */}
-            <div className="grid grid-cols-2 gap-4">
-              {data.stats.map((s, i) => (
-                <motion.div
-                  key={s.label}
-                  {...fadeUp(reduce, i)}
-                  className={cn(
-                    "rounded-3xl border border-white/10 bg-white/5 p-7 backdrop-blur-xl",
-                    i % 2 === 1 && "mt-8"
+                <AnimatePresence>
+                  {resumeDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 top-full mt-2 w-64 rounded-2xl border border-white/15 bg-[#14151a]/95 p-2 shadow-2xl backdrop-blur-2xl z-50 text-left"
+                    >
+                      {/* WhatsApp Option */}
+                      <a
+                        href="https://wa.me/916201533997?text=Hi%20Sumit%20DevTech%20Team,%20I%20am%20sharing%20my%20resume%20for%20career%20opportunities."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setResumeDropdownOpen(false)}
+                        className="group/wp flex items-center gap-3 rounded-xl p-3 text-xs font-semibold text-white/90 transition-all hover:bg-emerald-500/15 hover:text-white"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 group-hover/wp:bg-emerald-500 group-hover/wp:text-white transition-colors">
+                          <FaWhatsapp size={18} />
+                        </div>
+                        <div>
+                          <div className="font-heading font-bold text-sm text-white">Send on WhatsApp</div>
+                          <div className="text-[11px] text-white/50 font-normal">Fastest response in 2 hrs</div>
+                        </div>
+                      </a>
+
+                      {/* Email Option */}
+                      <a
+                        href={applyHref()}
+                        onClick={() => setResumeDropdownOpen(false)}
+                        className="group/mail flex items-center gap-3 rounded-xl p-3 text-xs font-semibold text-white/90 transition-all hover:bg-accent/15 hover:text-white mt-1 border-t border-white/5 pt-2"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/20 text-accent group-hover/mail:bg-accent group-hover/mail:text-white transition-colors">
+                          <Mail size={17} />
+                        </div>
+                        <div>
+                          <div className="font-heading font-bold text-sm text-white">Send via Email</div>
+                          <div className="text-[11px] text-white/50 font-normal">{CAREERS_EMAIL}</div>
+                        </div>
+                      </a>
+                    </motion.div>
                   )}
-                >
-                  <p className="font-heading text-4xl font-bold text-accent sm:text-5xl">{s.value}</p>
-                  <p className="mt-2 text-sm text-white/60">{s.label}</p>
-                </motion.div>
-              ))}
-            </div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
           </div>
         </Container>
       </section>
 
-      {/* ---------- Perks ---------- */}
-      <section className="border-t border-white/5 bg-dark-2 py-16 md:py-24">
-        <Container>
+      {/* ---------- Perks Section (Cream White / Off-White bg-light) ---------- */}
+      <section className="relative overflow-hidden border-t border-line/60 bg-[#f7f6f3] py-20 md:py-28 text-ink">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(#0000000a_1px,transparent_1px)] [background-size:24px_24px]"
+        />
+        <Container className="relative z-10">
           <div className="mx-auto max-w-[1200px]">
             <SectionHeading
               center
-              dark
               label={data.perksSection.label}
               title={data.perksSection.title}
               text={data.perksSection.text}
@@ -96,16 +158,16 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                 <motion.div
                   key={perk.id}
                   {...fadeUp(reduce, i)}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-dark p-8 transition hover:border-accent/50"
+                  className="group relative overflow-hidden rounded-3xl border border-line bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/40"
                 >
-                  <span className="absolute right-6 top-4 font-heading text-6xl font-bold text-white/[0.06]">
+                  <span className="absolute right-6 top-4 font-heading text-6xl font-bold text-dark/[0.05]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <div className="relative grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/5 text-accent transition group-hover:bg-accent group-hover:text-dark">
+                  <div className="relative grid h-12 w-12 place-items-center rounded-2xl bg-accent/10 text-accent transition group-hover:bg-brand group-hover:text-white">
                     <PerkIcon name={perk.icon} />
                   </div>
-                  <h3 className="relative mt-6 font-heading text-xl font-bold">{perk.title}</h3>
-                  <p className="relative mt-2 text-sm leading-relaxed text-white/60">{perk.description}</p>
+                  <h3 className="mt-6 font-heading text-xl font-bold text-ink">{perk.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{perk.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -113,8 +175,8 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
         </Container>
       </section>
 
-      {/* ---------- Open positions ---------- */}
-      <section id="openings" className="scroll-mt-24 bg-slate-50 py-16 text-dark md:py-24">
+      {/* ---------- Open roles (Modern Card Redesign) ---------- */}
+      <section id="openings" className="bg-white py-20 text-ink md:py-28 border-t border-line/50">
         <Container>
           <div className="mx-auto max-w-[1200px]">
             <SectionHeading
@@ -124,18 +186,18 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
               text={data.openingsSection.text}
             />
 
+            {/* Department filter */}
             <div className="mt-10 flex flex-wrap justify-center gap-2">
               {departments.map((d) => (
                 <button
                   key={d}
-                  type="button"
                   onClick={() => setDept(d)}
                   aria-pressed={dept === d}
                   className={cn(
-                    "rounded-full border px-5 py-2 text-sm font-medium transition",
+                    "rounded-full border px-5 py-2.5 text-xs sm:text-sm font-heading font-bold transition-all duration-300",
                     dept === d
-                      ? "border-dark bg-dark text-white"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-dark/40"
+                      ? "border-dark bg-dark text-white shadow-md shadow-black/15 scale-102"
+                      : "border-line bg-[#f7f6f3] text-muted hover:border-dark/40 hover:text-dark hover:bg-white"
                   )}
                 >
                   {d}
@@ -143,9 +205,10 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
               ))}
             </div>
 
-            <div className="mt-10 grid gap-6 md:grid-cols-2">
+            {/* Redesigned Job Cards in Single Row Layout */}
+            <div className="mt-12 flex flex-col gap-6">
               {jobs.length === 0 && (
-                <p className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-slate-500 md:col-span-2">
+                <p className="rounded-2xl border border-dashed border-line bg-[#f7f6f3] p-8 text-center text-muted">
                   No open roles right now. Send your resume to {CAREERS_EMAIL}.
                 </p>
               )}
@@ -153,41 +216,74 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
               {jobs.map((job, i) => (
                 <motion.article
                   key={job.id}
-                  {...fadeUp(reduce, i % 2)}
-                  className="group flex flex-col rounded-3xl border border-slate-200 bg-white p-7 transition hover:-translate-y-1 hover:shadow-xl"
+                  {...fadeUp(reduce, i)}
+                  className="group relative flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 sm:gap-8 rounded-3xl border border-line/80 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_16px_36px_rgba(255,106,31,0.12)] overflow-hidden"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="rounded-full bg-dark/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-dark/70">
-                      {job.department}
-                    </span>
+                  {/* Left & Middle Column Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-accent">
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                        {job.department}
+                      </span>
+                      <span className="text-xs font-semibold text-muted/70">
+                        Full-time • Jaipur (Mansarovar)
+                      </span>
+                    </div>
+
+                    <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-ink tracking-tight group-hover:text-accent transition-colors">
+                      {job.title}
+                    </h3>
+
+                    {/* Meta Badges Row */}
+                    <div className="mt-3 flex flex-wrap items-center gap-2.5 text-xs text-muted">
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                        <MapPin size={13} className="text-accent" /> {job.location}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                        <Briefcase size={13} className="text-accent" /> {job.type}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                        <Clock size={13} className="text-accent" /> {job.experience}
+                      </span>
+                    </div>
+
+                    <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-muted max-w-3xl">
+                      {job.summary}
+                    </p>
+
+                    {/* Key Requirements Highlights in flex wrap row */}
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      {job.requirements.slice(0, 3).map((r, rIdx) => (
+                        <span
+                          key={rIdx}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-light/70 px-3 py-1 text-[11px] font-medium text-ink/80"
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Column Action Button */}
+                  <div className="flex lg:flex-col items-center justify-between lg:justify-center gap-4 lg:pl-6 lg:border-l lg:border-line/60 shrink-0">
                     <Link
                       href={`/career/${job.slug}#apply`}
-                      aria-label={`Apply for ${job.title}`}
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 text-dark transition group-hover:border-dark group-hover:bg-dark group-hover:text-white"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-heading font-bold text-white shadow-md shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 hover:scale-105 shrink-0"
+                    >
+                      Apply Now
+                      <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                    </Link>
+
+                    <Link
+                      href={`/career/${job.slug}#apply`}
+                      aria-label={`View ${job.title}`}
+                      className="hidden lg:grid h-10 w-10 place-items-center rounded-2xl bg-light text-dark shadow-sm transition-all duration-300 group-hover:bg-brand group-hover:text-white group-hover:rotate-45"
                     >
                       <ArrowUpRight size={18} />
                     </Link>
                   </div>
-
-                  <h3 className="mt-5 font-heading text-2xl font-bold">{job.title}</h3>
-                  <JobMeta job={job} className="mt-2 text-slate-500" />
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600">{job.summary}</p>
-
-                  <ul className="mt-5 space-y-2 text-sm text-slate-600">
-                    {job.requirements.slice(0, 3).map((r) => (
-                      <li key={r} className="flex gap-2.5">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-dark" />
-                        {r}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={`/career/${job.slug}#apply`}
-                    className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-dark"
-                  >
-                    Apply now <ArrowRight size={15} className="transition group-hover:translate-x-1" />
-                  </Link>
                 </motion.article>
               ))}
             </div>
@@ -195,47 +291,79 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
         </Container>
       </section>
 
-      {/* ---------- Hiring process ---------- */}
-      <section className="py-16 md:py-24">
-        <Container>
-          <div className="mx-auto max-w-[1200px]">
+      {/* ---------- Hiring Process: Unique Dotted Track Roadmap Design ---------- */}
+      <section className="relative overflow-hidden border-t border-line/60 bg-[#f7f6f3] py-20 text-ink md:py-28">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(#0000000a_1px,transparent_1px)] [background-size:24px_24px]"
+        />
+        <Container className="relative z-10">
+          <div className="mx-auto max-w-[1240px]">
             <SectionHeading
               center
-              dark
               label={data.processSection.label}
               title={data.processSection.title}
               text={data.processSection.text}
             />
-            <div className="mt-12 grid gap-5 md:grid-cols-4">
-              {data.process.map((step, i) => (
-                <motion.div
-                  key={step.id}
-                  {...fadeUp(reduce, i)}
-                  className="rounded-3xl border border-white/10 bg-white/5 p-6"
-                >
-                  <span className="font-heading text-3xl font-bold text-accent">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="mt-3 font-heading text-lg font-bold">{step.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/60">{step.description}</p>
-                </motion.div>
-              ))}
+
+            {/* Dotted Track Timeline Container */}
+            <div className="mt-16 relative">
+              {/* Desktop Curved Dotted Connecting Line */}
+              <div 
+                aria-hidden="true"
+                className="hidden lg:block pointer-events-none absolute left-[12%] right-[12%] top-7 z-0 h-[3px] border-t-2 border-dashed border-accent/40"
+              />
+
+              {/* Steps Grid */}
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 relative z-10">
+                {data.process.map((step, i) => (
+                  <motion.div
+                    key={step.id}
+                    {...fadeUp(reduce, i)}
+                    className="group relative flex flex-col items-center text-center"
+                  >
+                    {/* Glowing Dotted Node Ring */}
+                    <div className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white border-2 border-dashed border-accent p-1 shadow-md shadow-accent/15 transition-all duration-500 group-hover:border-solid group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-accent/30">
+                      <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-tr from-accent to-accent-2 text-white font-heading font-black text-lg shadow-inner">
+                        {String(i + 1).padStart(2, "0")}
+                      </div>
+
+                      {/* Small pulsating ping dot */}
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-accent" />
+                      </span>
+                    </div>
+
+                    {/* Step Card with Clean Rounded Border */}
+                    <div className="w-full flex-1 rounded-3xl border border-line/80 bg-white p-6 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:border-accent/50 group-hover:shadow-[0_12px_28px_rgba(255,106,31,0.10)] flex flex-col justify-between">
+                      <div>
+                        <span className="inline-block mb-3 px-3 py-1 rounded-full bg-accent/10 text-[10px] font-extrabold uppercase tracking-widest text-accent">
+                          Step 0{i + 1}
+                        </span>
+                        
+                        <h3 className="font-heading text-xl font-bold text-ink mb-2.5 group-hover:text-accent transition-colors">
+                          {step.title}
+                        </h3>
+                        
+                        <p className="text-xs sm:text-sm text-muted font-normal leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
+
+                      {/* Bottom Visual Indicator */}
+                      <div className="mt-5 pt-3.5 border-t border-line/50 flex items-center justify-center gap-1.5 text-[11px] font-semibold text-muted">
+                        <CheckCircle2 size={13} className="text-accent" />
+                        <span>Stage {i + 1} Completed</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </Container>
       </section>
-
-      {/* ---------- Final call ---------- */}
-      {/* <section className="px-4 pb-16 md:pb-24">
-        <div className="mx-auto max-w-[1200px] rounded-3xl bg-orange-300 px-8 py-14 text-center text-dark md:px-16">
-          <h2 className="font-heading text-3xl font-bold md:text-4xl">{data.cta.title}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-dark/70">{data.cta.text}</p>
-          <a
-            href={applyHref()}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-dark px-7 py-3.5 text-sm font-semibold text-white transition hover:opacity-90"
-          >
-            Send your resume <ArrowRight size={16} />
-          </a>
-        </div>
-      </section> */}
     </main>
   );
 }

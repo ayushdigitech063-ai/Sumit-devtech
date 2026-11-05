@@ -15,9 +15,8 @@ export default function Purpose() {
   const FeaturedIcon = featured.icon;
 
   return (
-    <Section id="purpose-section" dark>
+    <Section id="purpose-section" light className="bg-white border-t border-line/50">
       <SectionHeading
-        dark
         center
         label="Our Purpose"
         title={<>Driven by Purpose, <span className="text-brand">Guided by Vision</span></>}
@@ -27,7 +26,7 @@ export default function Purpose() {
       <div className="mx-auto mt-12 grid w-full max-w-5xl gap-4 sm:mt-14 md:gap-5">
         {/* Row 1: photo carousel + featured card, same height */}
         <div className="grid gap-4 md:grid-cols-2 md:gap-5">
-          <div className="relative min-h-[260px] overflow-hidden rounded-2xl md:min-h-[340px]">
+          <div className="relative min-h-[260px] overflow-hidden rounded-3xl border border-line shadow-sm md:min-h-[340px]">
             <div className="absolute inset-0 overflow-hidden" ref={emblaRef}>
               <div className="flex h-full touch-pan-y">
                 {pictures.map((picture, index) => (
@@ -44,15 +43,15 @@ export default function Purpose() {
                 ))}
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>
 
-          <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-white/10 bg-dark-2 p-6 shadow-xl md:p-8">
-            <span className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-accent/10 text-accent">
+          <div className="relative flex flex-col justify-center overflow-hidden rounded-3xl border border-line/80 bg-[#faf9f6] p-7 sm:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-accent hover:shadow-[0_12px_28px_rgba(255,106,31,0.08)]">
+            <span className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-accent/10 text-accent">
               <FeaturedIcon size={26} />
             </span>
-            <h3 className="text-xl font-semibold text-white sm:text-2xl">{featured.title}</h3>
-            <p className="mt-4 text-sm leading-relaxed text-white/60 sm:text-base">{featured.text}</p>
+            <h3 className="font-heading text-2xl font-bold text-ink sm:text-3xl">{featured.title}</h3>
+            <p className="mt-4 text-sm leading-relaxed text-muted sm:text-base font-normal">{featured.text}</p>
           </div>
         </div>
 
@@ -63,13 +62,13 @@ export default function Purpose() {
             return (
               <article
                 key={item.title}
-                className="group flex min-w-0 flex-col rounded-2xl border border-white/10 bg-dark-2 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 md:p-6"
+                className="group flex min-w-0 flex-col rounded-3xl border border-line/80 bg-[#faf9f6] p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1.5 hover:border-accent hover:shadow-[0_12px_28px_rgba(255,106,31,0.08)]"
               >
-                <span className="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
+                <span className="mb-4 grid h-11 w-11 place-items-center rounded-2xl bg-accent/10 text-accent transition-colors group-hover:bg-brand group-hover:text-white">
                   <Icon size={22} />
                 </span>
-                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-white/60">{item.text}</p>
+                <h3 className="font-heading text-xl font-bold text-ink">{item.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted font-normal">{item.text}</p>
               </article>
             );
           })}

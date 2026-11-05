@@ -163,16 +163,16 @@ export default function HomeProcessSection() {
           />
           */}
 
-          {/* NAYA DYNAMIC HEADING */}
+          {/* NAYA CLEAN SINGLE-LINE HEADING */}
           <SectionHeading
             center
-            label={label}
+            label="SUMIT DEV TECH"
             title={
-              <>
-                {title} <span className="text-brand">{highlight}</span>
-              </>
+              <span className="whitespace-nowrap">
+                How We Build <span className="text-brand">High-Impact Digital Products</span>
+              </span>
             }
-            text={text}
+            text="Our battle-tested, end-to-end agile development methodology."
           />
 
           {/* ---------------- Desktop: circle ---------------- */}
@@ -231,8 +231,15 @@ export default function HomeProcessSection() {
                 </div>
 
                 {/* Centre */}
-                <div
-                  className="absolute grid place-items-center rounded-full bg-white shadow-[0_10px_40px_-10px_rgba(15,23,42,0.25)]"
+                {/* Centre - Click to restart 1, 2, 3 cycle */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActive(0);
+                    setPaused(false);
+                  }}
+                  title="Click to restart process from Step 1"
+                  className="group absolute grid place-items-center rounded-full bg-white shadow-[0_10px_40px_-10px_rgba(15,23,42,0.25)] border-2 border-slate-100 hover:border-brand/40 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer z-20"
                   style={{ left: CX - 72, top: CY - 72, width: 144, height: 144 }}
                 >
                   <motion.span
@@ -243,11 +250,15 @@ export default function HomeProcessSection() {
                     }
                     transition={{ duration: 2.6, repeat: Infinity, ease: "easeOut" }}
                   />
-                  <span className="relative px-4 text-center font-heading text-xl font-bold leading-tight text-brand">
-                    {centerLabel}
-                  </span>
-                </div>
-
+                  <div className="relative flex flex-col items-center justify-center px-4 text-center">
+                    <span className="font-heading text-lg sm:text-xl font-bold leading-tight text-brand group-hover:text-orange-600 transition-colors">
+                      {centerLabel}
+                    </span>
+                    <span className="mt-1 text-[9px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Click to Restart ?
+                    </span>
+                  </div>
+                </button>
                 {/* Numbered nodes and their text */}
                 {steps.map((step: any, i: number) => {
                   const p = place(i, n);
