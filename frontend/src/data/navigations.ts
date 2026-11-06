@@ -26,6 +26,15 @@ export const serviceMenu = [
     ],
   },
   {
+    title: "App Development",
+    items: [
+      { label: "Android App Development", desc: "Native Android apps", href: "/android-app-development" },
+      { label: "iOS App Development", desc: "iPhone & iPad apps", href: "/ios-app-development" },
+      { label: "React Native App", desc: "Cross-platform mobile apps", href: "/react-native-app-development" },
+      { label: "Flutter App Development", desc: "Beautiful multi-platform apps", href: "/flutter-app-development" },
+    ],
+  },
+  {
     title: "Marketing & Security",
     items: [
       { label: "Digital Marketing", desc: "SEO, content & campaigns", href: "/digital-marketing-services" },
@@ -35,10 +44,11 @@ export const serviceMenu = [
     ],
   },
 ];
+
 export const knowledgeHub =[
    {label : "Testimonials" , href : "/testimonial"},
-     {label : "Blog" , href : "/blogs"},
-       {label : "About Company" , href : "/about-company"},
+   {label : "Blog" , href : "/blogs"},
+   {label : "About Company" , href : "/about-company"},
 ]
 
 export const quickLinks = [
@@ -57,4 +67,6 @@ export const footerServices = [
   { label: "Shopify Development", href: "/shopify-website-development" },
   { label: "PHP Development", href: "/php-website-development" },
   { label: "ReactJS Development", href: "/reactjs-website-development"},
+  { label: "Android App Development", href: "/android-app-development"},
+  { label: "Flutter App Development", href: "/flutter-app-development"},
 ];

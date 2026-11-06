@@ -5,8 +5,10 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
+    overflow-x: hidden;
     font-family: var(--font-body);
     background: #fff;
     color: var(--color-ink);
@@ -16,6 +18,16 @@
     letter-spacing: -0.035em;
     line-height: 1.08;
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 @media (prefers-reduced-motion: reduce) {

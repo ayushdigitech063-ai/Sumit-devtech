@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import {
   X,
@@ -102,20 +103,19 @@ const INITIAL_LANGUAGE_SCREEN: Message[] = [
   },
 ];
 
-// Clean, cute minimal Robot Mascot SVG
-function RobotIcon({ size = 24 }: { size?: number }) {
+// 3D AI Robot Mascot Image
+function RobotIcon({ size = 32, className = "" }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="3" r="1.5" fill="#ff6a1f" />
-      <path d="M12 4.5V7" stroke="#ff6a1f" strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="4.5" y="7" width="15" height="12" rx="4" fill="#ff6a1f" />
-      <rect x="7" y="9.5" width="10" height="6.5" rx="2" fill="#ffffff" />
-      <circle cx="9.5" cy="12.5" r="1.3" fill="#ff6a1f" />
-      <circle cx="14.5" cy="12.5" r="1.3" fill="#ff6a1f" />
-      <path d="M10 18H14" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="2.5" y="10.5" width="2" height="4.5" rx="1" fill="#ffb703" />
-      <rect x="19.5" y="10.5" width="2" height="4.5" rx="1" fill="#ffb703" />
-    </svg>
+    <div className={`relative flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
+      <Image
+        src="/images/chatbot-avatar.png"
+        alt="AI Assistant"
+        width={size * 2}
+        height={size * 2}
+        className="h-full w-full object-contain"
+        priority
+      />
+    </div>
   );
 }
 
@@ -473,17 +473,27 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* TRIGGER BUTTON (Directly above WhatsApp, Clean & Simple) */}
-      <div className="fixed bottom-22 right-5 z-40">
+      {/* TRIGGER BUTTON (Directly above WhatsApp, Floating Character) */}
+      <div className="fixed bottom-22 right-4 sm:right-5 z-40">
         {!isOpen && (
-          <button
+          <motion.button
             onClick={() => setIsOpen(true)}
             aria-label="Open Chat"
-            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 transition-transform duration-200 hover:scale-105 active:scale-95"
+            animate={{
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            whileHover={{ scale: 1.12, y: -6 }}
+            whileTap={{ scale: 0.94 }}
+            className="group relative flex items-center justify-center focus:outline-none drop-shadow-[0_12px_24px_rgba(255,106,31,0.4)] cursor-pointer"
           >
-            <RobotIcon size={28} />
-            <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
-          </button>
+            {/* Direct Floating Mascot without White Circle Container */}
+            <RobotIcon size={80} />
+          </motion.button>
         )}
       </div>
 
@@ -498,18 +508,18 @@ export default function Chatbot() {
             className="fixed bottom-4 right-4 z-50 flex h-[540px] w-[92vw] max-w-[370px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-2xl sm:bottom-6 sm:right-6 sm:h-[580px]"
           >
             {/* Header: Clean & uncluttered */}
-            <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3.5">
+            <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 border border-orange-100">
-                  <RobotIcon size={24} />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 border border-orange-100 p-1">
+                  <RobotIcon size={38} />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-slate-900 leading-tight">
-                    Sumit DevTech
+                    Website Development 4U
                   </h3>
                   <p className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    Online
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Online Assistant
                   </p>
                 </div>
               </div>

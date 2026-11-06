@@ -56,7 +56,7 @@ export default function Header() {
 
       {/* Full-Width Sleek Enterprise Navbar with Rich Royal Midnight Navy */}
       <div className="w-full border-b border-white/10 bg-[#0b162c]/95 backdrop-blur-xl shadow-xl transition-all duration-300">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
+        <div className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
           {/* Logo */}
           <div className="flex items-center">
             <Logo />
@@ -76,9 +76,9 @@ export default function Header() {
                   </button>
 
                   {/* Mega Menu Dropdown */}
-                  <div className="invisible fixed left-1/2 -translate-x-1/2 top-[92px] w-[92vw] max-w-4xl pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <div className="invisible fixed left-1/2 -translate-x-1/2 top-[86px] z-50 w-[96vw] max-w-5xl pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="rounded-2xl border border-white/15 bg-[#0b162c]/98 p-6 shadow-2xl backdrop-blur-2xl">
-                      <div className="grid grid-cols-3 gap-6">
+                      <div className="grid grid-cols-4 gap-4">
                         {serviceMenu.map((g) => (
                           <div key={g.title} className="space-y-2.5">
                             <p className="border-b border-white/10 pb-1.5 text-xs font-bold uppercase tracking-wider text-accent">
@@ -117,7 +117,7 @@ export default function Header() {
                   </button>
 
                   {/* Dropdown Menu */}
-                  <div className="invisible absolute left-0 top-full min-w-[200px] pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <div className="invisible absolute left-0 top-full z-50 min-w-[200px] pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="rounded-xl border border-white/15 bg-[#0b162c]/98 p-2 shadow-2xl backdrop-blur-2xl">
                       {knowledgeHub.map((k) => (
                         <Link
@@ -161,7 +161,7 @@ export default function Header() {
         </div>
 
         {/* Quick Core Services Strip (under navbar) with Dark Royal Blue & High Contrast White Text */}
-        <div className="border-t border-white/10 bg-[#070e1d]/95 backdrop-blur-md">
+        <div className="relative z-10 border-t border-white/10 bg-[#070e1d]/95 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar gap-2 sm:gap-4 text-xs font-semibold">
             <div className="flex items-center gap-1 sm:gap-2 shrink-0 mx-auto sm:mx-0">
               <Link
@@ -217,6 +217,14 @@ export default function Header() {
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>Support &amp; Maintenance</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/android-app-development"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>App Development</span>
               </Link>
             </div>
 

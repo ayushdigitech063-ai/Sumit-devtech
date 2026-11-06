@@ -4,47 +4,55 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowUpRight, Sparkles, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
 
-// Project mock data with realistic web categories
+// Project mock data with realistic web categories & verified image paths
 const PROJECTS_DATA = [
   {
     id: "hvac-pro",
-    title: "Looking for Cool & Comfortable Space?",
-    category: "HVAC & Commercial Services",
-    image: "/images/projects/hvac.png",
-    url: "https://sumitdevtech.com",
+    title: "Commercial Climate & HVAC Infrastructure",
+    category: "Commercial Services",
+    image: "/images/projects/case-thumb.png",
+    url: "/all-projects",
     icon: Building2,
   },
   {
     id: "goddess-craft",
-    title: "Sacred Art & Spiritual Sculptures",
-    category: "E-Commerce & Handicrafts",
-    image: "/images/projects/sculpture.png",
-    url: "https://sumitdevtech.com",
+    title: "Global E-Commerce Craft Store",
+    category: "E-Commerce & Retail",
+    image: "/images/projects/case-thumb2.png",
+    url: "/all-projects",
     icon: ShoppingBag,
   },
   {
     id: "medical-care",
-    title: "Advanced Surgical & Clinical Care",
-    category: "Healthcare & Doctor Portal",
-    image: "/images/projects/doctor.png",
-    url: "https://sumitdevtech.com",
+    title: "Clinical Hospital Management Platform",
+    category: "Healthcare & MedTech",
+    image: "/images/projects/case-thumb3.png",
+    url: "/all-projects",
     icon: Stethoscope,
   },
   {
     id: "enterprise-cloud",
-    title: "Automated Supply Chain ERP",
+    title: "Automated Supply Chain & Logistics ERP",
     category: "SaaS & Cloud Architecture",
-    image: "/images/projects/erp.png",
-    url: "https://sumitdevtech.com",
+    image: "/images/projects/case-thumb4.png",
+    url: "/all-projects",
     icon: Laptop,
   },
   {
     id: "industrial-tools",
-    title: "Precision Engineering & Machinery",
+    title: "Precision Engineering & Manufacturing",
     category: "B2B Manufacturing Portal",
-    image: "/images/projects/machinery.png",
-    url: "https://sumitdevtech.com",
+    image: "/images/projects/case-thumb5.png",
+    url: "/all-projects",
     icon: Factory,
+  },
+  {
+    id: "fintech-portal",
+    title: "Next-Gen Fintech Payments Portal",
+    category: "Fintech & Banking",
+    image: "/images/projects/case-thumb6.png",
+    url: "/all-projects",
+    icon: Building2,
   },
 ];
 

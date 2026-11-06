@@ -6,10 +6,7 @@ import Container from "@/app/ui/Container";
 import SectionHeading from "@/app/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { apiFetch, ApiError } from "@/lib/api";
-
-/* PREVIOUS STATIC IMPORTS (COMMENTED OUT FOR REFERENCE):
-import { homeProcessData, type HomeProcessData } from "@/data/home-process-data";
-*/
+import { homeProcessData } from "@/data/home-process-data";
 
 const STAGE_W = 920;
 const STAGE_H = 680;
@@ -58,7 +55,6 @@ function labelStyle(p: ReturnType<typeof place>): React.CSSProperties {
 
 export default function HomeProcessSection() {
   const [processData, setProcessData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadProcess() {
@@ -68,26 +64,23 @@ export default function HomeProcessSection() {
           setProcessData(res.data);
         }
       } catch (err) {
-        if (err instanceof ApiError) {
-          console.error(`API Error (${err.status}):`, err.message);
-        } else {
-          console.error("Failed to load process section:", err);
-        }
-      } finally {
-        setLoading(false);
+        // Fallback gracefully to hardcoded 8-step data
+        console.warn("Using default process data");
       }
     }
 
     loadProcess();
   }, []);
 
-  // Backend fields fallback mapping
-  const label = processData?.label || processData?.tagline || "Our Process";
-  const title = processData?.title || processData?.heading || "How We Build";
-  const highlight = processData?.highlight || "High-Impact Websites";
-  const text = processData?.text || processData?.subheading || "A battle-tested 6-step engineering methodology.";
-  const centerLabel = processData?.tagline || processData?.centerText || "Our Working Process";
-  const steps: any[] = processData?.steps || processData?.items || [];
+  // Guarantee high-converting fallback to prevent empty/blank section on live
+  const activeData = processData || homeProcessData;
+  const label = activeData?.label || "SUMIT DEV TECH";
+  const title = activeData?.title || "How We Build";
+  const highlight = activeData?.highlight || "High-Impact Digital Products";
+  const text = activeData?.text || "Our battle-tested, end-to-end agile development methodology.";
+  const centerLabel = activeData?.centerLabel || "Sumit DevTech";
+  const rawSteps = activeData?.steps || activeData?.items || [];
+  const steps: any[] = rawSteps.length > 0 ? rawSteps : homeProcessData.steps;
 
   const n = steps.length;
 
@@ -124,24 +117,8 @@ export default function HomeProcessSection() {
     setPaused(true);
   };
 
-  // Layout shift rokne ke liye skeleton
-  if (loading) {
-    return (
-      <section className="relative overflow-hidden bg-white py-16 md:py-20">
-        <Container>
-          <div className="mx-auto w-full max-w-[1100px] animate-pulse">
-            <div className="mx-auto mb-3 h-5 w-28 rounded-full bg-slate-200" />
-            <div className="mx-auto mb-3 h-10 w-2/3 rounded-xl bg-slate-200" />
-            <div className="mx-auto mb-16 h-5 w-1/2 rounded bg-slate-200" />
-            <div className="mx-auto h-[480px] w-[480px] rounded-full border-2 border-dashed border-slate-200 bg-slate-50" />
-          </div>
-        </Container>
-      </section>
-    );
-  }
-
   return (
-    <section className="relative overflow-hidden bg-white md:py-20">
+    <section className="relative overflow-hidden bg-white md:py-20 border-t border-line/60">
       {/* Faint grid */}
       <div
         aria-hidden="true"
@@ -150,29 +127,15 @@ export default function HomeProcessSection() {
 
       <Container>
         <div className="relative mx-auto w-full max-w-[1100px] max-h-[1100px]">
-          {/* PREVIOUS STATIC HEADING (COMMENTED OUT):
           <SectionHeading
             center
-            label={data.label}
-            title={
-              <>
-                {data.title} <span className="text-brand">{data.highlight}</span>
-              </>
-            }
-            text={data.text}
-          />
-          */}
-
-          {/* NAYA CLEAN SINGLE-LINE HEADING */}
-          <SectionHeading
-            center
-            label="SUMIT DEV TECH"
+            label={label}
             title={
               <span className="whitespace-nowrap">
-                How We Build <span className="text-brand">High-Impact Digital Products</span>
+                {title} <span className="text-brand">{highlight}</span>
               </span>
             }
-            text="Our battle-tested, end-to-end agile development methodology."
+            text={text}
           />
 
           {/* ---------------- Desktop: circle ---------------- */}
@@ -230,7 +193,6 @@ export default function HomeProcessSection() {
                   <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand ring-4 ring-brand/20" />
                 </div>
 
-                {/* Centre */}
                 {/* Centre - Click to restart 1, 2, 3 cycle */}
                 <button
                   type="button"
@@ -255,10 +217,11 @@ export default function HomeProcessSection() {
                       {centerLabel}
                     </span>
                     <span className="mt-1 text-[9px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Click to Restart ?
+                      Click to Restart ↺
                     </span>
                   </div>
                 </button>
+
                 {/* Numbered nodes and their text */}
                 {steps.map((step: any, i: number) => {
                   const p = place(i, n);
@@ -298,7 +261,7 @@ export default function HomeProcessSection() {
                               "grid h-11 w-11 place-items-center rounded-xl border text-sm font-bold shadow-md transition duration-300",
                               isActive
                                 ? "scale-110 border-brand bg-brand text-white ring-4 ring-brand/15"
-                                : "border-slate-200 bg-white text-brand hover:border-brand/50"
+                                : "border-slate-200 bg-white text-slate-700 hover:border-brand/40 hover:text-brand"
                             )}
                           >
                             {i + 1}
@@ -308,13 +271,16 @@ export default function HomeProcessSection() {
 
                       {/* Text */}
                       <div
-                        className={cn("absolute", p.right ? "text-left" : "text-right")}
+                        className={cn(
+                          "absolute",
+                          p.right ? "text-left" : "text-right"
+                        )}
                         style={labelStyle(p)}
                       >
                         <motion.div
                           initial={{
                             opacity: 0,
-                            x: reduceMotion ? 0 : p.right ? 20 : -20,
+                            x: reduceMotion ? 0 : p.right ? 18 : -18,
                           }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true, margin: "-60px" }}
@@ -327,14 +293,14 @@ export default function HomeProcessSection() {
                           <div
                             onMouseEnter={() => activate(i)}
                             className={cn(
-                              "transition-opacity duration-300",
+                              "transition-opacity duration-300 cursor-pointer",
                               isActive ? "opacity-100" : "opacity-70"
                             )}
                           >
                             <h3
                               className={cn(
                                 "font-heading text-[28px] font-bold leading-[1.08] tracking-tight transition-colors duration-300 xl:text-[20px]",
-                                isActive ? "text-brand" : "text-dark-3"
+                                isActive ? "text-brand" : "text-slate-800"
                               )}
                             >
                               {stepTitle}
@@ -376,7 +342,7 @@ export default function HomeProcessSection() {
                       {i + 1}
                     </span>
                     <div className="pt-1">
-                      <h3 className="font-heading text-2xl font-bold leading-tight text-dark">
+                      <h3 className="font-heading text-2xl font-bold leading-tight text-slate-900">
                         {stepTitle}
                       </h3>
                       <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
