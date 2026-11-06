@@ -25,23 +25,23 @@ export default function Header() {
       {/* Top Announcement Bar matching CEO screenshot */}
       <div className="w-full bg-[#081226] border-b border-white/10 backdrop-blur-md py-1.5 px-4 text-xs text-white/90 shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between flex-wrap gap-x-6 gap-y-1">
-          <div className="flex items-center gap-6 flex-wrap justify-center font-medium text-[12px] sm:text-[13px]">
+          <div className="flex items-center gap-3 sm:gap-6 flex-wrap justify-center font-medium text-[11.5px] sm:text-[13px]">
             <a
               href="tel:+918769668455"
-              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
+              className="inline-flex items-center gap-1 text-white/90 hover:text-accent transition-colors"
             >
-              <PhoneCall size={13} className="text-accent shrink-0" />
+              <PhoneCall size={12} className="text-accent shrink-0" />
               <span className="font-bold tracking-tight text-white">+91-8769668455</span>
-              <span className="text-white/70 text-[11px] font-normal">- Sales &amp; Marketing Team</span>
+              <span className="text-white/70 text-[10.5px] font-normal hidden sm:inline">- Sales &amp; Marketing Team</span>
             </a>
-            <span className="hidden sm:inline-block text-white/20">|</span>
+            <span className="text-white/20">|</span>
             <a
               href="tel:+916201533997"
-              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
+              className="inline-flex items-center gap-1 text-white/90 hover:text-accent transition-colors"
             >
-              <PhoneCall size={13} className="text-accent-2 shrink-0" />
+              <PhoneCall size={12} className="text-accent-2 shrink-0" />
               <span className="font-bold tracking-tight text-white">+91-6201533997</span>
-              <span className="text-white/70 text-[11px] font-normal">- Founder Sumit Kumar Mishra</span>
+              <span className="text-white/70 text-[10.5px] font-normal hidden sm:inline">- Founder Sumit Kumar Mishra</span>
             </a>
           </div>
 
@@ -162,8 +162,8 @@ export default function Header() {
 
         {/* Quick Core Services Strip (under navbar) with Dark Royal Blue & High Contrast White Text */}
         <div className="relative z-10 border-t border-white/10 bg-[#070e1d]/95 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar gap-2 sm:gap-4 text-xs font-semibold">
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0 mx-auto sm:mx-0">
+          <div className="mx-auto flex max-w-7xl items-center justify-start sm:justify-between px-3 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar gap-2 sm:gap-4 text-xs font-semibold">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <Link
                 href="/website-design"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"

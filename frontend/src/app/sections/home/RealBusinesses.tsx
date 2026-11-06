@@ -171,17 +171,17 @@ export default function RealBusinesses() {
               scale = 1.05;
               opacity = 1;
             } else if (isLeft) {
-              xPosition = -330;
+              xPosition = typeof window !== 'undefined' && window.innerWidth < 640 ? -160 : -330;
               rotateY = 16;
               zIndex = 20;
-              scale = 0.92;
-              opacity = 0.85;
+              scale = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.85 : 0.92;
+              opacity = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.4 : 0.85;
             } else if (isRight) {
-              xPosition = 330;
+              xPosition = typeof window !== 'undefined' && window.innerWidth < 640 ? 160 : 330;
               rotateY = -16;
               zIndex = 20;
-              scale = 0.92;
-              opacity = 0.85;
+              scale = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.85 : 0.92;
+              opacity = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.4 : 0.85;
             }
 
             const isDarkCard = study.id === "healthcare";

@@ -92,7 +92,7 @@ export default function HeroVisualInteractive({ activeIndex }: HeroVisualProps) 
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.25 }}
-              className="relative w-full max-w-[530px] sm:max-w-[550px] scale-[0.88] xs:scale-[0.94] sm:scale-100 origin-center"
+              className="relative w-full max-w-[530px] sm:max-w-[550px] scale-[0.78] xs:scale-[0.88] sm:scale-100 origin-center"
             >
               {/* Lid */}
               <div className="relative rounded-t-[20px] border-[8px] border-[#1c1e28] bg-[#1c1e28] p-0 shadow-[0_25px_60px_rgba(0,0,0,0.5)] ring-1 ring-white/10">
