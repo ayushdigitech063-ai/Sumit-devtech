@@ -1,32 +1,27 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import {  ChevronRight } from "lucide-react";
-import Section from "../../ui/Section";
-import SectionHeading from "../../ui/SectionHeading";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import Section from "@/app/ui/Section";
+import SectionHeading from "@/app/ui/SectionHeading";
 import { homeServices } from "@/data/home";
 import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 
-const pad = (n: number) => String(n).padStart(2, "0");
+const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
 export default function ServicesTabs() {
   const [active, setActive] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
-  const elapsed = useRef(0);
+  const [progress, setProgress] = useState(0); // 0 to 1
   const listRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const total = homeServices.length;
-  const s = homeServices[active];
+  const elapsed = useRef(0);
 
   const select = (i: number) => {
-    elapsed.current = 0;
-    setProgress(0);
     setActive(i);
+    setProgress(0);
+    elapsed.current = 0;
   };
-
 
   // keep the active pill centred in the mobile scroll row (never scrolls the page)
   useEffect(() => {
@@ -39,12 +34,9 @@ export default function ServicesTabs() {
     });
   }, [active]);
 
- 
-
   return (
-    <Section id="services" dark>
+    <Section id="services" className="bg-[#f7f6f3] border-t border-line/60">
       <SectionHeading
-        dark
         label="Our Services"
         center={true}
         title={
@@ -65,7 +57,7 @@ export default function ServicesTabs() {
           ref={listRef}
           role="tablist"
           aria-label="Our services"
-          className="relative flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2 `[scrollbar-width:none]` lg:sticky lg:top-24 lg:flex-col lg:self-start lg:gap-1 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
+          className="relative flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2 [scrollbar-width:none] lg:sticky lg:top-24 lg:flex-col lg:self-start lg:gap-1.5 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
         >
           {homeServices.map((x, i) => {
             const on = i === active;
@@ -81,23 +73,23 @@ export default function ServicesTabs() {
                 onFocus={() => select(i)}
                 aria-selected={on}
                 className={cn(
-                  "relative flex shrink-0 snap-start items-center gap-3 overflow-hidden rounded-full px-4 py-2.5 text-left text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent lg:rounded-2xl lg:py-3",
+                  "relative flex shrink-0 snap-start items-center gap-3 overflow-hidden rounded-full px-4 py-2.5 text-left text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent lg:rounded-2xl lg:py-3.5",
                   on
-                    ? "text-white"
-                    : "text-white/55 hover:bg-white/5 hover:text-white",
+                    ? "text-ink shadow-sm"
+                    : "text-muted hover:bg-black/5 hover:text-ink",
                 )}
               >
                 {on && (
                   <motion.span
                     layoutId="svc-active"
-                    className="absolute inset-0 rounded-full border border-accent/40 `bg-gradient-to-r` from-accent/25 to-white/5 lg:rounded-2xl"
+                    className="absolute inset-0 rounded-full border border-accent/40 bg-white lg:rounded-2xl shadow-sm"
                     transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   />
                 )}
                 <span
                   className={cn(
                     "relative font-heading text-xs font-bold",
-                    on ? "text-accent-2" : "text-white/30",
+                    on ? "text-accent" : "text-muted/60",
                   )}
                 >
                   {pad(i + 1)}
@@ -116,7 +108,7 @@ export default function ServicesTabs() {
                 />
                 {on && (
                   <span
-                    className="absolute bottom-0 left-0 `h-[3px]` bg-brand transition-[width] duration-100 ease-linear"
+                    className="absolute bottom-0 left-0 h-[3px] bg-brand transition-[width] duration-100 ease-linear"
                     style={{ width: `${progress * 100}%` }}
                   />
                 )}
@@ -147,45 +139,45 @@ export default function ServicesTabs() {
                 }}
                 onFocus={() => select(i)}
                 className={cn(
-                  "group relative flex `min-h-[125px]` flex-col items-center justify-center rounded-2xl border px-3 py-5 text-center transition-all duration-300",
+                  "group relative flex min-h-[125px] flex-col items-center justify-center rounded-2xl border px-4 py-5 text-center transition-all duration-300",
                   on
-                    ? "border-accent/50 bg-[#152238] shadow-lg shadow-accent/5"
-                    : "border-white/10 bg-[#101c2e] hover:-translate-y-1 hover:border-accent/40 hover:bg-[#142238]",
+                    ? "border-accent bg-white shadow-xl shadow-accent/10 -translate-y-1"
+                    : "border-line bg-white/70 hover:-translate-y-1 hover:border-accent/40 hover:bg-white hover:shadow-lg hover:shadow-black/5",
                 )}
               >
                 {/* Icon */}
                 <span
                   className={cn(
-                    "mb-3 flex `h-[53px]` `w-[53px]` items-center justify-center rounded-2xl border bg-[#0b1728] transition-colors",
+                    "mb-3 flex h-[53px] w-[53px] items-center justify-center rounded-2xl border transition-colors",
                     on
-                      ? "border-accent/40"
-                      : "border-white/10 group-hover:border-accent/40",
+                      ? "border-accent/40 bg-accent/10"
+                      : "border-line bg-[#f7f6f3] group-hover:border-accent/30 group-hover:bg-accent/5",
                   )}
                 >
                   {Icon ? (
                     <Icon
                       size={25}
                       strokeWidth={1.7}
-                      className="text-accent-2 transition-transform duration-300 group-hover:scale-110"
+                      className={cn("transition-transform duration-300 group-hover:scale-110", on ? "text-accent" : "text-dark/80")}
                     />
                   ) : (
                     <ChevronRight
                       size={25}
                       strokeWidth={1.7}
-                      className="text-accent-2"
+                      className="text-accent"
                     />
                   )}
                 </span>
 
                 {/* Service name */}
-                <span className="text-xl font-semibold text-white/80">
+                <span className="text-xl font-bold text-ink">
                   {x.title}
                 </span>
-                <p className="text-sm font-semibold text-white/50">{x.text}</p>
+                <p className="mt-1 text-sm font-medium text-muted">{x.text}</p>
 
                 {/* Active progress indicator */}
                 {on && (
-                  <span className="absolute inset-x-0 bottom-0 `h-[3px]` overflow-hidden rounded-b-2xl bg-white/5">
+                  <span className="absolute inset-x-0 bottom-0 h-[3px] overflow-hidden rounded-b-2xl bg-black/5">
                     <span
                       className="block h-full bg-brand transition-[width] duration-100 ease-linear"
                       style={{ width: `${progress * 100}%` }}
