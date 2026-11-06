@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, PhoneCall } from "lucide-react";
 import Button from "../ui/Button";
 import Logo from "./Logo";
 import { navLinks, serviceMenu, knowledgeHub } from "@/data/navigations";
@@ -21,31 +21,63 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 pt-4 sm:pt-5 transition-all duration-300 pointer-events-none">
-      <div className="mx-auto w-full max-w-5xl px-4 relative">
-        {/* Floating Pill Navbar with slightly taller height & clear font */}
-        <div className="pointer-events-auto relative flex items-center justify-between rounded-full border border-white/15 bg-dark/85 px-6 py-2.5 shadow-2xl backdrop-blur-xl">
+    <header className="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+      {/* Top Announcement Bar matching CEO screenshot */}
+      <div className="w-full bg-[#081226] border-b border-white/10 backdrop-blur-md py-1.5 px-4 text-xs text-white/90 shadow-sm">
+        <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between flex-wrap gap-x-6 gap-y-1">
+          <div className="flex items-center gap-6 flex-wrap justify-center font-medium text-[12px] sm:text-[13px]">
+            <a
+              href="tel:+918769668455"
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
+            >
+              <PhoneCall size={13} className="text-accent shrink-0" />
+              <span className="font-bold tracking-tight text-white">+91-8769668455</span>
+              <span className="text-white/70 text-[11px] font-normal">- Sales &amp; Marketing Team</span>
+            </a>
+            <span className="hidden sm:inline-block text-white/20">|</span>
+            <a
+              href="tel:+916201533997"
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
+            >
+              <PhoneCall size={13} className="text-accent-2 shrink-0" />
+              <span className="font-bold tracking-tight text-white">+91-6201533997</span>
+              <span className="text-white/70 text-[11px] font-normal">- Founder Sumit Kumar Mishra</span>
+            </a>
+          </div>
+
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-white/70">
+            <span className="inline-flex items-center gap-1.5 text-emerald-400 font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Available Mon - Sat (9am - 8pm IST)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-Width Sleek Enterprise Navbar with Rich Royal Midnight Navy */}
+      <div className="w-full border-b border-white/10 bg-[#0b162c]/95 backdrop-blur-xl shadow-xl transition-all duration-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
           {/* Logo */}
           <div className="flex items-center">
             <Logo />
           </div>
 
-          {/* Desktop Navigation with increased font & comfortable spacing */}
-          <nav className="hidden items-center gap-6 text-[13.5px] font-medium lg:flex">
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-7 text-[14px] font-semibold lg:flex">
             {navLinks.map((l) =>
               l.mega ? (
-                <div key={l.label} className="group py-2">
+                <div key={l.label} className="group relative py-2">
                   <button
                     type="button"
-                    className="flex items-center gap-1.5 text-white/85 transition duration-200 hover:text-white focus:outline-none"
+                    className="flex items-center gap-1.5 text-white/95 transition duration-200 hover:text-accent focus:outline-none"
                   >
                     <span>{l.label}</span>
                     <ChevronDown size={14} className="transition-transform duration-200 group-hover:rotate-180" />
                   </button>
 
                   {/* Mega Menu Dropdown */}
-                  <div className="invisible absolute left-1/2 -translate-x-1/2 top-full w-full max-w-3xl pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                    <div className="rounded-2xl border border-white/10 bg-dark-2/95 p-6 shadow-2xl backdrop-blur-2xl">
+                  <div className="invisible fixed left-1/2 -translate-x-1/2 top-[92px] w-[92vw] max-w-4xl pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="rounded-2xl border border-white/15 bg-[#0b162c]/98 p-6 shadow-2xl backdrop-blur-2xl">
                       <div className="grid grid-cols-3 gap-6">
                         {serviceMenu.map((g) => (
                           <div key={g.title} className="space-y-2.5">
@@ -57,12 +89,12 @@ export default function Header() {
                                 <Link
                                   key={i.label}
                                   href={i.href}
-                                  className="group/item block rounded-lg p-2 transition duration-150 hover:bg-white/5"
+                                  className="group/item block rounded-lg p-2 transition duration-150 hover:bg-white/10"
                                 >
                                   <span className="block text-sm font-semibold text-white transition group-hover/item:text-accent">
                                     {i.label}
                                   </span>
-                                  <span className="text-xs text-white/50 group-hover/item:text-white/70">
+                                  <span className="text-xs text-white/60 group-hover/item:text-white/80">
                                     {i.desc}
                                   </span>
                                 </Link>
@@ -78,23 +110,20 @@ export default function Header() {
                 <div key={l.label} className="group relative py-2">
                   <button
                     type="button"
-                    className="flex items-center gap-1.5 whitespace-nowrap text-white/85 transition duration-200 hover:text-white focus:outline-none"
+                    className="flex items-center gap-1.5 text-white/95 transition duration-200 hover:text-accent focus:outline-none"
                   >
                     <span>{l.label}</span>
-                    <ChevronDown
-                      size={14}
-                      className="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
-                    />
+                    <ChevronDown size={14} className="transition-transform duration-200 group-hover:rotate-180" />
                   </button>
 
-                  {/* Standard Dropdown with Light / Dark theme polish */}
-                  <div className="invisible absolute left-1/2 -translate-x-1/2 top-full min-w-[210px] pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                    <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#14151a]/95 p-2 shadow-2xl backdrop-blur-2xl">
+                  {/* Dropdown Menu */}
+                  <div className="invisible absolute left-0 top-full min-w-[200px] pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="rounded-xl border border-white/15 bg-[#0b162c]/98 p-2 shadow-2xl backdrop-blur-2xl">
                       {knowledgeHub.map((k) => (
                         <Link
                           key={k.label}
                           href={k.href}
-                          className="block rounded-xl px-4 py-2.5 text-xs font-semibold text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-accent"
+                          className="block rounded-lg px-3 py-2 text-xs font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
                         >
                           {k.label}
                         </Link>
@@ -106,7 +135,7 @@ export default function Header() {
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="text-white/85 transition duration-200 hover:text-white"
+                  className="text-white/95 transition duration-200 hover:text-accent"
                 >
                   {l.label}
                 </Link>
@@ -114,26 +143,95 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Action Button */}
+          {/* Desktop Right CTA */}
           <div className="hidden lg:flex items-center">
-            <Button href="#" onClick={openQuote} className="!rounded-full !px-5 !py-2 text-[13px] font-semibold shadow-md">
+            <Button href="#" onClick={openQuote} className="!rounded-full !px-6 !py-2.5 text-[13px] font-semibold shadow-md shadow-accent/20">
               Get A Quote NOW
             </Button>
           </div>
 
           {/* Mobile Menu Toggle Button */}
           <button
-            className="rounded-full p-2 text-white hover:bg-white/10 lg:hidden"
+            className="rounded-xl p-2 text-white hover:bg-white/10 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Toggle Menu"
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
+        </div>
+
+        {/* Quick Core Services Strip (under navbar) with Dark Royal Blue & High Contrast White Text */}
+        <div className="border-t border-white/10 bg-[#070e1d]/95 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar gap-2 sm:gap-4 text-xs font-semibold">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0 mx-auto sm:mx-0">
+              <Link
+                href="/website-design"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>Website Design</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/reactjs-website-development"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>React &amp; Next.js</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/wordpress-website-development"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>WordPress</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/shopify-website-development"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>Shopify Store</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/ecommerce-website-development"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>E-Commerce</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/digital-marketing-services"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>Digital Marketing</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/website-maintenance"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>Support &amp; Maintenance</span>
+              </Link>
+            </div>
+
+            <Link
+              href="/packages"
+              className="ml-auto hidden md:inline-flex items-center gap-1 text-[11px] font-bold text-accent hover:text-accent-2 transition-colors shrink-0"
+            >
+              <span>View Packages →</span>
+            </Link>
+          </div>
         </div>
 
         {/* Mobile Drawer */}
         {open && (
-          <div className="pointer-events-auto mt-2 max-h-[75vh] overflow-y-auto rounded-2xl border border-white/10 bg-dark/95 p-5 shadow-2xl backdrop-blur-2xl lg:hidden">
+          <div className="border-t border-white/10 bg-[#10131e]/98 px-5 py-4 shadow-2xl backdrop-blur-2xl lg:hidden max-h-[75vh] overflow-y-auto">
             <div className="divide-y divide-white/5 space-y-1">
               {navLinks.map((l) => {
                 if (l.mega) {
@@ -225,7 +323,7 @@ export default function Header() {
               })}
             </div>
 
-            <div className="pt-4 pb-1">
+            <div className="pt-4 pb-2">
               <Button href="#" onClick={openQuote} className="w-full justify-center !rounded-full !py-2.5 text-xs">
                 Get A Quote NOW
               </Button>

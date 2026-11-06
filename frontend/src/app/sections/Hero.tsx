@@ -40,7 +40,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-visible bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] pt-28 sm:pt-32 pb-0 lg:pt-36 lg:pb-0 text-white"
+      className="relative overflow-visible bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] pt-40 sm:pt-44 pb-0 lg:pt-48 lg:pb-0 text-white"
     >
       {/* Floating 3D Crystal Gems in Background */}
       <motion.div
