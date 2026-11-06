@@ -131,7 +131,7 @@ export default function Testimonials() {
                       {t.name}
                     </p>
                     <p className="truncate text-xs text-muted">
-                      {t.role || t.title || "Client"}
+                      {t.role || t.company || "Client"}
                     </p>
                   </div>
                 </figcaption>
