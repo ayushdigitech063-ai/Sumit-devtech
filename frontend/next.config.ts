@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+const backendUrl =
+  process.env.BACKEND_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "http://127.0.0.1:5000"
+    : "http://localhost:5000");
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
@@ -21,7 +27,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:5000/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },

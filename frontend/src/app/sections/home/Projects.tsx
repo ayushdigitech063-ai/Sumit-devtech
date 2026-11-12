@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ArrowUpRight, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
+import { fetchProjects } from "@/lib/projects-api";
 
-// Project mock data with realistic web categories & verified image paths
-const PROJECTS_DATA = [
+// Default fallback projects if API is not yet loaded
+const DEFAULT_PROJECTS = [
   {
     id: "hvac-pro",
     title: "Commercial Climate & HVAC Infrastructure",
@@ -48,159 +49,226 @@ const PROJECTS_DATA = [
   {
     id: "fintech-portal",
     title: "Next-Gen Fintech Payments Portal",
-    category: "Fintech & Banking",
+    category: "Financial Technology",
     image: "/images/projects/case-thumb6.png",
     url: "/all-projects",
-    icon: Building2,
+    icon: Laptop,
   },
 ];
 
 export default function Projects() {
+  const [projectsList, setProjectsList] = useState(DEFAULT_PROJECTS);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Non-stop auto slide every 3 seconds without pause
+  // Sync real-time projects updated in Super Admin (/admin/projects)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % PROJECTS_DATA.length);
-    }, 3000);
-    return () => clearInterval(interval);
+    async function loadLiveProjects() {
+      try {
+        const res = await fetchProjects();
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const liveItems = res.data.map((p) => ({
+            id: p._id,
+            title: p.title,
+            category: p.category || "Web Development",
+            image: p.image || "/images/projects/case-thumb.png",
+            url: p.url || "/all-projects",
+            icon: Laptop,
+            featured: p.featured,
+          }));
+          const featuredOnly = liveItems.filter((p) => p.featured);
+          setProjectsList(featuredOnly.length >= 3 ? featuredOnly : liveItems);
+        }
+      } catch (err) {
+        console.error("Could not fetch live projects:", err);
+      }
+    }
+    loadLiveProjects();
   }, []);
 
+  // Continuous auto-slide every 3.5 seconds
+  useEffect(() => {
+    if (projectsList.length === 0) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % projectsList.length);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [projectsList.length]);
+
   const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? PROJECTS_DATA.length - 1 : prev - 1));
+    setActiveIndex((prev) => (prev === 0 ? projectsList.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % PROJECTS_DATA.length);
+    setActiveIndex((prev) => (prev + 1) % projectsList.length);
   };
+
+  const total = projectsList.length;
 
   return (
     <section 
       id="projects" 
-      className="relative overflow-hidden bg-[#f7f6f3] py-16 sm:py-24 text-ink font-sans select-none border-t border-line/60"
+      className="relative w-full py-24 bg-[#0a0a0c] text-white overflow-hidden border-t border-b border-white/5"
     >
-      {/* Background Soft Ambient Accents */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full bg-accent/5 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 h-48 w-[1100px] rounded-full bg-gradient-to-r from-orange-500/10 via-amber-500/15 to-orange-500/10 blur-[100px]" />
+      {/* Decorative dynamic ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-accent/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute -top-24 right-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative mx-auto w-full max-w-[1440px] px-4 sm:px-8 z-10">
-        
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-accent uppercase mb-3">
-              <span className="h-0.5 w-6 bg-accent" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-wider mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span>Our Projects</span>
             </div>
-            <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
-              Explore Our <span className="text-brand">Latest Work</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
+              Explore Our <span className="text-accent underline decoration-accent/30 underline-offset-8">Latest Work</span>
             </h2>
-            <p className="mt-3 max-w-xl text-sm sm:text-base text-muted font-normal leading-relaxed">
-              From modern websites to complex web applications, we help businesses build digital products that create real impact.
+            <p className="mt-3 text-sm sm:text-base text-zinc-400 max-w-xl">
+              High-converting websites, complex enterprise portals, and SaaS platforms built with cutting-edge performance.
             </p>
           </div>
 
-          {/* Nav Buttons */}
-          <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+          {/* Navigation Controls */}
+          <div className="flex items-center gap-3 self-start md:self-end">
             <button
-              type="button"
               onClick={handlePrev}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
               aria-label="Previous Project"
+              className="w-11 h-11 rounded-full border border-white/10 bg-white/5 hover:bg-accent hover:border-accent hover:text-white flex items-center justify-center transition-all duration-300 text-zinc-300"
             >
               <ChevronLeft size={20} />
             </button>
             <button
-              type="button"
               onClick={handleNext}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
               aria-label="Next Project"
+              className="w-11 h-11 rounded-full border border-white/10 bg-white/5 hover:bg-accent hover:border-accent hover:text-white flex items-center justify-center transition-all duration-300 text-zinc-300"
             >
               <ChevronRight size={20} />
             </button>
           </div>
         </div>
 
-        {/* 
-            SMOOTH HARDWARE-ACCELERATED CAROUSEL STAGE 
-            No jitter / No flickering / Rock-solid fixed positioning
-        */}
-        <div className="relative mx-auto flex items-center justify-center h-[390px] sm:h-[430px] overflow-hidden py-3">
-          {PROJECTS_DATA.map((proj, idx) => {
-            const total = PROJECTS_DATA.length;
-            let diff = idx - activeIndex;
-            if (diff > total / 2) diff -= total;
-            if (diff < -total / 2) diff += total;
+        {/* 3D Rotational Carousel Track */}
+        <div className="relative h-[480px] sm:h-[520px] md:h-[560px] w-full flex items-center justify-center [perspective:1200px]">
+          {projectsList.map((proj, idx) => {
+            let offset = idx - activeIndex;
+            if (offset > total / 2) offset -= total;
+            if (offset < -total / 2) offset += total;
 
-            const isCenter = diff === 0;
-            const absDiff = Math.abs(diff);
+            const isCenter = offset === 0;
+            const isLeft = offset === -1;
+            const isRight = offset === 1;
+            const isVisible = Math.abs(offset) <= 2;
 
-            // Hide cards beyond 2 steps
-            if (absDiff > 2) return null;
+            if (!isVisible) return null;
 
-            // Stable transform geometry with CSS transitions
-            const xOffset = diff * 280;
-            const scale = isCenter ? 1.05 : absDiff === 1 ? 0.92 : 0.82;
-            const opacity = isCenter ? 1 : absDiff === 1 ? 0.8 : 0.5;
-            const zIndex = isCenter ? 30 : absDiff === 1 ? 20 : 10;
-            const rotateY = diff * -12;
+            // Stable transform logic
+            let translateX = 0;
+            let scale = 0.72;
+            let opacity = 0;
+            let zIndex = 1;
+            let rotateY = 0;
 
-            const Icon = proj.icon;
+            if (isCenter) {
+              translateX = 0;
+              scale = 1;
+              opacity = 1;
+              zIndex = 30;
+              rotateY = 0;
+            } else if (isLeft) {
+              translateX = -320;
+              scale = 0.85;
+              opacity = 0.65;
+              zIndex = 20;
+              rotateY = 12;
+            } else if (isRight) {
+              translateX = 320;
+              scale = 0.85;
+              opacity = 0.65;
+              zIndex = 20;
+              rotateY = -12;
+            } else if (offset === -2) {
+              translateX = -540;
+              scale = 0.72;
+              opacity = 0.25;
+              zIndex = 10;
+              rotateY = 22;
+            } else if (offset === 2) {
+              translateX = 540;
+              scale = 0.72;
+              opacity = 0.25;
+              zIndex = 10;
+              rotateY = -22;
+            }
 
             return (
               <div
                 key={proj.id}
                 onClick={() => setActiveIndex(idx)}
                 style={{
-                  transform: `translateX(${xOffset}px) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
-                  zIndex: zIndex,
+                  transform: `translate3d(${translateX}px, 0, 0) scale(${scale}) rotateY(${rotateY}deg)`,
                   opacity: opacity,
-                  willChange: "transform, opacity",
+                  zIndex: zIndex,
                 }}
-                className={`absolute top-4 w-[285px] sm:w-[335px] md:w-[370px] cursor-pointer rounded-[24px] p-3 sm:p-3.5 transition-all duration-500 ease-out select-none ${
+                className={`absolute w-[300px] sm:w-[420px] md:w-[500px] rounded-3xl overflow-hidden cursor-pointer select-none transition-all duration-700 ease-out will-change-transform ${
                   isCenter
-                    ? "bg-white border-2 border-accent shadow-[0_16px_40px_rgba(255,106,31,0.22)] ring-4 ring-accent/15"
-                    : "bg-white/95 border border-line hover:border-accent/40 shadow-md"
+                    ? "shadow-[0_20px_60px_-15px_rgba(255,106,31,0.35)] border-2 border-accent/40"
+                    : "border border-white/10 hover:border-white/20"
                 }`}
               >
-                {/* Desktop Monitor Bezel Screen Mockup */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-line bg-dark-2">
+                {/* Project Image Box */}
+                <div className="relative h-[300px] sm:h-[340px] md:h-[370px] w-full bg-zinc-900 overflow-hidden group">
                   <Image
                     src={proj.image}
                     alt={proj.title}
                     fill
-                    sizes="(min-width:640px) 380px, 290px"
-                    className="object-cover object-top transition-transform duration-500 ease-out hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 500px"
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    priority={isCenter}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-                </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e12] via-[#0e0e12]/40 to-transparent" />
 
-                {/* Card Bottom Meta Bar */}
-                <div className="mt-4 flex items-center justify-between px-2 pb-1">
-                  <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f7f6f3] text-accent border border-line">
-                      <Icon size={18} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="truncate font-sans text-sm sm:text-base font-bold text-ink leading-tight">
-                        {proj.title}
-                      </h3>
-                      <p className="truncate text-[11px] font-medium text-muted mt-0.5">
-                        {proj.category}
-                      </p>
-                    </div>
+                  {/* Category Pill Tag */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-medium text-white/90">
+                      <proj.icon size={13} className="text-accent" />
+                      {proj.category}
+                    </span>
                   </div>
 
-                  {/* Circular Orange Arrow CTA */}
+                  {/* Visit External Button */}
                   <a
                     href={proj.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={proj.url.startsWith("http") ? "_blank" : "_self"}
+                    rel="noreferrer"
+                    className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-accent hover:border-accent transition-all duration-300"
                     onClick={(e) => e.stopPropagation()}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-orange-600 to-amber-500 text-white shadow-md hover:scale-110 active:scale-95 transition-transform"
-                    title="View live website"
                   >
-                    <ArrowUpRight size={15} />
+                    <ArrowUpRight size={16} />
+                  </a>
+                </div>
+
+                {/* Project Info Card Bottom Bar */}
+                <div className="p-5 sm:p-6 bg-[#0e0e12] border-t border-white/5 flex items-center justify-between">
+                  <div className="min-w-0 pr-4">
+                    <h3 className="text-base sm:text-lg font-bold text-white truncate">
+                      {proj.title}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5 truncate">
+                      Responsive UI • High Speed Architecture • Custom CMS
+                    </p>
+                  </div>
+
+                  <a
+                    href={proj.url}
+                    target={proj.url.startsWith("http") ? "_blank" : "_self"}
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-white transition-colors shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span>Visit</span>
+                    <ArrowUpRight size={14} />
                   </a>
                 </div>
               </div>
@@ -208,29 +276,30 @@ export default function Projects() {
           })}
         </div>
 
-        {/* Bottom Pagination Dots */}
-        <div className="mt-6 flex items-center justify-center gap-1.5">
-          {PROJECTS_DATA.map((_, dotIdx) => (
+        {/* Carousel Pagination Dots */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {projectsList.map((_, dotIdx) => (
             <button
               key={dotIdx}
-              type="button"
               onClick={() => setActiveIndex(dotIdx)}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                dotIdx === activeIndex ? "w-8 bg-accent" : "w-2 bg-line hover:bg-muted"
+              aria-label={`Go to slide ${dotIdx + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                dotIdx === activeIndex
+                  ? "w-8 bg-accent"
+                  : "w-2 bg-white/20 hover:bg-white/40"
               }`}
-              aria-label={`Go to project ${dotIdx + 1}`}
             />
           ))}
         </div>
 
         {/* View All Projects Button */}
-        <div className="mt-8 text-center">
+        <div className="mt-12 text-center">
           <a
             href="/all-projects"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-600 to-amber-500 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white/5 hover:bg-accent text-white font-semibold text-sm border border-white/10 hover:border-accent transition-all duration-300 shadow-lg hover:shadow-accent/25 hover:scale-105"
           >
             <span>View All Projects</span>
-            <ArrowUpRight size={17} />
+            <ArrowUpRight size={16} />
           </a>
         </div>
       </div>
