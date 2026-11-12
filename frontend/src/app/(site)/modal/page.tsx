@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, Loader2 } from "lucide-react";
 import { leadOptions } from "@/data/site";
 import { IMG } from "@/data/home";
+import { submitLead } from "@/lib/leads-api";
 
 const perks = ["Custom Development Blueprint", "Personalized Budget Estimate", "Accurate Time-to-Market Projection"];
 const partners = ["google-partenrs.png", "meta-partenrs.png", "shopify-partenrs.png"];
@@ -14,6 +15,13 @@ const field =
 export default function ExitIntentModal() {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    service: "",
+    name: "",
+    email: "",
+    phone: "",
+  });
 
   useEffect(() => {
     const show = () => {
@@ -24,18 +32,16 @@ export default function ExitIntentModal() {
     const onLeave = (e: MouseEvent) => { if (e.clientY <= 0) show(); };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     
-  const onOpen = () => {
-    sessionStorage.setItem("exit-popup", "1"); 
-    setSent(false);                         
-    setOpen(true);
-  };
-
-
+    const onOpen = () => {
+      sessionStorage.setItem("exit-popup", "1"); 
+      setSent(false);                         
+      setOpen(true);
+    };
 
     const timer = setTimeout(show, 60000);
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("keydown", onKey);
-     window.addEventListener("open-quote-modal", onOpen);
+    window.addEventListener("open-quote-modal", onOpen);
     return () => {
       clearTimeout(timer);
       document.removeEventListener("mouseleave", onLeave);
@@ -49,10 +55,27 @@ export default function ExitIntentModal() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: send the form data to your backend / email service
-    setSent(true);
+    if (!formData.name || !formData.phone) return;
+
+    setLoading(true);
+    try {
+      await submitLead({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        service: formData.service || "Website Consultation",
+        source: "quote_popup",
+        message: `Quote modal request for ${formData.service || "general project"}`,
+      });
+      setSent(true);
+    } catch (err) {
+      console.error(err);
+      setSent(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -103,25 +126,55 @@ export default function ExitIntentModal() {
                 <div className="grid h-full place-items-center text-center">
                   <div>
                     <span className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-green-100 text-3xl text-green-600">✓</span>
-                    <h3 className="text-2xl font-bold">Thank You!</h3>
-                    <p className="mb-6 mt-2 text-muted">Your request has been submitted successfully.</p>
+                    <h3 className="text-2xl font-bold text-slate-900">Thank You!</h3>
+                    <p className="mb-6 mt-2 text-muted">Your request has been submitted to our team.</p>
                     <button onClick={() => setOpen(false)} className="rounded-full bg-brand px-8 py-3 font-semibold text-white">OK</button>
                   </div>
                 </div>
               ) : (
                 <form onSubmit={submit} className="space-y-4">
-                  <label className="block text-sm font-semibold">
+                  <label className="block text-sm font-semibold text-slate-800">
                     Looking For *
-                    <select required className={`${field} mt-1.5`} defaultValue="">
+                    <select
+                      required
+                      className={`${field} mt-1.5`}
+                      value={formData.service}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, service: e.target.value }))}
+                    >
                       <option value="" disabled>Select a service</option>
-                      {leadOptions.map((o) => <option key={o}>{o}</option>)}
+                      {leadOptions.map((o) => <option key={o} value={o}>{o}</option>)}
                     </select>
                   </label>
-                  <input required placeholder="Your name" className={field} />
-                  <input required type="email" placeholder="Email address" className={field} />
-                  <input required type="tel" placeholder="Phone number" className={field} />
-                  <button className="w-full rounded-full bg-brand px-6 py-3.5 font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-1">
-                    Schedule Free Consultation
+                  <input
+                    required
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                    className={field}
+                  />
+                  <input
+                    required
+                    type="email"
+                    placeholder="Email address"
+                    value={formData.email}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                    className={field}
+                  />
+                  <input
+                    required
+                    type="tel"
+                    placeholder="Phone number"
+                    value={formData.phone}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                    className={field}
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3.5 font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-1 disabled:opacity-70"
+                  >
+                    {loading && <Loader2 size={16} className="animate-spin" />}
+                    <span>{loading ? "Submitting..." : "Schedule Free Consultation"}</span>
                   </button>
                   <p className="text-center text-xs text-muted">✓ Your information will be safe with us</p>
                 </form>

@@ -1,5 +1,12 @@
 import {
-  LayoutDashboard, Inbox, FolderKanban, FileText, Package, Star, Settings,
+  LayoutDashboard,
+  Inbox,
+  FolderKanban,
+  FileText,
+  Package,
+  Briefcase,
+  Star,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -9,6 +16,7 @@ export const adminNav: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Projects", href: "/admin/projects", icon: FolderKanban },
   { label: "Blogs", href: "/admin/blogs", icon: FileText },
   { label: "Packages", href: "/admin/packages", icon: Package },
+  { label: "Careers & Jobs", href: "/admin/careers", icon: Briefcase },
   { label: "Testimonials", href: "/admin/testimonials", icon: Star },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];

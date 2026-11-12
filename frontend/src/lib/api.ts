@@ -1,7 +1,6 @@
 export class ApiError extends Error {
   status: number;
 
-
   constructor(status: number, message: string) {
     super(message);
     this.name = "ApiError";
@@ -9,9 +8,11 @@ export class ApiError extends Error {
   }
 }
 
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
+// In the browser, /api uses Next.js rewrites (same origin port 3000), avoiding cross-port cookie/CORS blocks
+const isBrowser = typeof window !== "undefined";
+const API_BASE_URL = isBrowser
+  ? "/api"
+  : process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
@@ -19,15 +20,12 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     headers.set("Content-Type", "application/json");
   }
 
-
-  // Calls http://localhost:5000/api${path} directly
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers,
-    credentials: "include", // 'include' is required for cross-port (3000 -> 5000) cookies
+    credentials: "include",
     cache: "no-store",
   });
-
 
   let data: unknown = null;
   try {
@@ -35,7 +33,6 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   } catch {
     data = null;
   }
-
 
   if (!response.ok) {
     const message =
@@ -47,7 +44,6 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
         : "Something went wrong. Please try again.";
     throw new ApiError(response.status, message);
   }
-
 
   return data as T;
 }

@@ -1,60 +1,63 @@
-import React, { Suspense } from "react";
-import type { Metadata } from "next";
-import { blogPosts } from "@/data/blog-data";
-import { BlogListSection } from "../../sections/blog-sections";
-import Container from "../../ui/Container";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Technology & Digital Insights | Sumit DevTech Blogs",
-  description:
-    "Explore engineering deep dives, web design methodologies, cloud architecture, and cybersecurity insights authored by Sumit DevTech engineers.",
-  alternates: {
-    canonical: "/blogs",
-  },
-  openGraph: {
-    title: "Technology & Digital Insights | Sumit DevTech",
-    description:
-      "Articles, tutorials, and perspectives on full-stack web applications, Next.js, UI/UX, and cloud engineering.",
-    url: "https://sumitdevtech.com/blogs",
-    siteName: "Sumit DevTech",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Technology & Digital Insights | Sumit DevTech",
-    description: "Read in-depth technical blogs and engineering case studies.",
-  },
-};
+import { useEffect, useState } from "react";
+import Container from "@/app/ui/Container";
+import { BlogListSection } from "@/app/sections/blog-sections";
+import { blogPosts as fallbackPosts } from "@/data/blog-data";
+import { fetchPublicBlogs, type BlogItem } from "@/lib/blogs-api";
 
 export default function BlogsPage() {
+  const [posts, setPosts] = useState<any[]>(fallbackPosts);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetchPublicBlogs();
+        if (res.success && res.data && res.data.length > 0) {
+          // Map DB items to website blog post format
+          const mapped = res.data.map((b: BlogItem) => ({
+            id: b._id,
+            slug: b.slug,
+            title: b.title,
+            excerpt: b.excerpt,
+            coverImage: b.coverImage || "/images/projects/case-thumb2.png",
+            category: b.category,
+            readTime: b.readTime || "5 min read",
+            publishedAt: new Date(b.createdAt).toLocaleDateString([], {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            featured: b.featured,
+            author: {
+              name: b.authorName || "Sumit Kumar",
+              role: b.authorRole || "Lead Solutions Architect",
+              avatar: "/images/team/member-1.png",
+            },
+            tags: b.tags || ["Technology"],
+            content: {
+              introduction: b.excerpt,
+              sections: [
+                {
+                  heading: "Overview",
+                  paragraphs: [b.content],
+                },
+              ],
+              conclusion: "For customized architectural consultation, contact Sumit DevTech.",
+            },
+          }));
+          setPosts(mapped);
+        }
+      } catch (err) {
+        // fallback to initial data
+      }
+    }
+    load();
+  }, []);
+
   return (
-    <>
-      {/* Blog Page Hero Banner */}
-      <section className="relative overflow-hidden bg-dark text-white pt-28 pb-16 md:pt-35 md:pb-45 border-b border-white/10">
-        
-        <Container>
-          <div className="mx-auto w-full max-w-[1100px] text-center">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              Insights, Tutorials &amp; Engineering
-            </span>
-
-            <h1 className="text-3xl sm:text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight">
-              Technology &amp; Digital <span className="text-brand">Articles</span>
-            </h1>
-
-            <p className="mt-5 max-w-2xl mx-auto text-base sm:text-lg text-white/75 leading-relaxed">
-              Perspectives on modern Next.js architecture, UI/UX design systems, zero-trust cloud infrastructure, and conversion optimization.
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* Main Blog List with Search & Filtering */}
-      <Suspense fallback={<div className="min-h-[500px] bg-light" />}>
-        <BlogListSection posts={blogPosts} />
-      </Suspense>
-    </>
+    <main>
+      <BlogListSection posts={posts} />
+    </main>
   );
 }
-

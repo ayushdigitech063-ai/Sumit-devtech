@@ -1,44 +1,45 @@
-import type { Metadata } from "next";
-import { projects } from "@/data/projects";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   HeroSection,
   AllProjectsGridSection,
 } from "@/app/sections/all-projects-section";
-
-export const metadata: Metadata = {
-  title: "All Projects & Client Work | Sumit DevTech",
-  description:
-    "Browse our complete catalog of delivered websites, e-commerce stores, custom applications, and corporate platforms built by Sumit DevTech.",
-  alternates: {
-    canonical: "/all-projects",
-  },
-  openGraph: {
-    title: "All Projects & Client Work | Sumit DevTech",
-    description:
-      "Browse our complete catalog of delivered websites, e-commerce stores, custom applications, and corporate platforms.",
-    url: "https://sumitdevtech.com/all-projects",
-    siteName: "Sumit DevTech",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "All Projects & Client Work | Sumit DevTech",
-    description:
-      "Browse our complete catalog of delivered websites, e-commerce stores, custom applications, and corporate platforms.",
-  },
-};
+import { fetchProjects } from "@/lib/projects-api";
+import { projects as fallbackProjects } from "@/data/projects";
 
 export default function AllProjectsPage() {
-  const uniqueCategories = Array.from(new Set(projects.map((p) => p.category)));
+  const [projectList, setProjectList] = useState(fallbackProjects);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetchProjects();
+        if (res.success && res.data && res.data.length > 0) {
+          const mapped = res.data.map((p) => ({
+            title: p.title,
+            category: p.category,
+            url: p.url,
+            image: p.image || "/images/projects/case-thumb.png",
+          }));
+          setProjectList(mapped);
+        }
+      } catch (e) {
+        // use fallback
+      }
+    }
+    load();
+  }, []);
+
+  const uniqueCategories = Array.from(new Set(projectList.map((p) => p.category)));
 
   return (
     <main>
       <HeroSection
-        totalProjects={projects.length}
+        totalProjects={projectList.length}
         totalCategories={uniqueCategories.length}
       />
-      <AllProjectsGridSection projects={projects} />
+      <AllProjectsGridSection projects={projectList} />
     </main>
   );
 }
-

@@ -1,23 +1,23 @@
 "use client";
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Loader2, Mail, MapPin, Phone } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, MapPin, Phone, MessageSquare, Send, Sparkles } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
-import Section from "../../ui/Section";
-import SectionHeading from "../../ui/SectionHeading";
-import Reveal from "../../animation/Reveal";
+import Container from "@/app/ui/Container";
+import Reveal from "@/app/animation/Reveal";
 import { site } from "@/data/site";
 import { z } from "zod";
+import { submitLead } from "@/lib/leads-api";
 
 const services = [
-  "Website Design",
+  "Website Design & UI/UX",
   "WordPress Development",
-  "Shopify Development",
-  "E-Commerce Development",
-  "Custom Website Development",
-  "UI / UX Design",
+  "Shopify / E-Commerce Store",
+  "Next.js / React Web App",
+  "Custom Web Application",
+  "Website Maintenance & Support",
   "SEO & Digital Marketing",
-  "Other",
+  "Other / Custom Requirement",
 ];
 
 const countryCodes = [
@@ -40,27 +40,24 @@ const contactSchema = z.object({
     .trim()
     .min(1, "Phone number is required")
     .regex(/^\d{7,15}$/, "Phone number must be 7 to 15 digits"),
-  message: z.string().trim().min(10, "Please write at least 10 characters"),
-  services: z.array(z.string()),
+  message: z.string().trim().min(5, "Please write at least 5 characters"),
+  services: z.string().optional(),
 });
 
 type Errors = Partial<
-  Record<"firstName" | "lastName" | "email" | "phone" | "message", string>
+  Record<"firstName" | "lastName" | "email" | "phone" | "message" | "services", string>
 >;
 
 const fieldCls =
-  "w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-[invalid=true]:border-red-500";
-const labelCls = "mb-1.5 block text-sm font-semibold text-ink";
-const errCls = "mt-1.5 text-xs text-red-600";
-const linkCls =
-  "inline-flex items-center gap-2 font-semibold underline underline-offset-4 transition hover:text-accent";
+  "w-full rounded-xl border border-line bg-light px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 aria-[invalid=true]:border-red-500";
+const labelCls = "mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700";
+const errCls = "mt-1.5 text-xs text-red-600 font-medium";
 
 export default function ContactUsPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
-  // read the form
   const readForm = (form: HTMLFormElement) => {
     const fd = new FormData(form);
     return {
@@ -70,11 +67,9 @@ export default function ContactUsPage() {
       countryCode: fd.get("countryCode"),
       phone: fd.get("phone"),
       message: fd.get("message"),
-      services: fd.getAll("services"),
+      services: fd.get("services"),
     };
   };
-
-  // validate -> return errors not submmit
 
   const validateForm = (raw: any): Errors => {
     const fieldErrors: Errors = {};
@@ -91,7 +86,6 @@ export default function ContactUsPage() {
     return fieldErrors;
   };
 
-  // onblur validate individual field
   const touched = useRef<Set<string>>(new Set());
   const handleBlur = (e: React.FocusEvent<HTMLFormElement>) => {
     const name = e.target.name;
@@ -104,297 +98,357 @@ export default function ContactUsPage() {
     setErrors(visible);
   };
 
-  // submit form
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const all = validateForm(readForm(e.currentTarget));
+    const raw = readForm(e.currentTarget);
+    const all = validateForm(raw);
     setErrors(all);
     if (Object.keys(all).length) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const selectedService = String(raw.services || "General Inquiry");
+      const fullName = [raw.firstName, raw.lastName].filter(Boolean).join(" ");
+      await submitLead({
+        name: fullName || "Contact Client",
+        email: String(raw.email || ""),
+        phone: String(raw.phone || ""),
+        countryCode: String(raw.countryCode || "+91"),
+        service: selectedService,
+        source: "contact_form",
+        message: String(raw.message || ""),
+        metadata: { firstName: raw.firstName, lastName: raw.lastName, service: selectedService },
+      });
       setSent(true);
-    }, 1500);
+    } catch (err) {
+      console.error(err);
+      setSent(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`;
 
   return (
-    <Section id="contact-us" light>
-      <SectionHeading
-        center
-        label="Contact Us"
-        title="Get in touch with us"
-        text="We are here to assist you. Reach out to us for any inquiries, support, or feedback. Our team is ready to help you with your needs."
-      />
+    <main className="min-h-screen bg-[#fbfbfe]">
+      {/* Hero Header Banner */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-20 md:pt-40 md:pb-24 border-b border-white/10">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden"
+          style={{
+            backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <div className="pointer-events-none absolute right-0 -top-32 h-[480px] w-[480px] rounded-full bg-accent/20 blur-[130px]" />
+        <div className="pointer-events-none absolute -bottom-32 -left-16 h-[400px] w-[400px] rounded-full bg-amber-400/15 blur-[120px]" />
 
-      <div className="mx-auto mt-4 grid max-w-5xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:gap-14">
-        {/* FORM */}
-        <Reveal>
-          <div className="rounded-3xl border border-line bg-white p-5 shadow-xl shadow-black/5 sm:p-8">
-            <AnimatePresence mode="wait">
-              {sent ? (
-                <motion.div
-                  key="done"
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="grid min-h-[420px] place-items-center text-center"
-                >
-                  <div>
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 16,
-                        delay: 0.1,
-                      }}
-                      className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full bg-green-100 text-green-600"
+        <Container className="relative z-10 w-full text-center">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-4 inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Contact Sumit DevTech</span>
+              </span>
+            </div>
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
+              Get in Touch <span className="text-brand">with Us</span>
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
+              We are here to assist you. Reach out to discuss your project, get a custom quote, or explore technical solutions.
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      {/* Main Content Section */}
+      <section className="py-16 md:py-24">
+        <Container>
+          <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1.3fr_0.85fr] lg:gap-14 items-start">
+            {/* Contact Form Card */}
+            <Reveal>
+              <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-9 shadow-xl shadow-slate-900/5">
+                <div className="mb-6 pb-4 border-b border-slate-100">
+                  <h2 className="text-2xl font-bold text-slate-900">Send us a message</h2>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Fill out the form below and our team will get back to you within 24 hours.
+                  </p>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  {sent ? (
+                    <motion.div
+                      key="done"
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="grid min-h-[380px] place-items-center text-center py-8"
                     >
-                      <CheckCircle2 size={44} />
-                    </motion.span>
-                    <h3 className="mb-2 text-2xl font-extrabold">Thank you!</h3>
-                    <p className="mb-6 text-muted">
-                      Your message has been received. We will get back to you
-                      shortly.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setSent(false)}
-                      className="rounded-full border-2 border-accent px-7 py-2.5 font-semibold text-accent transition hover:bg-accent hover:text-white"
-                    >
-                      Send another message
-                    </button>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.form
-                  key="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  onBlur={handleBlur}
-                  exit={{ opacity: 0 }}
-                  className="space-y-5"
-                >
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="firstName" className={labelCls}>
-                        First name
-                      </label>
-                      <input
-                        id="firstName"
-                        name="firstName"
-                        placeholder="First name"
-                        autoComplete="given-name"
-                        aria-invalid={!!errors.firstName}
-                        className={fieldCls}
-                      />
-                      {errors.firstName && (
-                        <p className={errCls}>{errors.firstName}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="lastName" className={labelCls}>
-                        Last name
-                      </label>
-                      <input
-                        id="lastName"
-                        name="lastName"
-                        placeholder="Last name"
-                        autoComplete="family-name"
-                        className={fieldCls}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className={labelCls}>
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="you@company.com"
-                      autoComplete="email"
-                      aria-invalid={!!errors.email}
-                      className={fieldCls}
-                    />
-                    {errors.email && <p className={errCls}>{errors.email}</p>}
-                  </div>
-
-                  <div>
-                    <label htmlFor="phone" className={labelCls}>
-                      Phone number
-                    </label>
-                    <div className="flex gap-2">
-                      <select
-                        name="countryCode"
-                        defaultValue="+91"
-                        aria-label="Country code"
-                        className={`${fieldCls} !w-[110px] shrink-0`}
-                      >
-                        {countryCodes.map((c) => (
-                          <option key={c.label} value={c.value}>
-                            {c.label}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        inputMode="numeric"
-                        placeholder="98765 43210"
-                        autoComplete="tel-national"
-                        aria-invalid={!!errors.phone}
-                        className={fieldCls}
-                        onChange={(e) => {
-                          e.currentTarget.value = e.currentTarget.value.replace(
-                            /\D/g,
-                            "",
-                          );
-                        }}
-                      />
-                    </div>
-                    {errors.phone && <p className={errCls}>{errors.phone}</p>}
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className={labelCls}>
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={5}
-                      placeholder="Tell us about your project..."
-                      aria-invalid={!!errors.message}
-                      className={`${fieldCls} resize-none`}
-                    />
-                    {errors.message && (
-                      <p className={errCls}>{errors.message}</p>
-                    )}
-                  </div>
-
-                  <fieldset>
-                    <legend className={labelCls}>Services</legend>
-                    <div className="grid gap-2.5 sm:grid-cols-2">
-                      {/* {services.map((s) => (
-                        <label
-                          key={s}
-                          className="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm transition hover:border-accent has-[:checked]:border-accent has-[:checked]:bg-accent/5"
+                      <div>
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 16,
+                            delay: 0.1,
+                          }}
+                          className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-emerald-600 shadow-md shadow-emerald-500/10"
                         >
+                          <CheckCircle2 size={44} />
+                        </motion.span>
+                        <h3 className="mb-2 text-2xl font-bold text-slate-900">Thank you!</h3>
+                        <p className="mb-6 text-sm text-slate-600 max-w-sm mx-auto">
+                          Your message has been received successfully. Our project manager will reach out shortly.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setSent(false)}
+                          className="rounded-full bg-brand px-7 py-3 font-semibold text-white shadow-lg shadow-accent/25 transition hover:scale-102"
+                        >
+                          Send another message
+                        </button>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="form"
+                      noValidate
+                      onSubmit={handleSubmit}
+                      onBlur={handleBlur}
+                      exit={{ opacity: 0 }}
+                      className="space-y-4 sm:space-y-5"
+                    >
+                      {/* Name Fields */}
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="firstName" className={labelCls}>
+                            First name *
+                          </label>
                           <input
-                            type="checkbox"
-                            name="services"
-                            value={s}
-                            className="h-4 w-4 accent-accent"
+                            id="firstName"
+                            name="firstName"
+                            placeholder="John"
+                            autoComplete="given-name"
+                            aria-invalid={!!errors.firstName}
+                            className={fieldCls}
                           />
-                          {s}
+                          {errors.firstName && <p className={errCls}>{errors.firstName}</p>}
+                        </div>
+                        <div>
+                          <label htmlFor="lastName" className={labelCls}>
+                            Last name
+                          </label>
+                          <input
+                            id="lastName"
+                            name="lastName"
+                            placeholder="Doe"
+                            autoComplete="family-name"
+                            className={fieldCls}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Email Field */}
+                      <div>
+                        <label htmlFor="email" className={labelCls}>
+                          Email address *
                         </label>
-                      ))} */}
-                      <select
-                        name="countryCode"
-                        defaultValue="+91"
-                        aria-label="Country code"
-                        className={`${fieldCls} !w-[545px]`}
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="you@company.com"
+                          autoComplete="email"
+                          aria-invalid={!!errors.email}
+                          className={fieldCls}
+                        />
+                        {errors.email && <p className={errCls}>{errors.email}</p>}
+                      </div>
+
+                      {/* Phone Field */}
+                      <div>
+                        <label htmlFor="phone" className={labelCls}>
+                          Phone number *
+                        </label>
+                        <div className="flex gap-2.5">
+                          <select
+                            name="countryCode"
+                            defaultValue="+91"
+                            aria-label="Country code"
+                            className={`${fieldCls} !w-[110px] shrink-0 font-medium`}
+                          >
+                            {countryCodes.map((c) => (
+                              <option key={c.label} value={c.value}>
+                                {c.label}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            inputMode="numeric"
+                            placeholder="98765 43210"
+                            autoComplete="tel-national"
+                            aria-invalid={!!errors.phone}
+                            className={fieldCls}
+                            onChange={(e) => {
+                              e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+                            }}
+                          />
+                        </div>
+                        {errors.phone && <p className={errCls}>{errors.phone}</p>}
+                      </div>
+
+                      {/* Service Dropdown */}
+                      <div>
+                        <label htmlFor="services" className={labelCls}>
+                          Service required
+                        </label>
+                        <select
+                          id="services"
+                          name="services"
+                          defaultValue={services[0]}
+                          className={`${fieldCls} font-medium cursor-pointer`}
+                        >
+                          {services.map((svc) => (
+                            <option key={svc} value={svc}>
+                              {svc}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Message Field */}
+                      <div>
+                        <label htmlFor="message" className={labelCls}>
+                          Message *
+                        </label>
+                        <textarea
+                          id="message"
+                          name="message"
+                          rows={4}
+                          placeholder="Tell us about your project requirements, timeline, budget..."
+                          aria-invalid={!!errors.message}
+                          className={`${fieldCls} resize-none`}
+                        />
+                        {errors.message && <p className={errCls}>{errors.message}</p>}
+                      </div>
+
+                      {/* Submit Button */}
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 font-bold text-white shadow-lg shadow-accent/25 transition hover:-translate-y-0.5 hover:shadow-accent/35 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 cursor-pointer"
                       >
-                        {services.map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
+                        {loading ? (
+                          <>
+                            <Loader2 size={18} className="animate-spin" />
+                            <span>Sending Inquiry...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Send Message</span>
+                            <Send size={16} />
+                          </>
+                        )}
+                      </button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </div>
+            </Reveal>
+
+            {/* Sidebar Contact Info Cards */}
+            <Reveal delay={0.15}>
+              <div className="space-y-6">
+                {/* WhatsApp Card */}
+                <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-md shadow-slate-900/5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                      <FaWhatsapp size={20} />
+                    </span>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">Chat on WhatsApp</h3>
+                      <p className="text-xs text-slate-400">Instant answers from our engineering team</p>
                     </div>
-                  </fieldset>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-4 font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin" />{" "}
-                        Sending...
-                      </>
-                    ) : (
-                      "Send message"
-                    )}
-                  </button>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </div>
-        </Reveal>
-
-        {/* INFO */}
-        <Reveal delay={0.15}>
-          <div className="space-y-9 lg:pt-4">
-            <div>
-              <h3 className="mb-1 text-xl font-bold">Chat with us</h3>
-              <p className="mb-4 text-sm text-muted">
-                Speak to our friendly team via WhatsApp or email.
-              </p>
-              <div className="space-y-3 text-sm">
-                <a
-                  href={site.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${linkCls} block w-fit`}
-                >
-                  <FaWhatsapp size={17} className="text-accent" /> Chat with us
-                  on WhatsApp
-                </a>
-                <a
-                  href={`mailto:${site.email}`}
-                  className={`${linkCls} block w-fit`}
-                >
-                  <Mail size={17} className="text-accent" /> {site.email}
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="mb-1 text-xl font-bold">Call us</h3>
-              <p className="mb-4 text-sm text-muted">
-                Call our team and talk to us directly.
-              </p>
-              <div className="space-y-3 text-sm">
-                {site.phones.map((p) => (
+                  </div>
                   <a
-                    key={p}
-                    href={`tel:${p.replace(/-/g, "")}`}
-                    className={`${linkCls} block w-fit`}
+                    href={site.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs px-4 py-2.5 transition shadow-sm"
                   >
-                    <Phone size={17} className="text-accent" /> {p}
+                    <span>Open WhatsApp Chat</span>
+                    <MessageSquare size={14} />
                   </a>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            <div>
-              <h3 className="mb-1 text-xl font-bold">Visit us</h3>
-              <p className="mb-4 text-sm text-muted">
-                Chat to us in person at our Jaipur office.
-              </p>
-              <a
-                href={mapLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-2 text-sm font-semibold underline underline-offset-4 transition hover:text-accent"
-              >
-                <MapPin size={17} className="mt-0.5 shrink-0 text-accent" />{" "}
-                {site.address}
-              </a>
-            </div>
+                {/* Direct Call Card */}
+                <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-md shadow-slate-900/5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-orange-50 text-orange-600 border border-orange-100">
+                      <Phone size={18} />
+                    </span>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">Call Us Directly</h3>
+                      <p className="text-xs text-slate-400">Available Mon - Sat, 9 AM to 8 PM IST</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-2">
+                    {site.phones.map((p) => (
+                      <a
+                        key={p}
+                        href={`tel:${p.replace(/-/g, "")}`}
+                        className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-xs font-bold text-slate-800 hover:border-orange-300 hover:bg-orange-50/30 transition"
+                      >
+                        <span>{p}</span>
+                        <span className="text-[10px] font-semibold text-orange-600 bg-orange-100/70 px-2 py-0.5 rounded-md">Call</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Email & Office Card */}
+                <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-md shadow-slate-900/5">
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                        <Mail size={14} className="text-orange-500" />
+                        <span>Email Support</span>
+                      </div>
+                      <a
+                        href={`mailto:${site.email}`}
+                        className="text-sm font-semibold text-slate-800 hover:text-orange-600 transition"
+                      >
+                        {site.email}
+                      </a>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                        <MapPin size={14} className="text-orange-500" />
+                        <span>Office Address</span>
+                      </div>
+                      <a
+                        href={mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-medium text-slate-600 hover:text-orange-600 transition block leading-relaxed"
+                      >
+                        {site.address}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
-      </div>
-    </Section>
+        </Container>
+      </section>
+    </main>
   );
 }

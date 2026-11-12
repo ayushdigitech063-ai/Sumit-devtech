@@ -19,6 +19,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Container from "@/app/ui/Container";
+import { submitLead } from "@/lib/leads-api";
 import { packageCategories } from "@/data/packages-data";
 
 export default function PackageCardsSection() {
@@ -45,30 +46,40 @@ export default function PackageCardsSection() {
     setFormSent(false);
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leadForm.name || !leadForm.phone) return;
 
     setLoading(true);
+    try {
+      await submitLead({
+        name: leadForm.name,
+        email: leadForm.email,
+        phone: leadForm.phone,
+        service: selectedPlanForUnlock ? `Package Unlock: ${selectedPlanForUnlock.name} (${selectedPlanForUnlock.price})` : "Package Inquiry",
+        source: "package_unlock",
+        message: `User unlocked pricing for plan ${selectedPlanForUnlock?.name || "Standard"}`,
+        metadata: { plan: selectedPlanForUnlock },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    setLoading(false);
+    setFormSent(true);
+
+    if (selectedPlanForUnlock) {
+      setUnlockedPlans((prev) => ({
+        ...prev,
+        [selectedPlanForUnlock.id]: true,
+      }));
+    }
+
     setTimeout(() => {
-      setLoading(false);
-      setFormSent(true);
-
-      // Unlock the plan!
-      if (selectedPlanForUnlock) {
-        setUnlockedPlans((prev) => ({
-          ...prev,
-          [selectedPlanForUnlock.id]: true,
-        }));
-      }
-
-      // Automatically close modal after brief confirmation
-      setTimeout(() => {
-        setSelectedPlanForUnlock(null);
-        setFormSent(false);
-        setLeadForm({ name: "", email: "", phone: "" });
-      }, 1400);
-    }, 800);
+      setSelectedPlanForUnlock(null);
+      setFormSent(false);
+      setLeadForm({ name: "", email: "", phone: "" });
+    }, 1400);
   };
 
   return (

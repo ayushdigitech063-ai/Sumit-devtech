@@ -9,6 +9,7 @@ import {
   Languages,
 } from "lucide-react";
 import { site, leadOptions } from "@/data/site";
+import { submitLead } from "@/lib/leads-api";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Language = "en" | "hi";
@@ -376,6 +377,16 @@ export default function Chatbot() {
       const finalData = { ...leadData, phone: valid10 };
       setLeadData(finalData);
       setLeadStep("idle");
+
+      // Save lead to database for Super Admin Dashboard
+      submitLead({
+        name: finalData.name || "Chatbot Lead",
+        phone: valid10,
+        service: finalData.service || "Website Development",
+        source: "chatbot",
+        message: `Lead generated via interactive Chatbot. Service: ${finalData.service || "General"}`,
+        metadata: { language: lang },
+      }).catch((err) => console.error("Chatbot lead submit error:", err));
 
       addBotMessage(
         t.leadDone(finalData.name || "Client", finalData.service || "Web Project", valid10),

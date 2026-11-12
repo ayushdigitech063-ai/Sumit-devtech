@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowUpRight, Sparkles, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowUpRight, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
 
 // Project mock data with realistic web categories & verified image paths
 const PROJECTS_DATA = [
@@ -58,16 +57,14 @@ const PROJECTS_DATA = [
 
 export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
-  // Auto rotation every 4 seconds
+  // Non-stop auto slide every 3 seconds without pause
   useEffect(() => {
-    if (isPaused) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % PROJECTS_DATA.length);
-    }, 4000);
+    }, 3000);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, []);
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? PROJECTS_DATA.length - 1 : prev - 1));
@@ -81,10 +78,6 @@ export default function Projects() {
     <section 
       id="projects" 
       className="relative overflow-hidden bg-[#f7f6f3] py-16 sm:py-24 text-ink font-sans select-none border-t border-line/60"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
     >
       {/* Background Soft Ambient Accents */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full bg-accent/5 blur-[140px]" />
@@ -92,31 +85,27 @@ export default function Projects() {
 
       <div className="relative mx-auto w-full max-w-[1440px] px-4 sm:px-8 z-10">
         
-        {/* ========================================================
-            HEADER: LIGHT THEME CLEAN DESIGN
-           ======================================================== */}
+        {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-accent uppercase mb-3">
               <span className="h-0.5 w-6 bg-accent" />
-              <span>OUR PROJECTS</span>
+              <span>Our Projects</span>
             </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-sans text-ink tracking-tight leading-[1.14]">
+            <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
               Explore Our <span className="text-brand">Latest Work</span>
             </h2>
-
-            <p className="mt-3 text-xs sm:text-sm md:text-base text-muted max-w-xl font-normal leading-relaxed">
+            <p className="mt-3 max-w-xl text-sm sm:text-base text-muted font-normal leading-relaxed">
               From modern websites to complex web applications, we help businesses build digital products that create real impact.
             </p>
           </div>
 
-          {/* Top-Right Round Navigation Buttons */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Nav Buttons */}
+          <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
             <button
               type="button"
               onClick={handlePrev}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
               aria-label="Previous Project"
             >
               <ChevronLeft size={20} />
@@ -124,7 +113,7 @@ export default function Projects() {
             <button
               type="button"
               onClick={handleNext}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-accent hover:bg-accent hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
               aria-label="Next Project"
             >
               <ChevronRight size={20} />
@@ -132,13 +121,13 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* ========================================================
-            3D CURVED CAROUSEL CYLINDER STAGE (Clean Card Mockups)
-           ======================================================== */}
-        <div className="relative mx-auto flex items-center justify-center min-h-[400px] sm:min-h-[440px] [perspective:1400px] overflow-hidden py-3">
+        {/* 
+            SMOOTH HARDWARE-ACCELERATED CAROUSEL STAGE 
+            No jitter / No flickering / Rock-solid fixed positioning
+        */}
+        <div className="relative mx-auto flex items-center justify-center h-[390px] sm:h-[430px] overflow-hidden py-3">
           {PROJECTS_DATA.map((proj, idx) => {
             const total = PROJECTS_DATA.length;
-            // Calculate relative offset in circular array
             let diff = idx - activeIndex;
             if (diff > total / 2) diff -= total;
             if (diff < -total / 2) diff += total;
@@ -146,48 +135,43 @@ export default function Projects() {
             const isCenter = diff === 0;
             const absDiff = Math.abs(diff);
 
-            // Hide cards that are too far behind in the cylinder
-            if (absDiff > 2.5) return null;
+            // Hide cards beyond 2 steps
+            if (absDiff > 2) return null;
 
-            // Curved stage transforms - tighter spacing & smoother curve
-            const xOffset = diff * 290;
-            const zDistance = -Math.pow(absDiff, 1.3) * 80;
-            const rotateY = -diff * 14;
-            const scale = isCenter ? 1.05 : Math.max(0.84, 1 - absDiff * 0.08);
-            const opacity = isCenter ? 1 : Math.max(0.65, 0.95 - absDiff * 0.2);
-            const zIndex = 30 - Math.round(absDiff * 10);
+            // Stable transform geometry with CSS transitions
+            const xOffset = diff * 280;
+            const scale = isCenter ? 1.05 : absDiff === 1 ? 0.92 : 0.82;
+            const opacity = isCenter ? 1 : absDiff === 1 ? 0.8 : 0.5;
+            const zIndex = isCenter ? 30 : absDiff === 1 ? 20 : 10;
+            const rotateY = diff * -12;
 
             const Icon = proj.icon;
 
             return (
-              <motion.div
+              <div
                 key={proj.id}
-                animate={{
-                  x: xOffset,
-                  z: zDistance,
-                  rotateY: rotateY,
-                  scale: scale,
-                  opacity: opacity,
-                  zIndex: zIndex,
-                }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
                 onClick={() => setActiveIndex(idx)}
-                className={`absolute top-2 w-[280px] sm:w-[330px] md:w-[360px] cursor-pointer rounded-[22px] p-3 sm:p-3.5 shadow-xl transition-all duration-300 [transform-style:preserve-3d] ${
+                style={{
+                  transform: `translateX(${xOffset}px) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
+                  zIndex: zIndex,
+                  opacity: opacity,
+                  willChange: "transform, opacity",
+                }}
+                className={`absolute top-4 w-[285px] sm:w-[335px] md:w-[370px] cursor-pointer rounded-[24px] p-3 sm:p-3.5 transition-all duration-500 ease-out select-none ${
                   isCenter
-                    ? "bg-white border-2 border-accent shadow-[0_12px_40px_rgba(255,106,31,0.22)] ring-2 ring-accent/30"
-                    : "bg-white/90 border border-line hover:border-accent/40 shadow-md"
+                    ? "bg-white border-2 border-accent shadow-[0_16px_40px_rgba(255,106,31,0.22)] ring-4 ring-accent/15"
+                    : "bg-white/95 border border-line hover:border-accent/40 shadow-md"
                 }`}
               >
                 {/* Desktop Monitor Bezel Screen Mockup */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[16px] border border-line bg-dark-2 shadow-inner">
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px] border border-line bg-dark-2">
                   <Image
                     src={proj.image}
                     alt={proj.title}
                     fill
                     sizes="(min-width:640px) 380px, 290px"
-                    className="object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
+                    className="object-cover object-top transition-transform duration-500 ease-out hover:scale-105"
                   />
-                  {/* Subtle top glare */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
                 </div>
 
@@ -219,19 +203,19 @@ export default function Projects() {
                     <ArrowUpRight size={15} />
                   </a>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
 
         {/* Bottom Pagination Dots */}
-        <div className="mt-4 flex items-center justify-center gap-1.5">
+        <div className="mt-6 flex items-center justify-center gap-1.5">
           {PROJECTS_DATA.map((_, dotIdx) => (
             <button
               key={dotIdx}
               type="button"
               onClick={() => setActiveIndex(dotIdx)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                 dotIdx === activeIndex ? "w-8 bg-accent" : "w-2 bg-line hover:bg-muted"
               }`}
               aria-label={`Go to project ${dotIdx + 1}`}

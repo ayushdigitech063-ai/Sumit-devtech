@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CaseStudy {
@@ -97,18 +96,15 @@ const CASE_STUDIES: CaseStudy[] = [
 
 export default function RealBusinesses() {
   const [activeIndex, setActiveIndex] = useState(1); // Default center on 02 Healthcare
-  const [isPaused, setIsPaused] = useState(false);
 
-  // Fast auto-scroll cycle every 1.8 seconds with snappy smooth transition
+  // Smooth auto-scroll continuous loop every 3 seconds
   useEffect(() => {
-    if (isPaused) return;
-
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % CASE_STUDIES.length);
-    }, 1800);
+    }, 3000);
 
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, []);
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? CASE_STUDIES.length - 1 : prev - 1));
@@ -122,16 +118,10 @@ export default function RealBusinesses() {
     <section 
       id="real-businesses" 
       className="relative overflow-hidden bg-white py-18 sm:py-24 text-slate-800 font-sans select-none"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
     >
       <div className="relative mx-auto w-full max-w-[1360px] px-6 sm:px-8 z-10">
         
-        {/* ========================================================
-            HEADER: SUMIT DEVTECH BRAND THEME (ORANGE / AMBER ACCENT)
-           ======================================================== */}
+        {/* HEADER */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-orange-600 mb-3 uppercase">
             <span className="h-px w-6 bg-orange-500" />
@@ -148,9 +138,10 @@ export default function RealBusinesses() {
           </p>
         </div>
 
-        {/* ========================================================
-            3D PERSPECTIVE AUTO-SCROLLING CARDS STAGE
-           ======================================================== */}
+        {/* 
+            SMOOTH 3D PERSPECTIVE AUTO-SCROLLING CARDS STAGE
+            Hardware accelerated via CSS transforms & transition
+        */}
         <div className="relative mx-auto flex items-center justify-center min-h-[580px] sm:min-h-[640px] [perspective:1400px]">
           {CASE_STUDIES.map((study, idx) => {
             const offset = (idx - activeIndex + CASE_STUDIES.length) % CASE_STUDIES.length;
@@ -171,43 +162,42 @@ export default function RealBusinesses() {
               scale = 1.05;
               opacity = 1;
             } else if (isLeft) {
-              xPosition = typeof window !== 'undefined' && window.innerWidth < 640 ? -160 : -330;
+              xPosition = -330;
               rotateY = 16;
               zIndex = 20;
-              scale = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.85 : 0.92;
-              opacity = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.4 : 0.85;
+              scale = 0.92;
+              opacity = 0.85;
             } else if (isRight) {
-              xPosition = typeof window !== 'undefined' && window.innerWidth < 640 ? 160 : 330;
+              xPosition = 330;
               rotateY = -16;
               zIndex = 20;
-              scale = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.85 : 0.92;
-              opacity = typeof window !== 'undefined' && window.innerWidth < 640 ? 0.4 : 0.85;
+              scale = 0.92;
+              opacity = 0.85;
             }
 
-            const isDarkCard = study.id === "healthcare";
+            const isDarkCard = isCenter; // Center active card always gets dark hero styling
 
             return (
-              <motion.div
+              <div
                 key={study.id}
-                animate={{
-                  x: xPosition,
-                  rotateY: rotateY,
-                  scale: scale,
-                  opacity: opacity,
-                  zIndex: zIndex,
-                }}
-                transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
                 onClick={() => setActiveIndex(idx)}
-                className={`absolute top-0 w-[320px] sm:w-[370px] md:w-[400px] cursor-pointer rounded-[32px] p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.12)] transition-colors duration-300 font-sans ${
+                style={{
+                  transform: `translateX(${xPosition}px) scale(${scale}) perspective(1200px) rotateY(${rotateY}deg)`,
+                  zIndex: zIndex,
+                  opacity: opacity,
+                  willChange: "transform, opacity",
+                }}
+                className={`absolute top-0 w-[320px] sm:w-[370px] md:w-[400px] cursor-pointer rounded-[32px] p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.12)] transition-all duration-600 ease-out font-sans ${
                   isDarkCard
-                    ? "bg-[#181c26] text-white border border-slate-700/80 shadow-2xl"
+                    ? "bg-[#181c26] text-white border-2 border-orange-500/40 shadow-2xl ring-4 ring-orange-500/10"
                     : "bg-white text-slate-900 border border-slate-200/90 shadow-xl"
                 }`}
-                style={{ transformStyle: "preserve-3d" }}
               >
                 {/* Top Pill & Step Number */}
                 <div className="flex items-center justify-between pb-3">
-                  <span className={`rounded-full px-3 py-0.8 text-[11px] font-semibold tracking-wider uppercase border ${study.tagColor}`}>
+                  <span className={`rounded-full px-3 py-0.8 text-[11px] font-semibold tracking-wider uppercase border ${
+                    isDarkCard ? "bg-orange-950/70 text-orange-400 border-orange-800/60" : study.tagColor
+                  }`}>
                     {study.tag}
                   </span>
                   <span className={`text-sm font-semibold ${isDarkCard ? "text-slate-400" : "text-slate-400"}`}>
@@ -244,75 +234,104 @@ export default function RealBusinesses() {
                 </div>
 
                 {/* Visual Preview Box */}
-                <div className="mt-5 rounded-2xl bg-slate-50/70 p-3 overflow-hidden">
+                <div className={`mt-5 rounded-2xl p-3 overflow-hidden ${isDarkCard ? "bg-slate-900/80 border border-slate-800" : "bg-slate-50/70 border border-slate-100"}`}>
                   {/* Phone Mockup Preview */}
                   {study.previewType === "mobile" && study.mobileData && (
                     <div className="relative mx-auto w-48 rounded-[22px] border-[3px] border-slate-800 bg-white p-2.5 text-slate-800 shadow-md">
-                      <div className="mx-auto mb-1.5 h-2 w-12 rounded-full bg-black flex items-center justify-center">
-                        <span className="h-0.5 w-0.5 rounded-full bg-emerald-400" />
+                      <div className="mb-2 text-center text-[10px] text-slate-400">
+                        Good Morning, <b className="text-slate-700">{study.mobileData.userName}</b>
                       </div>
-                      <div className="text-[9px]">
-                        <span className="text-slate-400">Good Morning,</span>
-                        <div className="font-bold text-slate-900">{study.mobileData.userName}</div>
-                        <div className="mt-1.5 rounded-lg bg-slate-50 p-1.5 border border-slate-100">
-                          <span className="text-[7.5px] text-slate-400">Total Balance</span>
-                          <div className="text-xs font-black text-slate-900">{study.mobileData.balance}</div>
-                          <span className="text-[7.5px] font-bold text-emerald-600">{study.mobileData.growth}</span>
-                        </div>
+                      <div className="rounded-xl bg-slate-50 p-2 text-center">
+                        <span className="text-[9px] text-slate-400">Total Balance</span>
+                        <div className="text-sm font-extrabold text-slate-900">{study.mobileData.balance}</div>
+                        <span className="text-[8.5px] font-bold text-emerald-600">{study.mobileData.growth}</span>
                       </div>
                     </div>
                   )}
 
-                  {/* Healthcare Monitor Preview */}
+                  {/* Heartbeat Monitor Preview */}
                   {study.previewType === "health" && study.healthData && (
-                    <div className="relative mx-auto h-36 w-full rounded-2xl bg-[#11141e] p-4 text-white shadow-lg flex flex-col items-center justify-center">
-                      <div className="text-2xl font-black text-white flex items-center gap-1.5">
-                        <span className="text-rose-500 text-lg">❤️</span>
-                        <span>{study.healthData.bpm}</span>
-                        <span className="text-[10px] text-slate-400 font-normal">bpm</span>
+                    <div className="relative mx-auto flex h-32 w-full max-w-[240px] flex-col items-center justify-center rounded-2xl bg-[#121620] border border-slate-700/60 p-4 text-center">
+                      <div className="flex items-center gap-2 text-white">
+                        <span className="text-red-500 text-base animate-pulse">❤️</span>
+                        <span className="text-2xl font-black">{study.healthData.bpm}</span>
+                        <span className="text-xs text-slate-400">bpm</span>
                       </div>
-                      <div className="mt-2 h-1.5 w-32 rounded-full bg-slate-800 overflow-hidden">
-                        <div className="h-full w-3/4 rounded-full bg-emerald-400 animate-pulse" />
+                      <div className="mt-3 h-1.5 w-32 rounded-full bg-slate-800 overflow-hidden">
+                        <div className="h-full w-2/3 bg-emerald-500 rounded-full animate-pulse" />
                       </div>
+                      <span className="text-[10px] text-slate-400 mt-2">{study.healthData.status}</span>
                     </div>
                   )}
 
-                  {/* SaaS Virtual Card Preview */}
+                  {/* Credit Card Preview */}
                   {study.previewType === "card" && study.cardData && (
-                    <div className="relative mx-auto h-36 w-full rounded-2xl bg-gradient-to-tr from-[#161a26] to-[#222838] p-4 text-white shadow-lg flex flex-col justify-between">
-                      <div className="flex justify-between items-center text-[10px]">
-                        <span className="flex items-center gap-1 font-bold text-emerald-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                          <span>{study.cardData.brand}</span>
-                        </span>
-                        <span className="text-slate-400">Card</span>
+                    <div className="relative mx-auto h-28 w-52 rounded-2xl bg-gradient-to-tr from-slate-900 to-slate-800 p-3.5 text-white shadow-md border border-slate-700">
+                      <div className="flex justify-between items-center text-xs font-bold text-emerald-400">
+                        <span>{study.cardData.brand}</span>
+                        <span className="text-[9px] text-slate-400 uppercase">Card</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-5 w-8 rounded bg-amber-400/80" />
-                        <span className="font-mono text-xs tracking-wider text-slate-300">
-                          {study.cardData.cardNumber}
-                        </span>
+                      <div className="mt-6 flex items-center justify-between text-xs tracking-widest font-mono text-slate-300">
+                        <span className="h-3 w-4 bg-amber-400 rounded-xs" />
+                        <span>{study.cardData.cardNumber}</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Bottom 3 Metrics Footer */}
-                <div className={`mt-5 pt-4 border-t flex items-center justify-between text-center ${isDarkCard ? "border-slate-800 text-slate-300" : "border-slate-100 text-slate-700"}`}>
-                  {study.stats.map((s, sIdx) => (
-                    <div key={sIdx} className="flex-1">
-                      <div className={`text-base sm:text-lg font-black ${isDarkCard ? "text-white" : "text-slate-900"}`}>
-                        {s.value}
-                      </div>
-                      <div className="text-[9px] font-medium text-slate-400 mt-0.5 leading-tight">
+                {/* Key Metrics Row */}
+                <div className={`mt-5 grid grid-cols-3 gap-2 border-t pt-4 text-center ${
+                  isDarkCard ? "border-slate-800 text-white" : "border-slate-100 text-slate-900"
+                }`}>
+                  {study.stats.map((s, idx) => (
+                    <div key={idx}>
+                      <div className="text-base sm:text-lg font-black tracking-tight">{s.value}</div>
+                      <div className={`text-[10px] font-medium leading-tight mt-0.5 ${
+                        isDarkCard ? "text-slate-400" : "text-slate-500"
+                      }`}>
                         {s.label}
                       </div>
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             );
           })}
+        </div>
+
+        {/* Navigation Buttons & Dots */}
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={handlePrev}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:bg-orange-500 hover:text-white transition shadow-sm active:scale-95 cursor-pointer"
+            aria-label="Previous Case Study"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {CASE_STUDIES.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                type="button"
+                onClick={() => setActiveIndex(dotIdx)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  dotIdx === activeIndex ? "w-8 bg-orange-500" : "w-2 bg-slate-200 hover:bg-slate-300"
+                }`}
+                aria-label={`Go to slide ${dotIdx + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:bg-orange-500 hover:text-white transition shadow-sm active:scale-95 cursor-pointer"
+            aria-label="Next Case Study"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
       </div>
     </section>
