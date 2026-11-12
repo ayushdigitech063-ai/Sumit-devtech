@@ -539,6 +539,60 @@ export default function AdminCareersPage() {
                 <div className="font-bold text-orange-600">{selectedApp.jobTitle}</div>
               </div>
 
+              {/* Candidate Type Badge & Details */}
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-500">Candidate Type:</span>
+                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                    selectedApp.candidateType === "experienced"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-blue-100 text-blue-800"
+                  }`}>
+                    {selectedApp.candidateType === "experienced" ? "Experienced" : "Fresher"}
+                  </span>
+                </div>
+
+                {selectedApp.candidateType === "experienced" && (
+                  <div className="pt-2 border-t border-slate-200/60 grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-400 block">Previous Company:</span>
+                      <strong className="text-slate-800">{selectedApp.previousCompany || "N/A"}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block">Experience:</span>
+                      <strong className="text-slate-800">{selectedApp.experienceYears || selectedApp.experience || "N/A"}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block">Designation:</span>
+                      <strong className="text-slate-800">{selectedApp.currentDesignation || "N/A"}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block">Notice Period:</span>
+                      <strong className="text-slate-800">{selectedApp.noticePeriod || "Immediate"}</strong>
+                    </div>
+                    {selectedApp.currentSalary && (
+                      <div>
+                        <span className="text-slate-400 block">Current Salary:</span>
+                        <strong className="text-slate-800">{selectedApp.currentSalary}</strong>
+                      </div>
+                    )}
+                    {selectedApp.payslipUrl && (
+                      <div className="col-span-2 pt-1">
+                        <a
+                          href={selectedApp.payslipUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200"
+                        >
+                          <Download size={13} />
+                          <span>View Uploaded Payslip</span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {selectedApp.coverNote && (
                 <div>
                   <span className="text-xs font-semibold text-slate-400 uppercase">Cover Note</span>

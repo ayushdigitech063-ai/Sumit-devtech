@@ -23,6 +23,14 @@ export interface ApplicationItem {
   fullName: string;
   email: string;
   phone: string;
+  candidateType?: "fresher" | "experienced";
+  experienceYears?: string;
+  previousCompany?: string;
+  currentDesignation?: string;
+  currentSalary?: string;
+  expectedSalary?: string;
+  noticePeriod?: string;
+  payslipUrl?: string;
   experience?: string;
   location?: string;
   portfolioLink?: string;

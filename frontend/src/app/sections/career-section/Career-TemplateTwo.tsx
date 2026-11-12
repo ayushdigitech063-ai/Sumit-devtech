@@ -3,21 +3,78 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ArrowRight, MapPin, Briefcase, Clock, Sparkles, CheckCircle2, Mail, MessageSquare, ChevronDown } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  MapPin,
+  Briefcase,
+  Clock,
+  Sparkles,
+  CheckCircle2,
+  Mail,
+  ChevronDown,
+  Loader2,
+} from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import Container from "@/app/ui/Container";
 import SectionHeading from "@/app/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { careerData, applyHref, CAREERS_EMAIL, type CareerData } from "@/data/career-data";
-import { PerkIcon, getDepartments, fadeUp } from "./Career-Shared";
+import { PerkIcon, fadeUp } from "./Career-Shared";
+import CareerApplyModal from "./CareerApplyModal";
+
+interface JobOpeningItem {
+  _id: string;
+  id?: string;
+  title: string;
+  slug: string;
+  department: string;
+  location: string;
+  type: string;
+  experience: string;
+  summary: string;
+  requirements?: string[];
+  responsibilities?: string[];
+  isOpen?: boolean;
+}
 
 // Template 2 - Managed light theme: white / off-white cream sections with modern cards
 export default function CareerTemplateTwo({ data = careerData }: { data?: CareerData }) {
   const reduce = useReducedMotion();
-  const departments = getDepartments(data.openings);
+  const [openings, setOpenings] = useState<JobOpeningItem[]>([]);
+  const [loadingOpenings, setLoadingOpenings] = useState(true);
   const [dept, setDept] = useState("All");
+
+  // Modal State for instant apply without leaving page
+  const [selectedJobForModal, setSelectedJobForModal] = useState<JobOpeningItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch live openings from Backend API
+  useEffect(() => {
+    async function loadBackendOpenings() {
+      try {
+        const res = await fetch("/api/careers/openings", { cache: "no-store" });
+        const result = await res.json();
+        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+          // Filter only active open positions
+          const activeJobs = result.data.filter((j: any) => j.isOpen !== false);
+          setOpenings(activeJobs);
+        } else {
+          // Fallback to careerData if backend is still initializing
+          setOpenings(data.openings.map((o) => ({ ...o, _id: o.id })));
+        }
+      } catch (err) {
+        console.error("Failed to fetch openings:", err);
+        setOpenings(data.openings.map((o) => ({ ...o, _id: o.id })));
+      } finally {
+        setLoadingOpenings(false);
+      }
+    }
+    loadBackendOpenings();
+  }, [data.openings]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -29,13 +86,22 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const jobs = dept === "All" ? data.openings : data.openings.filter((o) => o.department === dept);
+  const departments = [
+    "All",
+    ...Array.from(new Set(openings.map((o) => o.department).filter(Boolean))),
+  ];
+
+  const filteredJobs = dept === "All" ? openings : openings.filter((o) => o.department === dept);
+
+  const handleOpenApplyModal = (job: JobOpeningItem) => {
+    setSelectedJobForModal(job);
+    setIsModalOpen(true);
+  };
 
   return (
     <main className="bg-white text-ink">
       {/* ---------- Hero ---------- */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-40 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
-        {/* Background ambient lighting blooms matching Package Hero */}
         <div 
           className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden z-0"
           style={{
@@ -99,24 +165,22 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                       transition={{ duration: 0.18 }}
                       className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 top-full mt-2 w-64 rounded-2xl border border-white/15 bg-[#14151a]/95 p-2 shadow-2xl backdrop-blur-2xl z-50 text-left"
                     >
-                      {/* WhatsApp Option */}
                       <a
-                        href="https://wa.me/916201533997?text=Hi%20Sumit%20DevTech%20Team,%20I%20am%20sharing%20my%20resume%20for%20career%20opportunities."
+                        href="https://wa.me/917976865261?text=Hi%20Sumit%20DevTech%2C%20I%20want%20to%20apply%20for%20a%20career%20opportunity."
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noreferrer"
                         onClick={() => setResumeDropdownOpen(false)}
-                        className="group/wp flex items-center gap-3 rounded-xl p-3 text-xs font-semibold text-white/90 transition-all hover:bg-emerald-500/15 hover:text-white"
+                        className="group/item flex items-center gap-3 rounded-xl p-3 text-xs font-semibold text-white/90 transition-all hover:bg-emerald-500/15 hover:text-white"
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 group-hover/wp:bg-emerald-500 group-hover/wp:text-white transition-colors">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 group-hover/item:bg-emerald-500 group-hover/item:text-white transition-colors">
                           <FaWhatsapp size={18} />
                         </div>
                         <div>
-                          <div className="font-heading font-bold text-sm text-white">Send on WhatsApp</div>
-                          <div className="text-[11px] text-white/50 font-normal">Fastest response in 2 hrs</div>
+                          <div className="font-heading font-bold text-sm text-white">WhatsApp HR</div>
+                          <div className="text-[11px] text-white/50 font-normal">+91 79768 65261</div>
                         </div>
                       </a>
 
-                      {/* Email Option */}
                       <a
                         href={applyHref()}
                         onClick={() => setResumeDropdownOpen(false)}
@@ -139,7 +203,7 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
         </Container>
       </section>
 
-      {/* ---------- Perks Section (Cream White / Off-White bg-light) ---------- */}
+      {/* ---------- Perks Section ---------- */}
       <section className="relative overflow-hidden border-t border-line/60 bg-[#f7f6f3] py-20 md:py-28 text-ink">
         <div
           aria-hidden="true"
@@ -175,7 +239,7 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
         </Container>
       </section>
 
-      {/* ---------- Open roles (Modern Card Redesign) ---------- */}
+      {/* ---------- Open roles (Backend Driven + Instant Modal Apply) ---------- */}
       <section id="openings" className="bg-white py-20 text-ink md:py-28 border-t border-line/50">
         <Container>
           <div className="mx-auto max-w-[1200px]">
@@ -207,91 +271,100 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
 
             {/* Redesigned Job Cards in Single Row Layout */}
             <div className="mt-12 flex flex-col gap-6">
-              {jobs.length === 0 && (
+              {loadingOpenings ? (
+                <div className="py-16 text-center">
+                  <Loader2 size={32} className="animate-spin text-accent mx-auto mb-3" />
+                  <p className="text-sm text-muted">Fetching latest job openings...</p>
+                </div>
+              ) : filteredJobs.length === 0 ? (
                 <p className="rounded-2xl border border-dashed border-line bg-[#f7f6f3] p-8 text-center text-muted">
-                  No open roles right now. Send your resume to {CAREERS_EMAIL}.
+                  No open roles right now in this department. Send your resume to {CAREERS_EMAIL}.
                 </p>
-              )}
-
-              {jobs.map((job, i) => (
-                <motion.article
-                  key={job.id}
-                  {...fadeUp(reduce, i)}
-                  className="group relative flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 sm:gap-8 rounded-3xl border border-line/80 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_16px_36px_rgba(255,106,31,0.12)] overflow-hidden"
-                >
-                  {/* Left & Middle Column Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-accent">
-                        <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                        {job.department}
-                      </span>
-                      <span className="text-xs font-semibold text-muted/70">
-                        Full-time • Jaipur (Mansarovar)
-                      </span>
-                    </div>
-
-                    <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-ink tracking-tight group-hover:text-accent transition-colors">
-                      {job.title}
-                    </h3>
-
-                    {/* Meta Badges Row */}
-                    <div className="mt-3 flex flex-wrap items-center gap-2.5 text-xs text-muted">
-                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
-                        <MapPin size={13} className="text-accent" /> {job.location}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
-                        <Briefcase size={13} className="text-accent" /> {job.type}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
-                        <Clock size={13} className="text-accent" /> {job.experience}
-                      </span>
-                    </div>
-
-                    <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-muted max-w-3xl">
-                      {job.summary}
-                    </p>
-
-                    {/* Key Requirements Highlights in flex wrap row */}
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      {job.requirements.slice(0, 3).map((r, rIdx) => (
-                        <span
-                          key={rIdx}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-light/70 px-3 py-1 text-[11px] font-medium text-ink/80"
-                        >
-                          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                          {r}
+              ) : (
+                filteredJobs.map((job, i) => (
+                  <motion.article
+                    key={job._id || job.id || i}
+                    {...fadeUp(reduce, i)}
+                    className="group relative flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 sm:gap-8 rounded-3xl border border-line/80 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_16px_36px_rgba(255,106,31,0.12)] overflow-hidden"
+                  >
+                    {/* Left & Middle Column Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-accent">
+                          <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                          {job.department}
                         </span>
-                      ))}
+                        <span className="text-xs font-semibold text-muted/70">
+                          {job.type} • {job.location}
+                        </span>
+                      </div>
+
+                      <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-ink tracking-tight group-hover:text-accent transition-colors">
+                        {job.title}
+                      </h3>
+
+                      {/* Meta Badges Row */}
+                      <div className="mt-3 flex flex-wrap items-center gap-2.5 text-xs text-muted">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                          <MapPin size={13} className="text-accent" /> {job.location}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                          <Briefcase size={13} className="text-accent" /> {job.type}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f7f6f3] px-3 py-1 font-medium text-ink/80">
+                          <Clock size={13} className="text-accent" /> {job.experience}
+                        </span>
+                      </div>
+
+                      <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-muted max-w-3xl">
+                        {job.summary}
+                      </p>
+
+                      {/* Key Requirements Highlights in flex wrap row */}
+                      {job.requirements && job.requirements.length > 0 && (
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                          {job.requirements.slice(0, 3).map((r, rIdx) => (
+                            <span
+                              key={rIdx}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-light/70 px-3 py-1 text-[11px] font-medium text-ink/80"
+                            >
+                              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                              {r}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
 
-                  {/* Right Column Action Button */}
-                  <div className="flex lg:flex-col items-center justify-between lg:justify-center gap-4 lg:pl-6 lg:border-l lg:border-line/60 shrink-0">
-                    <Link
-                      href={`/career/${job.slug}#apply`}
-                      className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-heading font-bold text-white shadow-md shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 hover:scale-105 shrink-0"
-                    >
-                      Apply Now
-                      <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-                    </Link>
+                    {/* Right Column Action: Modal Trigger on Current Page */}
+                    <div className="flex lg:flex-col items-center justify-between lg:justify-center gap-4 lg:pl-6 lg:border-l lg:border-line/60 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenApplyModal(job)}
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-heading font-bold text-white shadow-md shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 hover:scale-105 shrink-0"
+                      >
+                        Apply Now
+                        <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                      </button>
 
-                    <Link
-                      href={`/career/${job.slug}#apply`}
-                      aria-label={`View ${job.title}`}
-                      className="hidden lg:grid h-10 w-10 place-items-center rounded-2xl bg-light text-dark shadow-sm transition-all duration-300 group-hover:bg-brand group-hover:text-white group-hover:rotate-45"
-                    >
-                      <ArrowUpRight size={18} />
-                    </Link>
-                  </div>
-                </motion.article>
-              ))}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenApplyModal(job)}
+                        aria-label={`Apply for ${job.title}`}
+                        className="hidden lg:grid h-10 w-10 place-items-center rounded-2xl bg-light text-dark shadow-sm transition-all duration-300 group-hover:bg-brand group-hover:text-white group-hover:rotate-45"
+                      >
+                        <ArrowUpRight size={18} />
+                      </button>
+                    </div>
+                  </motion.article>
+                ))
+              )}
             </div>
           </div>
         </Container>
       </section>
 
-      {/* ---------- Hiring Process: Unique Dotted Track Roadmap Design ---------- */}
+      {/* ---------- Hiring Process Roadmap ---------- */}
       <section className="relative overflow-hidden border-t border-line/60 bg-[#f7f6f3] py-20 text-ink md:py-28">
         <div
           aria-hidden="true"
@@ -306,15 +379,12 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
               text={data.processSection.text}
             />
 
-            {/* Dotted Track Timeline Container */}
             <div className="mt-16 relative">
-              {/* Desktop Curved Dotted Connecting Line */}
               <div 
                 aria-hidden="true"
                 className="hidden lg:block pointer-events-none absolute left-[12%] right-[12%] top-7 z-0 h-[3px] border-t-2 border-dashed border-accent/40"
               />
 
-              {/* Steps Grid */}
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 relative z-10">
                 {data.process.map((step, i) => (
                   <motion.div
@@ -322,20 +392,17 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                     {...fadeUp(reduce, i)}
                     className="group relative flex flex-col items-center text-center"
                   >
-                    {/* Glowing Dotted Node Ring */}
                     <div className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white border-2 border-dashed border-accent p-1 shadow-md shadow-accent/15 transition-all duration-500 group-hover:border-solid group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-accent/30">
                       <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-tr from-accent to-accent-2 text-white font-heading font-black text-lg shadow-inner">
                         {String(i + 1).padStart(2, "0")}
                       </div>
 
-                      {/* Small pulsating ping dot */}
                       <span className="absolute -top-1 -right-1 flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-accent" />
                       </span>
                     </div>
 
-                    {/* Step Card with Clean Rounded Border */}
                     <div className="w-full flex-1 rounded-3xl border border-line/80 bg-white p-6 shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:border-accent/50 group-hover:shadow-[0_12px_28px_rgba(255,106,31,0.10)] flex flex-col justify-between">
                       <div>
                         <span className="inline-block mb-3 px-3 py-1 rounded-full bg-accent/10 text-[10px] font-extrabold uppercase tracking-widest text-accent">
@@ -351,7 +418,6 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                         </p>
                       </div>
 
-                      {/* Bottom Visual Indicator */}
                       <div className="mt-5 pt-3.5 border-t border-line/50 flex items-center justify-center gap-1.5 text-[11px] font-semibold text-muted">
                         <CheckCircle2 size={13} className="text-accent" />
                         <span>Stage {i + 1} Completed</span>
@@ -364,6 +430,13 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
           </div>
         </Container>
       </section>
+
+      {/* ---------- Instant Apply Modal (No Page Redirection) ---------- */}
+      <CareerApplyModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        job={selectedJobForModal}
+      />
     </main>
   );
 }
