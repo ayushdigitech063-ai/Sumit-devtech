@@ -9,11 +9,28 @@ cloudinary.config({
 
 export async function uploadToCloudinary(
   fileBuffer: Buffer,
-  folder = "company_website"
+  folder = "company_website",
+  resourceType: "image" | "raw" | "auto" = "auto",
+  originalFilename?: string
 ): Promise<{ url: string; publicId: string }> {
   return new Promise((resolve, reject) => {
+    const isPdfOrDoc = originalFilename?.match(/\.(pdf|doc|docx)$/i) || resourceType === "raw";
+    
+    // For PDFs/docs, upload as type 'upload' and access_mode 'public' so they can be viewed directly
+    const options: any = {
+      folder,
+      resource_type: isPdfOrDoc ? "raw" : resourceType,
+      type: "upload",
+      access_mode: "public",
+    };
+
+    if (originalFilename) {
+      // Keep filename clean
+      options.public_id = `${Date.now()}_${originalFilename.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    }
+
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder },
+      options,
       (error, result) => {
         if (error || !result) return reject(error);
         resolve({

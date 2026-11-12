@@ -132,39 +132,99 @@ export const deleteJobOpening = async (req: Request, res: Response) => {
   }
 };
 
-// Public: Submit job application with resume file
+// Public: Submit job application with resume file and optional payslip
 export const submitApplicationForm = async (req: Request, res: Response) => {
   try {
-    const { jobId, jobTitle, fullName, email, phone, experience, location, link, coverNote } = req.body;
+    const {
+      jobId,
+      jobTitle,
+      fullName,
+      email,
+      phone,
+      candidateType,
+      experienceYears,
+      previousCompany,
+      currentDesignation,
+      currentSalary,
+      expectedSalary,
+      noticePeriod,
+      location,
+      link,
+      coverNote,
+    } = req.body;
+
     const files = req.files as Express.Multer.File[];
+
+    // Validation: Name, Email & Phone
+    if (!fullName || !fullName.trim()) {
+      return res.status(400).json({ success: false, message: "Full name is required." });
+    }
+
+    // Strict Email regex validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email.trim())) {
+      return res.status(400).json({ success: false, message: "Please provide a valid email address." });
+    }
+
+    // Strict 10-digit mobile number validation (Indian 10-digit format)
+    const cleanPhone = (phone || "").replace(/\D/g, "");
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid 10-digit mobile number.",
+      });
+    }
+
+    // Experience checks
+    const isExperienced = candidateType === "experienced";
+    if (isExperienced && (!previousCompany || !previousCompany.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide your previous company name.",
+      });
+    }
 
     let resumeUrl = "";
     let resumeFileName = "resume.pdf";
+    let payslipUrl = "";
 
     if (files && files.length > 0) {
-      const file = files[0];
-      resumeFileName = file.originalname || "resume.pdf";
-      const uploaded = await uploadToCloudinary(file.buffer, "career_resumes");
-      resumeUrl = uploaded.url;
+      // Find resume file vs payslip file
+      const resumeFile = files.find((f) => f.fieldname === "file" || f.fieldname === "resume") || files[0];
+      const payslipFile = files.find((f) => f.fieldname === "payslip");
+
+      if (resumeFile) {
+        resumeFileName = resumeFile.originalname || "resume.pdf";
+        const uploadedResume = await uploadToCloudinary(resumeFile.buffer, "career_resumes", "raw", resumeFileName);
+        resumeUrl = uploadedResume.url;
+      }
+
+      if (payslipFile) {
+        const uploadedPayslip = await uploadToCloudinary(payslipFile.buffer, "career_payslips", "raw", payslipFile.originalname || "payslip.pdf");
+        payslipUrl = uploadedPayslip.url;
+      }
     } else if (req.body.resumeUrl) {
       resumeUrl = req.body.resumeUrl;
     }
 
-    if (!fullName || !email || !phone) {
-      return res.status(400).json({ success: false, message: "Full name, email and phone are required." });
-    }
-
     if (!resumeUrl) {
-      return res.status(400).json({ success: false, message: "Resume file is required." });
+      return res.status(400).json({ success: false, message: "Resume file (.pdf, .doc, .docx) is required." });
     }
 
     const application = await Application.create({
       jobId: jobId || "",
       jobTitle: jobTitle || "General Application",
-      fullName,
-      email,
-      phone,
-      experience: experience || "",
+      fullName: fullName.trim(),
+      email: email.trim().toLowerCase(),
+      phone: cleanPhone,
+      candidateType: isExperienced ? "experienced" : "fresher",
+      experienceYears: isExperienced ? experienceYears || "" : "Fresher",
+      previousCompany: isExperienced ? previousCompany || "" : "",
+      currentDesignation: isExperienced ? currentDesignation || "" : "",
+      currentSalary: isExperienced ? currentSalary || "" : "",
+      expectedSalary: expectedSalary || "",
+      noticePeriod: noticePeriod || "",
+      payslipUrl: payslipUrl || "",
       location: location || "",
       portfolioLink: link || "",
       coverNote: coverNote || "",
@@ -196,6 +256,7 @@ export const getApplications = async (req: Request, res: Response) => {
         { email: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
         { jobTitle: { $regex: search, $options: "i" } },
+        { previousCompany: { $regex: search, $options: "i" } },
       ];
     }
 

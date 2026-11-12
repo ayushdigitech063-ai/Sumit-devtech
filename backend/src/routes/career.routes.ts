@@ -10,13 +10,13 @@ import {
   deleteApplication,
 } from "../controllers/career.controller";
 import { requireAuth } from "../middelwares/auth";
-import { handleUpload } from "../middelwares/upload";
+import { handleResumeUpload } from "../middelwares/upload";
 
 const router = Router();
 
 // Public
 router.get("/openings", getJobOpenings);
-router.post("/apply", handleUpload, submitApplicationForm);
+router.post("/apply", handleResumeUpload, submitApplicationForm);
 
 // Admin-only: Job Openings
 router.post("/openings", requireAuth, createJobOpening);

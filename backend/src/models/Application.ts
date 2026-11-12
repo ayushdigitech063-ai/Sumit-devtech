@@ -6,7 +6,14 @@ export interface IApplication extends Document {
   fullName: string;
   email: string;
   phone: string;
-  experience?: string;
+  candidateType: "fresher" | "experienced";
+  experienceYears?: string;
+  previousCompany?: string;
+  currentDesignation?: string;
+  currentSalary?: string;
+  expectedSalary?: string;
+  noticePeriod?: string;
+  payslipUrl?: string;
   location?: string;
   portfolioLink?: string;
   coverNote?: string;
@@ -25,7 +32,18 @@ const ApplicationSchema = new Schema<IApplication>(
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, lowercase: true },
     phone: { type: String, required: true, trim: true },
-    experience: { type: String, default: "" },
+    candidateType: {
+      type: String,
+      enum: ["fresher", "experienced"],
+      default: "fresher",
+    },
+    experienceYears: { type: String, default: "" },
+    previousCompany: { type: String, default: "" },
+    currentDesignation: { type: String, default: "" },
+    currentSalary: { type: String, default: "" },
+    expectedSalary: { type: String, default: "" },
+    noticePeriod: { type: String, default: "" },
+    payslipUrl: { type: String, default: "" },
     location: { type: String, default: "" },
     portfolioLink: { type: String, default: "" },
     coverNote: { type: String, default: "" },
