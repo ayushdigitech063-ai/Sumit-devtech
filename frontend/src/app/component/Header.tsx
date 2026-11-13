@@ -54,38 +54,35 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Full-Width Sleek Enterprise Navbar with Rich Royal Midnight Navy */}
-      <div className="w-full border-b border-white/10 bg-[#0b162c]/95 backdrop-blur-xl shadow-xl transition-all duration-300">
-        <div className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Logo />
-          </div>
+      {/* Main Navbar */}
+      <nav aria-label="Main Navigation" className="border-b border-white/10 bg-[#0e1628]/95 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+          <Logo />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-7 text-[14px] font-semibold lg:flex">
+          {/* Desktop Nav */}
+          <div className="hidden items-center gap-7 lg:flex text-sm font-semibold">
             {navLinks.map((l) =>
               l.mega ? (
                 <div key={l.label} className="group relative py-2">
-                  <button
-                    type="button"
+                  <Link
+                    href="/services"
                     className="flex items-center gap-1.5 text-white/95 transition duration-200 hover:text-accent focus:outline-none"
                   >
                     <span>{l.label}</span>
                     <ChevronDown size={14} className="transition-transform duration-200 group-hover:rotate-180" />
-                  </button>
+                  </Link>
 
                   {/* Mega Menu Dropdown */}
-                  <div className="invisible fixed left-1/2 -translate-x-1/2 top-[86px] z-50 w-[96vw] max-w-5xl pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <div className="invisible absolute -left-48 top-full z-50 w-[780px] pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="rounded-2xl border border-white/15 bg-[#0b162c]/98 p-6 shadow-2xl backdrop-blur-2xl">
-                      <div className="grid grid-cols-4 gap-4">
-                        {serviceMenu.map((g) => (
-                          <div key={g.title} className="space-y-2.5">
-                            <p className="border-b border-white/10 pb-1.5 text-xs font-bold uppercase tracking-wider text-accent">
-                              {g.title}
+                      <div className="grid grid-cols-4 gap-6">
+                        {serviceMenu.map((cat) => (
+                          <div key={cat.title}>
+                            <p className="mb-3 font-heading text-xs font-bold uppercase tracking-wider text-accent">
+                              {cat.title}
                             </p>
                             <div className="space-y-1">
-                              {g.items.map((i) => (
+                              {cat.items.map((i) => (
                                 <Link
                                   key={i.label}
                                   href={i.href}
@@ -141,31 +138,35 @@ export default function Header() {
                 </Link>
               )
             )}
-          </nav>
+          </div>
 
-          {/* Desktop Right CTA */}
-          <div className="hidden lg:flex items-center">
-            <Button href="#" onClick={openQuote} className="!rounded-full !px-6 !py-2.5 text-[13px] font-semibold shadow-md shadow-accent/20">
+          {/* Action Button */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Button
+              href="/"
+              onClick={openQuote}
+              className="bg-gradient-to-r from-accent to-accent-2 text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full shadow-lg shadow-accent/25 hover:shadow-accent/40 transition hover:scale-102"
+            >
               Get A Quote NOW
             </Button>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
+          {/* Mobile hamburger */}
           <button
-            className="rounded-xl p-2 text-white hover:bg-white/10 lg:hidden"
             onClick={() => setOpen(!open)}
-            aria-label="Toggle Menu"
+            aria-label="Toggle menu"
+            className="rounded-lg p-2 text-white hover:bg-white/10 lg:hidden cursor-pointer"
           >
-            {open ? <X size={24} /> : <Menu size={24} />}
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        {/* Quick Core Services Strip (under navbar) with Dark Royal Blue & High Contrast White Text */}
-        <div className="relative z-10 border-t border-white/10 bg-[#070e1d]/95 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl items-center justify-start sm:justify-between px-3 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar gap-2 sm:gap-4 text-xs font-semibold">
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Sub-Header Horizontal Strip matching CEO UI */}
+        <div className="hidden lg:block border-t border-white/10 bg-[#0a1222]/90 py-1.5 px-4 text-xs font-medium text-white/80">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-4 flex-wrap">
               <Link
-                href="/website-design"
+                href="/services/website-design"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>Website Design</span>
@@ -173,7 +174,7 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/reactjs-website-development"
+                href="/services/reactjs-website-development"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>React &amp; Next.js</span>
@@ -181,7 +182,7 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/wordpress-website-development"
+                href="/services/wordpress-website-development"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>WordPress</span>
@@ -189,7 +190,7 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/shopify-website-development"
+                href="/services/shopify-website-development"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>Shopify Store</span>
@@ -197,7 +198,7 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/ecommerce-website-development"
+                href="/services/ecommerce-website-development"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>E-Commerce</span>
@@ -205,7 +206,15 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/digital-marketing-services"
+                href="/services/seo-services"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+              >
+                <span>SEO Services</span>
+              </Link>
+              <span className="text-white/30">•</span>
+
+              <Link
+                href="/services/digital-marketing-services"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>Digital Marketing</span>
@@ -213,18 +222,10 @@ export default function Header() {
               <span className="text-white/30">•</span>
 
               <Link
-                href="/website-maintenance"
+                href="/services/website-maintenance"
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
               >
                 <span>Support &amp; Maintenance</span>
-              </Link>
-              <span className="text-white/30">•</span>
-
-              <Link
-                href="/android-app-development"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
-              >
-                <span>App Development</span>
               </Link>
             </div>
 
@@ -249,33 +250,32 @@ export default function Header() {
                       <button
                         type="button"
                         onClick={() => toggleMobileSubmenu(l.label)}
-                        className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-white/90 hover:text-white"
+                        className="flex w-full items-center justify-between text-left text-sm font-semibold text-white/90 hover:text-accent"
                       >
                         <span>{l.label}</span>
                         <ChevronDown
                           size={16}
-                          className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-accent" : "text-white/60"}`}
+                          className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-accent" : ""}`}
                         />
                       </button>
+
                       {isExpanded && (
-                        <div className="mt-2 space-y-3 rounded-xl bg-white/[0.04] p-3 border border-white/5">
-                          {serviceMenu.map((g) => (
-                            <div key={g.title} className="space-y-1">
-                              <p className="text-xs font-bold uppercase tracking-wider text-accent">
-                                {g.title}
+                        <div className="mt-3 pl-3 space-y-4 border-l-2 border-accent/40">
+                          {serviceMenu.map((cat) => (
+                            <div key={cat.title} className="space-y-1.5">
+                              <p className="text-[11px] font-bold uppercase tracking-wider text-accent">
+                                {cat.title}
                               </p>
-                              <div className="pl-2 space-y-1">
-                                {g.items.map((i) => (
-                                  <Link
-                                    key={i.label}
-                                    href={i.href}
-                                    onClick={() => setOpen(false)}
-                                    className="block py-1 text-xs text-white/70 hover:text-white"
-                                  >
-                                    {i.label}
-                                  </Link>
-                                ))}
-                              </div>
+                              {cat.items.map((i) => (
+                                <Link
+                                  key={i.label}
+                                  href={i.href}
+                                  onClick={() => setOpen(false)}
+                                  className="block py-1 text-xs text-white/80 hover:text-white"
+                                >
+                                  {i.label}
+                                </Link>
+                              ))}
                             </div>
                           ))}
                         </div>
@@ -291,22 +291,23 @@ export default function Header() {
                       <button
                         type="button"
                         onClick={() => toggleMobileSubmenu(l.label)}
-                        className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-white/90 hover:text-white"
+                        className="flex w-full items-center justify-between text-left text-sm font-semibold text-white/90 hover:text-accent"
                       >
                         <span>{l.label}</span>
                         <ChevronDown
                           size={16}
-                          className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-accent" : "text-white/60"}`}
+                          className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-accent" : ""}`}
                         />
                       </button>
+
                       {isExpanded && (
-                        <div className="mt-2 space-y-1 rounded-xl bg-white/[0.04] p-2.5 border border-white/5">
+                        <div className="mt-2 pl-3 space-y-1.5 border-l-2 border-accent/40">
                           {knowledgeHub.map((k) => (
                             <Link
                               key={k.label}
                               href={k.href}
                               onClick={() => setOpen(false)}
-                              className="block rounded-lg px-3 py-2 text-xs text-white/80 hover:bg-white/5 hover:text-white"
+                              className="block py-1 text-xs text-white/80 hover:text-white"
                             >
                               {k.label}
                             </Link>
@@ -318,27 +319,30 @@ export default function Header() {
                 }
 
                 return (
-                  <div key={l.label} className="py-2">
-                    <Link
-                      href={l.href}
-                      onClick={() => setOpen(false)}
-                      className="block py-1.5 text-sm font-medium text-white/90 hover:text-white"
-                    >
-                      {l.label}
-                    </Link>
-                  </div>
+                  <Link
+                    key={l.label}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="block py-2.5 text-sm font-semibold text-white/90 hover:text-accent"
+                  >
+                    {l.label}
+                  </Link>
                 );
               })}
-            </div>
 
-            <div className="pt-4 pb-2">
-              <Button href="#" onClick={openQuote} className="w-full justify-center !rounded-full !py-2.5 text-xs">
-                Get A Quote NOW
-              </Button>
+              <div className="pt-4">
+                <Button
+                  href="/"
+                  onClick={openQuote}
+                  className="w-full justify-center bg-gradient-to-r from-accent to-accent-2 text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-lg"
+                >
+                  Get A Quote NOW
+                </Button>
+              </div>
             </div>
           </div>
         )}
-      </div>
+      </nav>
     </header>
   );
 }

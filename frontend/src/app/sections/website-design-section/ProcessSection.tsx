@@ -53,93 +53,100 @@ export default function ProcessSection({
   const scaleY = useTransform(scrollYProgress, [0, 1], [0.1, 1]);
 
   return (
-    <section ref={sectionRef} className="relative bg-[#10131e] text-white md:py-24 overflow-hidden">
-      {/* Background glow elements */}
+    <section ref={sectionRef} className="relative bg-white text-ink md:py-24 overflow-hidden border-t border-line/60">
+      {/* Subtle background ambient mesh */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 h-[500px] w-[600px] bg-accent/10 blur-[120px] rounded-full"
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage: "radial-gradient(#e2e8f0 1.2px, transparent 1.2px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 h-[450px] w-[550px] bg-accent/5 blur-[120px] rounded-full"
       />
 
       <Container>
         <div className="mx-auto w-full max-w-[1100px]">
           <SectionHeading
             center
-            dark
             label={label}
             title={title}
             text={text}
           />
 
           <div className="mx-auto max-w-4xl relative mt-16">
-          {/* Vertical progress line for desktop / tablet */}
-          <div
-            aria-hidden="true"
-            className="hidden md:block absolute left-1/2 top-8 bottom-8 -translate-x-1/2 w-0.5 bg-white/10"
-          >
-            <motion.div
-              style={{ scaleY, originY: 0 }}
-              className="w-full h-full bg-brand"
-            />
-          </div>
+            {/* Vertical progress line for desktop / tablet */}
+            <div
+              aria-hidden="true"
+              className="hidden md:block absolute left-1/2 top-8 bottom-8 -translate-x-1/2 w-0.5 bg-line"
+            >
+              <motion.div
+                style={{ scaleY, originY: 0 }}
+                className="w-full h-full bg-brand"
+              />
+            </div>
 
-          <div className="space-y-12 md:space-y-16">
-            {steps.map((step, index) => {
-              const isEven = index % 2 === 0;
+            <div className="space-y-12 md:space-y-16">
+              {steps.map((step, index) => {
+                const isEven = index % 2 === 0;
 
-              return (
-                <div
-                  key={step.number}
-                  className="relative flex flex-col items-center md:grid md:grid-cols-2 md:gap-14"
-                >
-                  {/* Step Card: on odd index, place on left; on even, place on right */}
-                  <motion.div
-                    initial={{ opacity: 0, x: shouldReduceMotion ? 0 : isEven ? -40 : 40 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-60px" }}
-                    transition={{
-                      duration: 0.7,
-                      delay: shouldReduceMotion ? 0 : 0.1,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className={`w-full text-left ${
-                      isEven ? "md:col-start-1" : "md:col-start-2"
-                    }`}
-                  >
-                    <div className="rounded-3xl border border-white/10 bg-dark-2/80 p-8 backdrop-blur-xl shadow-xl transition duration-300 hover:border-accent/40 hover:bg-dark-2">
-                      <div className="flex items-center gap-3 mb-4 justify-start">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold text-accent-2">
-                          <Layers size={13} />
-                          Step {step.number}
-                        </span>
-                      </div>
-
-                      <h3 className="text-2xl font-bold tracking-tight text-white mb-3">
-                        {step.title}
-                      </h3>
-
-                      <p className="text-sm leading-relaxed text-white/70 mb-5">
-                        {step.description}
-                      </p>
-
-                      <div className="flex items-center gap-2 pt-4 border-t border-white/10 text-xs font-medium text-emerald-400 justify-start">
-                        <CheckCircle2 size={15} />
-                        <span>Deliverable: {step.deliverable}</span>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Center Node / Number Badge on desktop */}
+                return (
                   <div
-                    aria-hidden="true"
-                    className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center h-12 w-12 rounded-full border-2 border-accent bg-dark shadow-lg shadow-accent/20 z-10 font-heading font-black text-accent-2"
+                    key={step.number}
+                    className="relative flex flex-col items-center md:grid md:grid-cols-2 md:gap-14"
                   >
-                    {step.number}
+                    {/* Step Card */}
+                    <motion.div
+                      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : isEven ? -40 : 40 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-60px" }}
+                      transition={{
+                        duration: 0.7,
+                        delay: shouldReduceMotion ? 0 : 0.1,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className={`w-full text-left ${
+                        isEven ? "md:col-start-1" : "md:col-start-2"
+                      }`}
+                    >
+                      <div className="rounded-3xl border border-line/80 bg-[#f7f6f3]/80 p-8 backdrop-blur-xl shadow-sm transition duration-300 hover:border-accent/40 hover:bg-white hover:shadow-xl hover:shadow-accent/5">
+                        <div className="flex items-center gap-3 mb-4 justify-start">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-200/80 bg-orange-50/80 px-3 py-1 text-xs font-bold text-accent">
+                            <Layers size={13} />
+                            Step {step.number}
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl font-bold tracking-tight text-ink mb-3 font-heading">
+                          {step.title}
+                        </h3>
+
+                        <p className="text-sm leading-relaxed text-muted mb-5">
+                          {step.description}
+                        </p>
+
+                        <div className="flex items-center gap-2 pt-4 border-t border-line/80 text-xs font-medium text-emerald-600 justify-start">
+                          <CheckCircle2 size={15} />
+                          <span>Deliverable: {step.deliverable}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* Center Node / Number Badge on desktop */}
+                    <div
+                      aria-hidden="true"
+                      className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center h-12 w-12 rounded-full border-2 border-accent bg-white shadow-lg shadow-accent/15 z-10 font-heading font-black text-accent text-base"
+                    >
+                      {step.number}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
         </div>
       </Container>
     </section>

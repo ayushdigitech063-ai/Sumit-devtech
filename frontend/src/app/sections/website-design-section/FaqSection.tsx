@@ -49,8 +49,29 @@ export default function FaqSection({
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <section className="relative bg-white md:py-20 overflow-hidden border-t border-line/60">
+      {/* FAQ Schema for Search Engines */}
+      {items.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
       <Container>
         <div className="mx-auto w-full max-w-[1100px]">
           <SectionHeading
@@ -61,78 +82,78 @@ export default function FaqSection({
           />
 
           <div className="mx-auto max-w-3xl space-y-4">
-          {items.map((item, index) => {
-            const isOpen = openIndex === index;
-            const contentId = `faq-content-${item.id}`;
-            const headerId = `faq-header-${item.id}`;
+            {items.map((item, index) => {
+              const isOpen = openIndex === index;
+              const contentId = `faq-content-${item.id}`;
+              const headerId = `faq-header-${item.id}`;
 
-            return (
-              <div
-                key={item.id}
-                className={cn(
-                  "overflow-hidden rounded-2xl border transition-all duration-300",
-                  isOpen
-                    ? "border-accent/40 bg-light/70 shadow-lg shadow-accent/5"
-                    : "border-line bg-white hover:border-line/80 hover:bg-light/40"
-                )}
-              >
-                <button
-                  type="button"
-                  id={headerId}
-                  aria-expanded={isOpen}
-                  aria-controls={contentId}
-                  onClick={() => toggleItem(index)}
-                  className="flex w-full items-center justify-between p-6 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    "overflow-hidden rounded-2xl border transition-all duration-300",
+                    isOpen
+                      ? "border-accent/40 bg-light/70 shadow-lg shadow-accent/5"
+                      : "border-line bg-white hover:border-line/80 hover:bg-light/40"
+                  )}
                 >
-                  <span className="flex items-center gap-3 pr-4">
-                    <HelpCircle
-                      size={18}
+                  <button
+                    type="button"
+                    id={headerId}
+                    aria-expanded={isOpen}
+                    aria-controls={contentId}
+                    onClick={() => toggleItem(index)}
+                    className="flex w-full items-center justify-between p-6 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent cursor-pointer"
+                  >
+                    <span className="flex items-center gap-3 pr-4">
+                      <HelpCircle
+                        size={18}
+                        className={cn(
+                          "transition-colors shrink-0",
+                          isOpen ? "text-accent" : "text-muted"
+                        )}
+                      />
+                      <h3
+                        className={cn(
+                          "font-heading text-base md:text-lg font-bold transition-colors m-0",
+                          isOpen ? "text-dark" : "text-dark/80"
+                        )}
+                      >
+                        {item.question}
+                      </h3>
+                    </span>
+                    <ChevronDown
+                      size={20}
                       className={cn(
-                        "transition-colors shrink-0",
-                        isOpen ? "text-accent" : "text-muted"
+                        "text-muted transition-transform duration-300 shrink-0",
+                        isOpen && "rotate-180 text-accent"
                       )}
                     />
-                    <span
-                      className={cn(
-                        "font-heading text-lg font-bold transition-colors",
-                        isOpen ? "text-dark" : "text-dark/80"
-                      )}
-                    >
-                      {item.question}
-                    </span>
-                  </span>
-                  <ChevronDown
-                    size={20}
-                    className={cn(
-                      "text-muted transition-transform duration-300 shrink-0",
-                      isOpen && "rotate-180 text-accent"
-                    )}
-                  />
-                </button>
+                  </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={contentId}
-                      role="region"
-                      aria-labelledby={headerId}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{
-                        duration: shouldReduceMotion ? 0 : 0.3,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                    >
-                      <div className="px-6 pb-6 pt-1 text-sm leading-relaxed text-muted border-t border-line/40">
-                        {item.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        id={contentId}
+                        role="region"
+                        aria-labelledby={headerId}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{
+                          duration: shouldReduceMotion ? 0 : 0.3,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                      >
+                        <p className="px-6 pb-6 pt-1 text-sm leading-relaxed text-muted border-t border-line/40 m-0">
+                          {item.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Container>

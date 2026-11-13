@@ -1,8 +1,9 @@
 export const site = {
-  name: "Sumit DevTech",
-  url: "https://sumitdevtech.com",
+  name: "Website Development Company 4U",
+  brandName: "WebsiteDevelopmentCompany4u",
+  url: "https://websitedevelopmentcompany4u.com",
   phones: ["+91-6201533997", "+91-9521433997"],
-  email: "info@sumitdevtech.com",
+  email: "info@websitedevelopmentcompany4u.com",
   whatsapp: "https://wa.me/916201533997",
   parent: "A Unit of Sumit DigiTech Pvt Ltd",
   address: "F-1, 60/189, Heera Path, Ward 27, Mansarovar Sector 6, Jaipur, Rajasthan 302020",
@@ -12,12 +13,8 @@ export const site = {
     instagram: "https://www.instagram.com/sumitdevtech/",
     pinterest: "https://in.pinterest.com/devtechsumit/",
   },
-
-
 };
 
-
-// and add this new export at the bottom of the file:
 export const leadOptions = [
   "Website Designing",
   "WordPress Website Development",

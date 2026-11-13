@@ -35,6 +35,20 @@ export default function BlogListSection({ posts }: { posts: BlogPost[] }) {
 
       <Container>
         <div className="mx-auto w-full max-w-[1140px]">
+          {/* SEO Header with H1 */}
+          <div className="mb-10 text-center md:text-left">
+            <span className="mb-2 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-orange-600">
+              <BookOpen size={14} />
+              <span>Knowledge Hub & Insights</span>
+            </span>
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              Latest Articles, Engineering <span className="text-orange-500">& Growth Guides</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
+              Explore battle-tested architectural guides, SEO playbooks, and modern web development trends written by our senior engineers.
+            </p>
+          </div>
+
           {/* Filter Bar & Search */}
           <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-line pb-6">
             {/* Category Pills */}
@@ -172,4 +186,3 @@ export default function BlogListSection({ posts }: { posts: BlogPost[] }) {
     </section>
   );
 }
-

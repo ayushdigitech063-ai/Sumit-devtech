@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Sparkles, Smartphone, Monitor, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
 import Container from "@/app/ui/Container";
 import Button from "@/app/ui/Button";
 import { ServicePageData, FeatureChip, TrustItem } from "@/types/service-page";
@@ -39,11 +39,6 @@ export default function HeroSection({
   secondaryCtaText: secondaryCtaTextProp,
   secondaryCtaHref: secondaryCtaHrefProp,
   trustItems: trustItemsProp,
-  previewUrl: previewUrlProp,
-  floatingBadge1Title: fb1TitleProp,
-  floatingBadge1Sub: fb1SubProp,
-  floatingBadge2Title: fb2TitleProp,
-  floatingBadge2Sub: fb2SubProp,
 }: HeroSectionProps = {}) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -68,145 +63,137 @@ export default function HeroSection({
   const primaryCtaHref = data?.primaryCta?.href ?? primaryCtaHrefProp ?? "/contact-us";
   const secondaryCtaText = data?.secondaryCta?.label ?? secondaryCtaTextProp ?? "Explore Services";
   const secondaryCtaHref = data?.secondaryCta?.href ?? secondaryCtaHrefProp ?? "#web-design-services";
-  const trustItems = data?.trustItems ?? trustItemsProp ?? [];
-  const previewUrl = data?.previewUrl ?? previewUrlProp ?? "sumitdevtech.com/website-design";
-  const floatingBadge1Title = data?.floatingBadge1?.title ?? fb1TitleProp ?? "100% Mobile Ready";
-  const floatingBadge1Sub = data?.floatingBadge1?.sub ?? fb1SubProp ?? "Fluid Micro-Breakpoints";
-  const floatingBadge2Title = data?.floatingBadge2?.title ?? fb2TitleProp ?? "Pixel-Perfect Responsive";
-  const floatingBadge2Sub = data?.floatingBadge2?.sub ?? fb2SubProp ?? "Modern Figma Systems";
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.12,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 25 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
-    },
-  };
+  const trustItems = data?.trustItems ?? trustItemsProp ?? [
+    { label: "100% Code Ownership" },
+    { label: "On-Time Milestone Delivery" },
+    { label: "Enterprise Security Built-In" },
+  ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-24 md:pt-44 md:pb-28 min-h-[75vh] flex items-center border-b border-white/10">
-      {/* Ambient background lighting */}
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#10131e] via-[#141826] to-[#191e2f] text-white pt-36 pb-20 md:pt-44 md:pb-24 min-h-[78vh] flex items-center border-b border-white/10">
+      {/* Background Architectural Illustration / Tech Devices Showcase */}
+      <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-25 overflow-hidden">
+        <Image
+          src="/images/hero/hero-devices-showcase.png"
+          alt="Hero background design"
+          fill
+          priority
+          className="object-cover object-center filter blur-[1px] mix-blend-screen scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#10131e] via-transparent to-[#10131e] opacity-90" />
+      </div>
+
+      {/* Ambient background lighting blooms */}
       <div className="pointer-events-none absolute right-0 -top-32 h-[520px] w-[520px] animate-blob rounded-full bg-accent/25 opacity-70 blur-[130px] overflow-hidden" />
       <div className="pointer-events-none absolute -bottom-32 -left-16 h-[460px] w-[460px] animate-blob rounded-full bg-amber-400/20 opacity-60 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 h-[380px] w-[620px] rounded-full bg-blue-500/15 blur-[140px]" />
+
+      {/* Subtle modern mesh grid */}
       <div 
-        className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden -z-10"
+        className="pointer-events-none absolute inset-0 opacity-[0.04] overflow-hidden z-0"
         style={{
           backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
- 
+
+      {/* Centered Content Container */}
       <Container className="relative z-10 w-full">
-        <div className="mx-auto max-w-[1100px]">
-          <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
-            {/* Left Column: Copy & CTAs */}
+        <div className="mx-auto w-full max-w-[960px] text-center flex flex-col items-center">
+          
+          {/* Top Pill Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 inline-flex items-center gap-2"
+          >
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              {badge}
+            </span>
+          </motion.div>
+
+          {/* Centered Main H1 Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.05 }}
+            className="font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.75rem] font-bold tracking-tight leading-[1.14] text-white max-w-4xl"
+          >
+            {title}
+          </motion.h1>
+
+          {/* Centered Subtitle Description */}
+          <motion.p
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-6 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-white/80 leading-relaxed font-normal"
+          >
+            {description}
+          </motion.p>
+
+          {/* Feature Chips in Center */}
+          {featureChips.length > 0 && (
             <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="lg:col-span-7"
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.15 }}
+              className="mt-6 flex flex-wrap items-center justify-center gap-2.5"
             >
-              {/* Small Badge */}
-              <motion.div variants={itemVariants} className="mb-6 inline-flex items-center gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  {badge}
+              {featureChips.map((chip, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs text-white/85 backdrop-blur-sm"
+                >
+                  <Sparkles size={13} className="text-accent" />
+                  {chip.label}
                 </span>
-              </motion.div>
-
-              {/* H1 Heading matching Home & Packages typography */}
-              <motion.h1
-                variants={itemVariants}
-                className="font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.15] text-white"
-              >
-                {title}
-              </motion.h1>
-
-              {/* Paragraph */}
-              <motion.p
-                variants={itemVariants}
-                className="mt-6 max-w-xl text-base sm:text-lg text-white/75 leading-relaxed font-normal"
-              >
-                {description}
-              </motion.p>
-
-              {/* Feature Chips */}
-              {featureChips.length > 0 && (
-                <motion.div variants={itemVariants} className="mt-6 flex flex-wrap items-center gap-2.5">
-                  {featureChips.map((chip, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80"
-                    >
-                      <Sparkles size={12} className="text-brand" />
-                      {chip.label}
-                    </span>
-                  ))}
-                </motion.div>
-              )}
-
-              {/* CTAs */}
-              <motion.div variants={itemVariants} className="mt-8 flex flex-wrap items-center gap-4">
-                <Button href={primaryCtaHref} variant="primary" className="gap-2.5 shadow-xl shadow-accent/25">
-                  {primaryCtaText}
-                  <ArrowRight size={16} />
-                </Button>
-                <Button href={secondaryCtaHref} variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                  {secondaryCtaText}
-                </Button>
-              </motion.div>
+              ))}
             </motion.div>
+          )}
 
-            {/* Right Column: Visual Interactive Glass Preview */}
-            <div className="lg:col-span-5">
-              {visual ?? (
-                <div className="relative rounded-3xl border border-white/15 bg-white/[0.04] p-7 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden group">
-                  {/* Glowing corner aura */}
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-accent/20 blur-3xl group-hover:bg-accent/35 transition-all duration-500" />
-                  
-                  {/* Browser bar */}
-                  <div className="flex items-center gap-2 pb-5 border-b border-white/10 text-xs text-white/60">
-                    <span className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-                    <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
-                    <span className="ml-2 font-mono text-[11px] truncate text-white/50">{previewUrl}</span>
-                  </div>
+          {/* Centered Primary & Secondary CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-4"
+          >
+            <Button
+              href={primaryCtaHref}
+              variant="primary"
+              className="group gap-2.5 shadow-xl shadow-accent/25 hover:shadow-accent/40 !px-7 !py-3 font-semibold"
+            >
+              <span>{primaryCtaText}</span>
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </Button>
+            <Button
+              href={secondaryCtaHref}
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10 !px-7 !py-3"
+            >
+              {secondaryCtaText}
+            </Button>
+          </motion.div>
 
-                  {/* Main Visual Showcase */}
-                  <div className="py-8 space-y-5 text-center relative z-10">
-                    <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-accent/20 to-accent-2/10 border border-accent/30 text-accent mb-1 shadow-lg shadow-accent/15">
-                      <Monitor size={36} />
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-bold text-xl text-white tracking-tight">{floatingBadge1Title}</h3>
-                      <p className="mt-1.5 text-xs text-white/70 max-w-xs mx-auto leading-relaxed">{floatingBadge1Sub}</p>
-                    </div>
-
-                    {/* Secondary mini floating metric tile */}
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between text-left px-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                        <span className="text-xs font-semibold text-white/90">{floatingBadge2Title}</span>
-                      </div>
-                      <span className="text-[11px] text-accent font-medium">{floatingBadge2Sub}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Trust Guarantees in Center */}
+          {trustItems && trustItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.25 }}
+              className="mt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs sm:text-sm font-semibold text-white/70 border-t border-white/10 pt-6"
+            >
+              {trustItems.map((item, i) => (
+                <span key={i} className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                  <span>{item.label}</span>
+                </span>
+              ))}
+            </motion.div>
+          )}
         </div>
       </Container>
     </section>

@@ -49,11 +49,15 @@ export default function StatsSection({ data, stats: statsProp }: StatsSectionPro
   const stats = data?.items ?? statsProp ?? [];
 
   return (
-    <section className="relative bg-[#141826] text-white md:py-16 border-y border-white/10 overflow-hidden">
+    <section className="relative bg-[#f8fafc] text-ink md:py-16 border-y border-line/60 overflow-hidden">
       {/* Background Subtle Gradient Grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem]"
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage: "radial-gradient(#e2e8f0 1.2px, transparent 1.2px)",
+          backgroundSize: "28px 28px",
+        }}
       />
 
       <Container>
@@ -70,13 +74,13 @@ export default function StatsSection({ data, stats: statsProp }: StatsSectionPro
                   delay: shouldReduceMotion ? 0 : index * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm"
+                className="flex flex-col items-center text-center p-6 rounded-2xl border border-line bg-white shadow-sm hover:shadow-md transition duration-200"
               >
                 <AnimatedMetric item={stat} />
-                <div className="text-base font-semibold text-white/90 mt-2">
+                <div className="text-base font-semibold text-ink mt-2">
                   {stat.label}
                 </div>
-                <div className="text-xs text-white/60 mt-1.5 leading-relaxed">
+                <div className="text-xs text-muted mt-1.5 leading-relaxed">
                   {stat.subtext}
                 </div>
               </motion.div>
