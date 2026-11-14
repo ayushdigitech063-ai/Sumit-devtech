@@ -508,7 +508,7 @@ export default function Chatbot() {
         )}
       </div>
 
-      {/* CHAT WINDOW (Clean, Minimal & Attractive Light Theme) */}
+      {/* CHAT WINDOW (Clean, Minimal & Attractive Light Theme - Fully Mobile Responsive) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -516,10 +516,10 @@ export default function Chatbot() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-4 right-4 z-50 flex h-[540px] w-[92vw] max-w-[370px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-2xl sm:bottom-6 sm:right-6 sm:h-[580px]"
+            className="fixed inset-x-2 bottom-2 z-50 flex h-[calc(100dvh-16px)] max-h-[560px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[580px] sm:w-[380px] sm:max-w-[400px]"
           >
             {/* Header: Clean & uncluttered */}
-            <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 border border-orange-100 p-1">
                   <RobotIcon size={38} />
@@ -612,7 +612,7 @@ export default function Chatbot() {
             </div>
 
             {/* Input Bar */}
-            <form onSubmit={handleSend} className="border-t border-slate-100 bg-white p-2.5">
+            <form onSubmit={handleSend} className="shrink-0 border-t border-slate-100 bg-white p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom,0px))]">
               <div className="flex items-center gap-2">
                 <input
                   ref={inputRef}

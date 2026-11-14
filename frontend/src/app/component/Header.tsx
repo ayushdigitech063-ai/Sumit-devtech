@@ -161,13 +161,13 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Sub-Header Horizontal Strip matching CEO UI */}
-        <div className="hidden lg:block border-t border-white/10 bg-[#0a1222]/90 py-1.5 px-4 text-xs font-medium text-white/80">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <div className="flex items-center gap-4 flex-wrap">
+        {/* Sub-Header Horizontal Strip matching CEO UI - Now with Mobile Horizontal Scroll */}
+        <div className="border-t border-white/10 bg-[#0a1222]/95 py-1.5 px-3 sm:px-4 text-[11px] sm:text-xs font-medium text-white/80 overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="mx-auto flex max-w-7xl items-center justify-between min-w-max gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-nowrap">
               <Link
                 href="/services/website-design"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>Website Design</span>
               </Link>
@@ -175,7 +175,7 @@ export default function Header() {
 
               <Link
                 href="/services/reactjs-website-development"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>React &amp; Next.js</span>
               </Link>
@@ -183,7 +183,7 @@ export default function Header() {
 
               <Link
                 href="/services/wordpress-website-development"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>WordPress</span>
               </Link>
@@ -191,7 +191,7 @@ export default function Header() {
 
               <Link
                 href="/services/shopify-website-development"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>Shopify Store</span>
               </Link>
@@ -199,7 +199,7 @@ export default function Header() {
 
               <Link
                 href="/services/ecommerce-website-development"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>E-Commerce</span>
               </Link>
@@ -207,7 +207,7 @@ export default function Header() {
 
               <Link
                 href="/services/seo-services"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>SEO Services</span>
               </Link>
@@ -215,7 +215,7 @@ export default function Header() {
 
               <Link
                 href="/services/digital-marketing-services"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>Digital Marketing</span>
               </Link>
@@ -223,7 +223,7 @@ export default function Header() {
 
               <Link
                 href="/services/website-maintenance"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-white hover:bg-white/10 hover:text-accent transition duration-150 whitespace-nowrap"
               >
                 <span>Support &amp; Maintenance</span>
               </Link>
@@ -231,7 +231,7 @@ export default function Header() {
 
             <Link
               href="/packages"
-              className="ml-auto hidden md:inline-flex items-center gap-1 text-[11px] font-bold text-accent hover:text-accent-2 transition-colors shrink-0"
+              className="ml-auto inline-flex items-center gap-1 text-[10.5px] sm:text-[11px] font-bold text-accent hover:text-accent-2 transition-colors shrink-0 whitespace-nowrap pl-2"
             >
               <span>View Packages →</span>
             </Link>
