@@ -134,12 +134,12 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
               {data.hero.text}
             </motion.p>
 
-            <motion.div {...fadeUp(reduce, 3)} className="mt-9 flex flex-wrap justify-center items-center gap-4 relative">
+            <motion.div {...fadeUp(reduce, 3)} className="mt-8 flex flex-row flex-nowrap justify-center items-center gap-2 sm:gap-4 relative w-full max-w-md mx-auto">
               <a
                 href="#openings"
-                className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-heading font-bold text-white shadow-lg shadow-accent/25 hover:shadow-accent/40 transition hover:scale-105"
+                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-brand px-4 py-3 sm:px-7 sm:py-3.5 text-xs sm:text-sm font-heading font-bold text-white shadow-lg shadow-accent/25 hover:shadow-accent/40 transition hover:scale-105 whitespace-nowrap"
               >
-                See open roles <ArrowRight size={16} />
+                <span>See open roles</span> <ArrowRight size={15} />
               </a>
 
               {/* Resume Dropdown Button with WhatsApp & Email options */}
@@ -147,11 +147,11 @@ export default function CareerTemplateTwo({ data = careerData }: { data?: Career
                 <button
                   type="button"
                   onClick={() => setResumeDropdownOpen((prev) => !prev)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-heading font-semibold text-white/90 backdrop-blur-md transition hover:border-white/40 hover:bg-white/10"
+                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-3 sm:px-7 sm:py-3.5 text-xs sm:text-sm font-heading font-semibold text-white/90 backdrop-blur-md transition hover:border-white/40 hover:bg-white/10 whitespace-nowrap"
                 >
-                  <span>Send your resume</span>
+                  <span>Send resume</span>
                   <ChevronDown
-                    size={15}
+                    size={14}
                     className={`transition-transform duration-200 ${resumeDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </button>

@@ -102,18 +102,18 @@ export default function Hero() {
             </p>
 
             {/* Primary Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="flex flex-row flex-nowrap items-center gap-2.5 sm:gap-4">
               <Button 
                 href="/contact-us"
-                className="group px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg shadow-accent/25 hover:shadow-accent/40 transition-all duration-300"
+                className="group px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 whitespace-nowrap"
               >
                 <span>Get Free Consultation</span>
-                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </Button>
               <Button 
                 href="/project" 
                 variant="outline" 
-                className="border-white/25 px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-medium text-white hover:bg-white/10"
+                className="border-white/25 px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-medium text-white hover:bg-white/10 whitespace-nowrap"
               >
                 View Portfolio
               </Button>
