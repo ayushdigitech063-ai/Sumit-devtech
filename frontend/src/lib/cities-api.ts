@@ -42,7 +42,8 @@ export async function fetchCities(activeOnly = false): Promise<CityLocationData[
 
 export async function createCity(payload: Partial<CityLocationData>): Promise<{ success: boolean; city?: CityLocationData; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/cities`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/cities`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -55,7 +56,8 @@ export async function createCity(payload: Partial<CityLocationData>): Promise<{ 
 
 export async function updateCity(id: string, payload: Partial<CityLocationData>): Promise<{ success: boolean; city?: CityLocationData; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/cities/${id}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/cities/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -68,7 +70,8 @@ export async function updateCity(id: string, payload: Partial<CityLocationData>)
 
 export async function deleteCity(id: string): Promise<{ success: boolean; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/cities/${id}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/cities/${id}`, {
       method: "DELETE",
     });
     return await res.json();
