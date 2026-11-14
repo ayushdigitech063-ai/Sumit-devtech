@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export type LeadSource = "contact_form" | "quote_popup" | "chatbot" | "package_unlock" | "career_apply";
-export type LeadStatus = "New" | "In progress" | "Won" | "Lost";
+export type LeadStatus = "New" | "In progress" | "Converted" | "Cancelled" | "Won" | "Lost";
 
 export interface ILead extends Document {
   name: string;
@@ -31,7 +31,7 @@ const LeadSchema = new Schema<ILead>(
     },
     status: {
       type: String,
-      enum: ["New", "In progress", "Won", "Lost"],
+      enum: ["New", "In progress", "Converted", "Cancelled", "Won", "Lost"],
       default: "New",
     },
     message: { type: String, default: "" },

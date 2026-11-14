@@ -106,7 +106,7 @@ export const markNotificationsAsRead = async (req: Request, res: Response) => {
   }
 };
 
-// Admin endpoint: Update lead status (New -> In progress -> Won -> Lost)
+// Admin endpoint: Update lead status
 export const updateLeadStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -132,23 +132,40 @@ export const deleteLead = async (req: Request, res: Response) => {
   }
 };
 
-// Admin endpoint: Dashboard stats summary
+// Admin endpoint: Dashboard stats summary & real monthly/quarterly timeline trend
 export const getDashboardSummary = async (_req: Request, res: Response) => {
   try {
-    const [totalLeads, newLeads, inProgressLeads, wonLeads, latestLeads] = await Promise.all([
+    const [totalLeads, newLeads, inProgressLeads, convertedLeads, latestLeads] = await Promise.all([
       Lead.countDocuments(),
       Lead.countDocuments({ status: "New" }),
       Lead.countDocuments({ status: "In progress" }),
-      Lead.countDocuments({ status: "Won" }),
+      Lead.countDocuments({ status: { $in: ["Converted", "Won"] } }),
       Lead.find().sort({ createdAt: -1 }).limit(5).lean(),
     ]);
 
-    // Service split breakdown
+    // Service split breakdown from actual database leads
     const serviceAggregation = await Lead.aggregate([
       { $group: { _id: "$service", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
-      { $limit: 4 },
+      { $limit: 5 },
     ]);
+
+    // Dynamic Monthly Timeline for the past 6 months
+    const now = new Date();
+    const monthsData: { label: string; count: number }[] = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const start = new Date(d.getFullYear(), d.getMonth(), 1);
+      const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+      const count = await Lead.countDocuments({
+        createdAt: { $gte: start, $lte: end },
+      });
+      monthsData.push({
+        label: start.toLocaleDateString("en-US", { month: "short" }),
+        count,
+      });
+    }
 
     return res.json({
       success: true,
@@ -156,10 +173,11 @@ export const getDashboardSummary = async (_req: Request, res: Response) => {
         totalLeads,
         newLeads,
         inProgressLeads,
-        wonLeads,
+        wonLeads: convertedLeads,
       },
       latestLeads,
       serviceSplit: serviceAggregation,
+      timeline: monthsData,
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });

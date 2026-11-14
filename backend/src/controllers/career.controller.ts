@@ -66,6 +66,20 @@ export const getJobOpenings = async (_req: Request, res: Response) => {
   }
 };
 
+// Public: Get single job opening by slug
+export const getJobOpeningBySlug = async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+    const job = await JobOpening.findOne({ slug }).lean();
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job opening not found." });
+    }
+    return res.json({ success: true, data: job });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Admin: Create job opening
 export const createJobOpening = async (req: Request, res: Response) => {
   try {

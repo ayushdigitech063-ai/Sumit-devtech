@@ -8,6 +8,9 @@ import uploadRoutes from "./upload.routes";
 import packageRoutes from "./package.routes";
 import careerRoutes from "./career.routes";
 import testimonialRoutes from "./testimonial.routes";
+import clientLogoRoutes from "./clientLogo.routes";
+import cityLocationRoutes from "./cityLocation.routes";
+import projectCategoryRoutes from "./projectCategory.routes";
 
 const router = Router();
 router.get("/health", (_req, res) => res.json({ ok: true }));
@@ -15,10 +18,13 @@ router.use("/auth", authRoutes);
 router.use("/home", homeContent);
 router.use("/leads", leadRoutes);
 router.use("/projects", projectRoutes);
+router.use("/project-categories", projectCategoryRoutes);
 router.use("/blogs", blogRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/packages", packageRoutes);
 router.use("/careers", careerRoutes);
 router.use("/testimonials", testimonialRoutes);
+router.use("/clients", clientLogoRoutes);
+router.use("/cities", cityLocationRoutes);
 
 export default router;

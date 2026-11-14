@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getJobOpenings,
+  getJobOpeningBySlug,
   createJobOpening,
   updateJobOpening,
   deleteJobOpening,
@@ -16,6 +17,7 @@ const router = Router();
 
 // Public
 router.get("/openings", getJobOpenings);
+router.get("/openings/:slug", getJobOpeningBySlug);
 router.post("/apply", handleResumeUpload, submitApplicationForm);
 
 // Admin-only: Job Openings
