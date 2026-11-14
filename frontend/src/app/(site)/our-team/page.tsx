@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { team } from "@/data/team";
+import { team as fallbackTeam } from "@/data/team";
+import { fetchTeamMembers } from "@/lib/team-api";
 import {
   HeroSection,
   TeamGridSection,
@@ -21,12 +22,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function OurTeamPage() {
+export default async function OurTeamPage() {
+  const dynamicTeam = await fetchTeamMembers(true);
+  const members = dynamicTeam.length > 0 ? dynamicTeam : fallbackTeam;
+
   return (
     <main>
-      <HeroSection memberCount={team.length} />
-      <TeamGridSection members={team} />
+      <HeroSection memberCount={members.length} />
+      <TeamGridSection members={members as any} />
     </main>
   );
 }
-
