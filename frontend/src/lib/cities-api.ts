@@ -1,4 +1,14 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const getApiBase = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  if (typeof window === "undefined") {
+    // Server-side (during build or SSR) requires absolute URL
+    if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+      return envUrl;
+    }
+    return "http://localhost:5000/api";
+  }
+  return envUrl || "/api";
+};
 
 export interface CityLocationData {
   _id?: string;
@@ -19,7 +29,8 @@ export async function fetchCities(activeOnly = false): Promise<CityLocationData[
     return [];
   }
   try {
-    const res = await fetch(`${API_BASE}/cities${activeOnly ? "?activeOnly=true" : ""}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/cities${activeOnly ? "?activeOnly=true" : ""}`, {
       next: { revalidate: 60 },
     });
     const data = await res.json();

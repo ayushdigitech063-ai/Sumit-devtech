@@ -8,11 +8,18 @@ import {
   ApplyFormSection,
 } from "@/app/sections/career-detail-section";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const getApiBase = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+    return envUrl;
+  }
+  return "http://localhost:5000/api";
+};
 
 async function getJob(slug: string): Promise<JobOpening | null> {
   try {
-    const res = await fetch(`${API_BASE}/careers/openings/${slug}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/careers/openings/${slug}`, {
       next: { revalidate: 60 },
     });
     const result = await res.json();

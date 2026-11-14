@@ -8,11 +8,18 @@ import {
   RelatedBlogs,
 } from "../../../sections/blog-sections";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const getApiBase = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+    return envUrl;
+  }
+  return "http://localhost:5000/api";
+};
 
 async function getPost(slug: string): Promise<BlogPost | null> {
   try {
-    const res = await fetch(`${API_BASE}/blogs/detail/${slug}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/blogs/detail/${slug}`, {
       next: { revalidate: 60 },
     });
     const result = await res.json();
