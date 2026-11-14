@@ -1,4 +1,5 @@
 import { apiFetch } from "./api";
+import { LeadStatus } from "@/types/leads";
 
 export interface LeadSubmission {
   name: string;
@@ -18,7 +19,7 @@ export interface LeadItem {
   phone: string;
   service?: string;
   source: "contact_form" | "quote_popup" | "chatbot" | "package_unlock" | "career_apply";
-  status: "New" | "In progress" | "Won" | "Lost";
+  status: LeadStatus;
   message?: string;
   countryCode?: string;
   metadata?: Record<string, any>;
@@ -68,7 +69,7 @@ export async function markNotificationsRead(leadId?: string) {
   });
 }
 
-export async function updateAdminLeadStatus(id: string, status: "New" | "In progress" | "Won" | "Lost") {
+export async function updateAdminLeadStatus(id: string, status: LeadStatus) {
   return apiFetch<{ success: boolean; data: LeadItem }>(`/leads/${id}/status`, {
     method: "PATCH",
     body: JSON.stringify({ status }),

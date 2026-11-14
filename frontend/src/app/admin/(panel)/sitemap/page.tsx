@@ -463,7 +463,7 @@ export default function AdminSitemapPage() {
               </button>
               <button
                 type="button"
-                onClick={handleDeleteCity}
+                onClick={() => handleDeleteCity(cityToDelete)}
                 disabled={actionLoading}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20 transition"
               >

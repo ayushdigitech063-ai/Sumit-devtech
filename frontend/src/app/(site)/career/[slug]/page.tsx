@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { careerData, JobOpening } from "@/data/career-data";
+import { careerData, Opening as JobOpening } from "@/data/career-data";
 import {
   JobHeroSection,
   JobDetailsSection,
