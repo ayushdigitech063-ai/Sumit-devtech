@@ -6,6 +6,7 @@ import { Plus, ArrowUpRight, TrendingUp, Users, Layers, Inbox, FolderKanban, Fil
 import StatCard from "@/app/component/adminComponent/StatusCard";
 import StatusBadge from "@/app/component/adminComponent/StatusBadge";
 import { fetchDashboardSummary, type LeadItem } from "@/lib/leads-api";
+import { fetchPublicBlogs } from "@/lib/blogs-api";
 
 // Refined SVG curved chart line
 const LINE = "M0 130 C70 120 120 75 190 85 S290 45 360 60 S460 25 520 40 S580 15 620 20";
@@ -18,29 +19,43 @@ export default function DashboardPage() {
     wonLeads: 0,
   });
   const [latestLeads, setLatestLeads] = useState<LeadItem[]>([]);
-  const [serviceSplit, setServiceSplit] = useState<{ label: string; value: number }[]>([
-    { label: "Web design", value: 45 },
-    { label: "Next.js / Custom Code", value: 30 },
-    { label: "E-Commerce / Shopify", value: 25 },
-  ]);
+  const [serviceSplit, setServiceSplit] = useState<{ label: string; value: number }[]>([]);
+  const [timeline, setTimeline] = useState<{ label: string; count: number }[]>([]);
+  const [timeView, setTimeView] = useState<"Monthly" | "Quarterly">("Monthly");
+  const [totalBlogs, setTotalBlogs] = useState<number>(2);
   const [loading, setLoading] = useState(true);
 
   const loadSummary = async () => {
     try {
-      const res = await fetchDashboardSummary();
+      const [res, blogsRes] = await Promise.all([
+        fetchDashboardSummary(),
+        fetchPublicBlogs(),
+      ]);
+
+      if (blogsRes && blogsRes.success && Array.isArray(blogsRes.data)) {
+        setTotalBlogs(blogsRes.data.length);
+      }
+
       if (res.success) {
         setStats(res.stats);
-        if (res.latestLeads && res.latestLeads.length > 0) {
+        if (res.latestLeads) {
           setLatestLeads(res.latestLeads);
         }
+
+        if (res.timeline && res.timeline.length > 0) {
+          setTimeline(res.timeline);
+        }
+
         if (res.serviceSplit && res.serviceSplit.length > 0) {
           const total = res.serviceSplit.reduce((acc, curr) => acc + curr.count, 0) || 1;
           setServiceSplit(
             res.serviceSplit.map((s) => ({
-              label: s._id || "Other Services",
+              label: s._id || "General Inquiry",
               value: Math.round((s.count / total) * 100),
             }))
           );
+        } else {
+          setServiceSplit([]);
         }
       }
     } catch {
@@ -73,7 +88,7 @@ export default function DashboardPage() {
     },
     {
       id: "won",
-      label: "Won (Closed)",
+      label: "Converted Leads",
       value: String(stats.wonLeads),
       change: "Converted",
       icon: Star,
@@ -81,8 +96,8 @@ export default function DashboardPage() {
     {
       id: "blogs",
       label: "Published blogs",
-      value: "36",
-      change: "+4 live",
+      value: String(totalBlogs),
+      change: `${totalBlogs} live`,
       icon: FileText,
     },
   ];
@@ -144,53 +159,69 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-1 text-xs font-medium text-slate-500 bg-slate-50 p-1 rounded-lg border border-slate-200">
-              <span className="px-2.5 py-1 bg-white rounded-md shadow-2xs text-slate-900 font-semibold">Monthly</span>
-              <span className="px-2 py-1 text-slate-400">Quarterly</span>
+              <button
+                type="button"
+                onClick={() => setTimeView("Monthly")}
+                className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                  timeView === "Monthly"
+                    ? "bg-white shadow-2xs text-slate-900 font-semibold"
+                    : "text-slate-400 hover:text-slate-700"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimeView("Quarterly")}
+                className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                  timeView === "Quarterly"
+                    ? "bg-white shadow-2xs text-slate-900 font-semibold"
+                    : "text-slate-400 hover:text-slate-700"
+                }`}
+              >
+                Quarterly
+              </button>
             </div>
           </div>
 
-          <div className="relative mt-4">
-            <svg
-              viewBox="0 0 620 180"
-              role="img"
-              aria-label="Leads per month graph"
-              className="h-56 w-full text-orange-500 overflow-visible"
-            >
-              <defs>
-                <linearGradient id="adminWaveGlow" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ff6a1f" stopOpacity="0.22" />
-                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-                </linearGradient>
-              </defs>
+          <div className="relative mt-6">
+            {/* Dynamic Interactive Chart from Real Database Leads */}
+            <div className="h-56 w-full flex items-end justify-between gap-3 px-2 pt-6">
+              {timeline.length === 0 ? (
+                <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
+                  Waiting for initial lead timeline entries...
+                </div>
+              ) : (
+                timeline.map((item, idx) => {
+                  const maxVal = Math.max(...timeline.map((t) => t.count), 1);
+                  const heightPercent = Math.max(Math.round((item.count / maxVal) * 100), 14);
+                  const isLatest = idx === timeline.length - 1;
 
-              {/* Grid Lines */}
-              <line x1="0" y1="40" x2="620" y2="40" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="0" y1="90" x2="620" y2="90" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="0" y1="140" x2="620" y2="140" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
+                  return (
+                    <div key={item.label} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+                      <span className="text-[11px] font-bold text-slate-800 opacity-80 group-hover:scale-110 transition">
+                        {item.count}
+                      </span>
 
-              {/* Gradient Area Fill */}
-              <path d={`${LINE} L620 180 L0 180Z`} fill="url(#adminWaveGlow)" />
+                      <div className="w-full max-w-[48px] h-full flex items-end">
+                        <div
+                          className={`w-full rounded-t-xl transition-all duration-700 ${
+                            isLatest
+                              ? "bg-gradient-to-t from-orange-600 to-amber-500 shadow-md shadow-orange-500/20"
+                              : "bg-slate-200 hover:bg-orange-300"
+                          }`}
+                          style={{ height: `${heightPercent}%` }}
+                        />
+                      </div>
 
-              {/* Wave Stroke */}
-              <path
-                d={LINE}
-                fill="none"
-                stroke="#ff6a1f"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-
-              {/* Highlight Target Indicator Dot at Peak */}
-              <circle cx="600" cy="22" r="4.5" fill="#ff6a1f" stroke="#ffffff" strokeWidth="2.5" />
-            </svg>
-
-            <div className="flex items-center justify-between text-xs text-slate-400 mt-2 px-1">
-              <span>May</span>
-              <span>Jun</span>
-              <span>Jul</span>
-              <span>Aug</span>
-              <span>Sep</span>
-              <span>Oct (Peak)</span>
+                      <span className={`text-xs font-semibold ${isLatest ? "text-orange-600 font-bold" : "text-slate-400"}`}>
+                        {item.label}
+                        {isLatest && " (Now)"}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </section>
@@ -211,32 +242,41 @@ export default function DashboardPage() {
             </div>
 
             <div className="mt-5 space-y-4">
-              {serviceSplit.map((s, idx) => (
-                <div key={s.label}>
-                  <div className="mb-1.5 flex justify-between text-sm font-medium">
-                    <span className="text-slate-700">{s.label}</span>
-                    <span className="font-semibold text-slate-900">{s.value}%</span>
+              {serviceSplit.length === 0 ? (
+                <p className="text-xs text-slate-400 py-6 text-center">No leads recorded yet.</p>
+              ) : (
+                serviceSplit.map((s, idx) => (
+                  <div key={s.label}>
+                    <div className="mb-1.5 flex justify-between text-sm font-medium">
+                      <span className="text-slate-700 truncate max-w-[200px]">{s.label}</span>
+                      <span className="font-semibold text-slate-900">{s.value}%</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${
+                          idx === 0
+                            ? "bg-orange-500"
+                            : idx === 1
+                            ? "bg-amber-500"
+                            : idx === 2
+                            ? "bg-blue-500"
+                            : "bg-emerald-500"
+                        }`}
+                        style={{ width: `${s.value}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${
-                        idx === 0
-                          ? "bg-orange-500"
-                          : idx === 1
-                          ? "bg-amber-500"
-                          : "bg-blue-500"
-                      }`}
-                      style={{ width: `${s.value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span>Database Lead Sync</span>
-            <span className="font-semibold text-emerald-600">Active</span>
+            <span className="font-semibold text-emerald-600 flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live Dynamic
+            </span>
           </div>
         </section>
       </div>

@@ -87,5 +87,6 @@ export async function fetchDashboardSummary() {
     stats: { totalLeads: number; newLeads: number; inProgressLeads: number; wonLeads: number };
     latestLeads: LeadItem[];
     serviceSplit: { _id: string; count: number }[];
+    timeline?: { label: string; count: number }[];
   }>("/leads/summary");
 }

@@ -16,17 +16,27 @@ import {
   Upload,
   Loader2,
   Check,
+  Tag,
+  X,
 } from "lucide-react";
 import {
   fetchProjects,
   createAdminProject,
   updateAdminProject,
   deleteAdminProject,
+  fetchProjectCategories,
+  createProjectCategory,
+  deleteProjectCategory,
   type ProjectData,
 } from "@/lib/projects-api";
 import { uploadImageFile } from "@/lib/upload-api";
+import { confirmAction, notify } from "@/lib/alerts";
 
-const CATEGORIES = [
+const DEFAULT_CATEGORIES = [
+  "App Development",
+  "Web Application",
+  "SEO Services",
+  "CRM & ERP",
   "E-Commerce Website",
   "Corporate Website",
   "Booking Website",
@@ -35,11 +45,13 @@ const CATEGORIES = [
   "Tourism Website",
   "Service Website",
   "Medical Website",
-  "Web Application",
 ];
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [categories, setCategories] = useState<{ _id?: string; name: string }[]>(
+    DEFAULT_CATEGORIES.map((name) => ({ name }))
+  );
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -50,24 +62,36 @@ export default function AdminProjectsPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  // Category Manager Modal State
+  const [isCatModalOpen, setIsCatModalOpen] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const [catLoading, setCatLoading] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [formData, setFormData] = useState({
     title: "",
-    category: CATEGORIES[0],
+    category: DEFAULT_CATEGORIES[0],
     url: "",
     image: "/images/projects/case-thumb.png",
     description: "",
     featured: false,
   });
 
-  const loadProjects = async () => {
+  const loadData = async () => {
     setLoading(true);
     try {
-      const res = await fetchProjects();
-      if (res.success && res.data) {
-        setProjects(res.data);
+      const [pRes, cRes] = await Promise.all([
+        fetchProjects(),
+        fetchProjectCategories(),
+      ]);
+
+      if (pRes.success && pRes.data) {
+        setProjects(pRes.data);
+      }
+      if (cRes.success && cRes.data && cRes.data.length > 0) {
+        setCategories(cRes.data);
       }
     } catch (err) {
       console.error(err);
@@ -77,14 +101,14 @@ export default function AdminProjectsPage() {
   };
 
   useEffect(() => {
-    loadProjects();
+    loadData();
   }, []);
 
   const openAddModal = () => {
     setEditingId(null);
     setFormData({
       title: "",
-      category: CATEGORIES[0],
+      category: categories[0]?.name || DEFAULT_CATEGORIES[0],
       url: "",
       image: "/images/projects/case-thumb.png",
       description: "",
@@ -106,7 +130,6 @@ export default function AdminProjectsPage() {
     setIsModalOpen(true);
   };
 
-  // Handle direct file upload from PC
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -114,54 +137,119 @@ export default function AdminProjectsPage() {
     setUploading(true);
     try {
       const res = await uploadImageFile(file);
-      if (res.url) {
+      if (res.success && res.url) {
         setFormData((prev) => ({ ...prev, image: res.url }));
+        notify.success("Image uploaded successfully!");
       }
     } catch (err: any) {
-      alert("Failed to upload image: " + (err.message || "Unknown error"));
+      notify.error("Image upload failed: " + (err.message || "Network error"));
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.url) return;
+    if (!formData.title || !formData.url) {
+      notify.error("Title and URL are required.");
+      return;
+    }
 
     setSaving(true);
     try {
       if (editingId) {
-        await updateAdminProject(editingId, formData);
+        const res = await updateAdminProject(editingId, formData);
+        if (res.success) {
+          setProjects((prev) =>
+            prev.map((item) => (item._id === editingId ? res.data : item))
+          );
+          setIsModalOpen(false);
+          notify.success("Project updated successfully!");
+        }
       } else {
-        await createAdminProject(formData);
+        const res = await createAdminProject(formData);
+        if (res.success) {
+          setProjects((prev) => [res.data, ...prev]);
+          setIsModalOpen(false);
+          notify.success("New project published successfully!");
+        }
       }
-      setIsModalOpen(false);
-      loadProjects();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save project.");
+    } catch (err: any) {
+      notify.error(err.message || "Failed to save project.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`Delete project "${title}"?`)) return;
+    const confirmed = await confirmAction({
+      title: `Delete "${title}"?`,
+      text: "This project will be permanently removed from the website and portfolio.",
+      confirmButtonText: "Yes, Delete It",
+    });
+
+    if (!confirmed) return;
+
     try {
-      await deleteAdminProject(id);
-      setProjects((prev) => prev.filter((p) => p._id !== id));
-    } catch (err) {
-      console.error(err);
+      const res = await deleteAdminProject(id);
+      if (res.success) {
+        setProjects((prev) => prev.filter((p) => p._id !== id));
+        notify.success(`"${title}" deleted successfully!`);
+      }
+    } catch (err: any) {
+      notify.error(err.message || "Failed to delete project.");
     }
   };
 
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) return;
+
+    setCatLoading(true);
+    try {
+      const res = await createProjectCategory(newCatName.trim());
+      if (res.success && res.data) {
+        setCategories((prev) => [...prev, res.data!]);
+        setNewCatName("");
+        notify.success(`Category "${res.data.name}" added!`);
+      } else {
+        notify.error(res.message || "Could not add category");
+      }
+    } catch (e: any) {
+      notify.error(e.message);
+    } finally {
+      setCatLoading(false);
+    }
+  };
+
+  const handleDeleteCategory = async (id: string, name: string) => {
+    const confirmed = await confirmAction({
+      title: `Delete Category "${name}"?`,
+      text: "This category will be permanently removed from the portfolio filters.",
+      confirmButtonText: "Yes, Delete",
+    });
+
+    if (!confirmed) return;
+
+    try {
+      const res = await deleteProjectCategory(id);
+      if (res.success) {
+        setCategories((prev) => prev.filter((c) => c._id !== id));
+        notify.success(`Category "${name}" deleted!`);
+      }
+    } catch (e: any) {
+      notify.error(e.message);
+    }
+  };
+
+  // Filtered List
   const filteredProjects = projects.filter((p) => {
     const matchesSearch =
       p.title.toLowerCase().includes(search.toLowerCase()) ||
       p.category.toLowerCase().includes(search.toLowerCase()) ||
       p.url.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
+    const matchesCategory =
+      categoryFilter === "all" || p.category.toLowerCase() === categoryFilter.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -171,28 +259,28 @@ export default function AdminProjectsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-black">Projects Portfolio</h1>
+            <h1 className="text-2xl font-bold text-black">Projects &amp; Portfolio</h1>
             <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-700">
               {projects.length} live
             </span>
           </div>
           <p className="mt-1 text-sm text-slate-500">
-            Add, update, or remove portfolio client websites displayed across your website.
+            Publish new projects, manage category tags, and update your live showcase.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <button
-            onClick={loadProjects}
-            title="Refresh"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition shadow-2xs cursor-pointer"
+            onClick={() => setIsCatModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-700 shadow-2xs transition cursor-pointer"
           >
-            <RefreshCw size={16} className={loading ? "animate-spin text-orange-500" : ""} />
+            <Tag size={15} className="text-orange-600" />
+            <span>Manage Categories</span>
           </button>
 
           <button
             onClick={openAddModal}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-orange-500/25 transition hover:shadow-orange-500/40 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-orange-500/25 transition hover:shadow-orange-500/40 cursor-pointer"
           >
             <Plus size={16} />
             <span>Add New Project</span>
@@ -218,9 +306,9 @@ export default function AdminProjectsPage() {
           className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-orange-500 cursor-pointer"
         >
           <option value="all">All Categories ({projects.length})</option>
-          {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
+          {categories.map((cat) => (
+            <option key={cat.name} value={cat.name}>
+              {cat.name}
             </option>
           ))}
         </select>
@@ -247,88 +335,140 @@ export default function AdminProjectsPage() {
           {filteredProjects.map((p) => (
             <div
               key={p._id}
-              className="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition duration-200 hover:border-orange-300 hover:shadow-md"
             >
-              <div>
-                {/* Image Banner */}
-                <div className="relative h-44 w-full bg-slate-100 overflow-hidden">
-                  <Image
-                    src={p.image || "/images/projects/case-thumb.png"}
-                    alt={p.title}
-                    fill
-                    unoptimized
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 flex gap-1.5">
-                    <span className="rounded-md bg-black/70 backdrop-blur-md px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                      {p.category}
-                    </span>
-                    {p.featured && (
-                      <span className="rounded-md bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white flex items-center gap-0.5">
-                        <Star size={10} /> Featured
-                      </span>
-                    )}
-                  </div>
-                </div>
+              {/* Image Thumbnail */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 border-b border-slate-100">
+                <Image
+                  src={p.image || "/images/projects/case-thumb.png"}
+                  alt={p.title}
+                  fill
+                  unoptimized
+                  className="object-cover object-top transition duration-300 group-hover:scale-102"
+                />
+                <span className="absolute top-3 left-3 rounded-full bg-slate-900/80 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-xs">
+                  {p.category}
+                </span>
+                {p.featured && (
+                  <span className="absolute top-3 right-3 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-xs flex items-center gap-1">
+                    <Star size={10} fill="white" /> Featured
+                  </span>
+                )}
+              </div>
 
-                {/* Content */}
-                <div className="p-4">
-                  <h3 className="font-bold text-base text-slate-900 group-hover:text-orange-600 transition">
+              {/* Card Body */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-orange-600 transition line-clamp-1">
                     {p.title}
                   </h3>
                   {p.description && (
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                    <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
                       {p.description}
                     </p>
                   )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                   <a
                     href={p.url}
                     target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-orange-600 transition truncate max-w-full"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-orange-600 hover:text-orange-700"
                   >
-                    <Globe size={13} className="text-slate-400 shrink-0" />
-                    <span className="truncate">{p.url}</span>
-                    <ExternalLink size={11} className="shrink-0" />
+                    <span>Visit Live Site</span>
+                    <ExternalLink size={12} />
                   </a>
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => openEditModal(p)}
+                      title="Edit Project"
+                      className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 transition"
+                    >
+                      <Edit2 size={13} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p._id, p.title)}
+                      title="Delete Project"
+                      className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              {/* Actions Footer */}
-              <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <button
-                  onClick={() => openEditModal(p)}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-orange-600 transition cursor-pointer px-2 py-1 rounded-md hover:bg-white"
-                >
-                  <Edit2 size={13} />
-                  <span>Edit</span>
-                </button>
-
-                <button
-                  onClick={() => handleDelete(p._id, p.title)}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition cursor-pointer px-2 py-1 rounded-md hover:bg-red-50"
-                >
-                  <Trash2 size={13} />
-                  <span>Delete</span>
-                </button>
               </div>
             </div>
           ))}
         </div>
       )}
 
+      {/* Category Manager Modal */}
+      {isCatModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <Tag size={18} className="text-orange-500" />
+                <h3 className="text-base font-bold text-slate-900">Manage Portfolio Categories</h3>
+              </div>
+              <button
+                onClick={() => setIsCatModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 transition"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Add Category Input */}
+            <form onSubmit={handleAddCategory} className="mt-4 flex gap-2">
+              <input
+                required
+                placeholder="New category name (e.g. AI Tools)"
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                className="flex-1 h-10 px-3 rounded-xl border border-slate-200 text-sm outline-none focus:border-orange-500"
+              />
+              <button
+                type="submit"
+                disabled={catLoading}
+                className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition flex items-center gap-1"
+              >
+                {catLoading ? <Loader2 size={13} className="animate-spin" /> : <Plus size={14} />}
+                <span>Add</span>
+              </button>
+            </form>
+
+            {/* Existing Categories List */}
+            <div className="mt-4 max-h-60 overflow-y-auto space-y-2 pr-1">
+              {categories.map((c) => (
+                <div
+                  key={c.name}
+                  className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800"
+                >
+                  <span>{c.name}</span>
+                  {c._id && (
+                    <button
+                      onClick={() => handleDeleteCategory(c._id!, c.name)}
+                      className="p-1 text-slate-400 hover:text-red-600 transition"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add / Edit Project Modal */}
       {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-2xs p-4 overflow-y-auto"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 my-8 max-h-[92vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-lg bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900">
                 {editingId ? "Edit Project" : "Add New Project"}
               </h3>
               <button
@@ -363,9 +503,9 @@ export default function AdminProjectsPage() {
                     onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
                     className="w-full h-10 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-800 outline-none focus:border-orange-500 cursor-pointer"
                   >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
+                    {categories.map((cat) => (
+                      <option key={cat.name} value={cat.name}>
+                        {cat.name}
                       </option>
                     ))}
                   </select>
@@ -392,7 +532,6 @@ export default function AdminProjectsPage() {
                   Project Preview Image
                 </label>
 
-                {/* Upload Button & Preview */}
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   <div className="relative h-20 w-32 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
                     <Image
@@ -445,8 +584,8 @@ export default function AdminProjectsPage() {
                   Short Description (Optional)
                 </label>
                 <textarea
-                  rows={2}
-                  placeholder="Tell clients what technologies or results were achieved in this project..."
+                  rows={3}
+                  placeholder="Tell brief results or client industry..."
                   value={formData.description}
                   onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                   className="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-900 outline-none focus:border-orange-500 resize-none"
@@ -456,13 +595,13 @@ export default function AdminProjectsPage() {
               <div className="flex items-center gap-2 pt-1">
                 <input
                   type="checkbox"
-                  id="featuredCheck"
+                  id="featuredProject"
                   checked={formData.featured}
                   onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.checked }))}
-                  className="h-4 w-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+                  className="h-4 w-4 rounded text-orange-600 focus:ring-orange-500 cursor-pointer"
                 />
-                <label htmlFor="featuredCheck" className="text-xs font-bold text-slate-700 cursor-pointer">
-                  Feature this project on Homepage Carousel
+                <label htmlFor="featuredProject" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                  Mark as Featured (Highlights on home page)
                 </label>
               </div>
 
@@ -470,16 +609,18 @@ export default function AdminProjectsPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                  disabled={saving}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving || uploading}
-                  className="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-xs font-bold text-white shadow-md shadow-orange-500/20 transition cursor-pointer disabled:opacity-70"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 transition"
                 >
-                  {saving ? "Saving..." : editingId ? "Save Changes" : "Create Project"}
+                  {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                  <span>{editingId ? "Update Project" : "Publish Project"}</span>
                 </button>
               </div>
             </form>

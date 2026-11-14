@@ -2,9 +2,9 @@ export const navLinks = [
   { label: "Home", href: "/" },
   { label: "Our Services", href: "#", mega: true },
   { label: "Packages", href: "/packages" },
+  { label: "Portfolio", href: "/portfolio" },
   { label: "Career", href: "/career" },
   { label: "Knowledge Hub", href: "#", dropdown: true },
-  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const serviceMenu = [
@@ -46,9 +46,10 @@ export const serviceMenu = [
 ];
 
 export const knowledgeHub = [
+  { label: "About Company", href: "/about-company" },
   { label: "Testimonials", href: "/testimonial" },
   { label: "Blog", href: "/blogs" },
-  { label: "About Company", href: "/about-company" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const quickLinks = [

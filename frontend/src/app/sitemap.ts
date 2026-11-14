@@ -2,10 +2,24 @@ import { MetadataRoute } from "next";
 import { site } from "@/data/site";
 import { blogPosts } from "@/data/blog-data";
 import { projectDetails } from "@/data/projects-data";
-import { supportedCities, supportedServices } from "@/data/locations-data";
+import { supportedCities as fallbackCities, supportedServices } from "@/data/locations-data";
+import { fetchCities } from "@/lib/cities-api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = site.url;
+
+  // Fetch active cities dynamically from database
+  let activeCities: { slug: string }[] = [];
+  try {
+    const dbCities = await fetchCities(true);
+    if (dbCities && dbCities.length > 0) {
+      activeCities = dbCities.filter((c) => c.isActive !== false);
+    } else {
+      activeCities = fallbackCities;
+    }
+  } catch {
+    activeCities = fallbackCities;
+  }
 
   // 1. Core Static Marketing Pages
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -23,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/packages`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/portfolio`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
@@ -94,7 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 3. Dynamic City + Service Local SEO Pages (/services/[service]/[city])
   const cityServiceRoutes: MetadataRoute.Sitemap = [];
   supportedServices.forEach((service) => {
-    supportedCities.forEach((city) => {
+    activeCities.forEach((city) => {
       cityServiceRoutes.push({
         url: `${baseUrl}/services/${service.slug}/${city.slug}`,
         lastModified: new Date(),

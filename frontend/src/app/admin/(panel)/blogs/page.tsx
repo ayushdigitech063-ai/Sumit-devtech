@@ -27,6 +27,7 @@ import {
 } from "@/lib/blogs-api";
 import { uploadImageFile } from "@/lib/upload-api";
 import BlogRichEditor from "@/app/component/adminComponent/BlogRichEditor";
+import { confirmAction, notify } from "@/lib/alerts";
 
 const CATEGORIES = [
   "Web Development",
@@ -153,26 +154,36 @@ export default function AdminBlogsPage() {
       };
       if (editingId) {
         await updateAdminBlog(editingId, payload);
+        notify.success("Blog post updated successfully!");
       } else {
         await createAdminBlog(payload);
+        notify.success("New blog published successfully!");
       }
       setIsModalOpen(false);
       loadBlogs();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to save blog post.");
+      notify.error(err.message || "Failed to save blog post.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`Delete article "${title}"?`)) return;
+    const confirmed = await confirmAction({
+      title: `Delete article "${title}"?`,
+      text: "This blog article will be permanently removed from the website and search indices.",
+      confirmButtonText: "Yes, Delete Article",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteAdminBlog(id);
       setBlogs((prev) => prev.filter((b) => b._id !== id));
-    } catch (err) {
-      console.error(err);
+      notify.success("Blog post deleted!");
+    } catch (err: any) {
+      notify.error(err.message || "Failed to delete article");
     }
   };
 

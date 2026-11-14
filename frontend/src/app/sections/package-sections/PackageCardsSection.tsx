@@ -20,11 +20,50 @@ import {
 } from "lucide-react";
 import Container from "@/app/ui/Container";
 import { submitLead } from "@/lib/leads-api";
-import { packageCategories } from "@/data/packages-data";
+import { packageCategories as fallbackCategories, PackageCategory, PricingPlan } from "@/data/packages-data";
+import { fetchPublicPackages, PackagePlanItem } from "@/lib/packages-api";
 
 export default function PackageCardsSection() {
+  const [categories, setCategories] = useState<PackageCategory[]>(fallbackCategories);
   const [activeTab, setActiveTab] = useState<string>("web-dev");
   const [unlockedPlans, setUnlockedPlans] = useState<Record<string, boolean>>({});
+
+  // Fetch dynamic packages updated from Super Admin
+  React.useEffect(() => {
+    async function loadPackages() {
+      try {
+        const res = await fetchPublicPackages();
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          // Group packages by category
+          const mappedCategories: PackageCategory[] = [
+            {
+              id: "web-dev",
+              title: "Web Design & Development Packages",
+              description: "End-to-end engineering from startup MVP websites to high-traffic enterprise web platforms.",
+              plans: res.data.map((item: PackagePlanItem) => ({
+                id: item._id,
+                name: item.name,
+                tagline: item.tagline,
+                badge: item.popular ? "Most Popular" : undefined,
+                price: item.price,
+                period: item.period || "one-time",
+                popular: item.popular,
+                idealFor: item.idealFor || "Businesses and startups",
+                deliveryTime: item.deliveryTime || "7 - 14 Days",
+                features: item.features || [],
+                ctaText: item.ctaText || "Get Package",
+                ctaHref: item.ctaHref || `/contact-us?plan=${encodeURIComponent(item.name)}`,
+              })),
+            },
+          ];
+          setCategories(mappedCategories);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic packages:", err);
+      }
+    }
+    loadPackages();
+  }, []);
 
   // Lead modal state
   const [selectedPlanForUnlock, setSelectedPlanForUnlock] = useState<{
@@ -39,7 +78,7 @@ export default function PackageCardsSection() {
   const [loading, setLoading] = useState(false);
 
   const currentCategory =
-    packageCategories.find((cat) => cat.id === activeTab) || packageCategories[0];
+    categories.find((cat) => cat.id === activeTab) || categories[0] || fallbackCategories[0];
 
   const handleOpenUnlockModal = (plan: { id: string; name: string; price: string }) => {
     setSelectedPlanForUnlock(plan);

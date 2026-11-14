@@ -1,1 +1,1 @@
-export type LeadStatus = "New" | "In progress" | "Won" | "Lost";
+export type LeadStatus = "New" | "In progress" | "Converted" | "Cancelled" | "Won" | "Lost";

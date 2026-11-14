@@ -49,3 +49,36 @@ export async function deleteAdminProject(id: string) {
     method: "DELETE",
   });
 }
+
+export async function fetchProjectCategories(): Promise<{ success: boolean; data: { _id: string; name: string }[] }> {
+  try {
+    const res = await fetch("/api/project-categories", { cache: "no-store" });
+    return await res.json();
+  } catch (err) {
+    return { success: false, data: [] };
+  }
+}
+
+export async function createProjectCategory(name: string): Promise<{ success: boolean; message?: string; data?: { _id: string; name: string } }> {
+  try {
+    const res = await fetch("/api/project-categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+export async function deleteProjectCategory(id: string): Promise<{ success: boolean; message?: string }> {
+  try {
+    const res = await fetch(`/api/project-categories/${id}`, {
+      method: "DELETE",
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}

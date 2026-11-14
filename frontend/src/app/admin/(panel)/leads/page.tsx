@@ -21,12 +21,13 @@ import {
   deleteAdminLead,
   type LeadItem,
 } from "@/lib/leads-api";
+import { confirmAction, notify } from "@/lib/alerts";
 
-const STATUSES: ("New" | "In progress" | "Won" | "Lost")[] = [
-  "New",
-  "In progress",
-  "Won",
-  "Lost",
+const STATUSES: { value: string; label: string }[] = [
+  { value: "New", label: "New" },
+  { value: "In progress", label: "In Progress" },
+  { value: "Converted", label: "Converted" },
+  { value: "Cancelled", label: "Cancelled" },
 ];
 
 export default function AdminLeadsPage() {
@@ -77,19 +78,28 @@ export default function AdminLeadsPage() {
       if (selectedLead?._id === id) {
         setSelectedLead((prev) => (prev ? { ...prev, status: newStatus, isRead: true } : null));
       }
+      notify.success(`Lead status updated to ${newStatus}!`);
     } catch (err) {
-      console.error(err);
+      notify.error("Failed to update status");
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this lead?")) return;
+  const handleDelete = async (id: string, clientName?: string) => {
+    const confirmed = await confirmAction({
+      title: `Delete lead ${clientName ? `from "${clientName}"` : ""}?`,
+      text: "This lead record will be permanently removed from the CRM database.",
+      confirmButtonText: "Yes, Delete Lead",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteAdminLead(id);
       setLeads((prev) => prev.filter((l) => l._id !== id));
       if (selectedLead?._id === id) setSelectedLead(null);
+      notify.success("Lead deleted successfully!");
     } catch (err) {
-      console.error(err);
+      notify.error("Failed to delete lead");
     }
   };
 
@@ -141,8 +151,8 @@ export default function AdminLeadsPage() {
             <option value="all">All Statuses</option>
             <option value="New">New</option>
             <option value="In progress">In Progress</option>
-            <option value="Won">Won (Closed)</option>
-            <option value="Lost">Lost</option>
+            <option value="Converted">Converted</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
 
           <select
@@ -182,65 +192,76 @@ export default function AdminLeadsPage() {
                 </tr>
               ) : leads.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-sm text-slate-400">
-                    No leads found. When a client submits any form, it will appear right here!
+                  <td colSpan={6} className="px-4 py-16 text-center">
+                    <div className="flex flex-col items-center justify-center text-slate-400">
+                      <Inbox size={40} className="stroke-[1.3] text-slate-300 mb-2" />
+                      <p className="text-sm font-semibold text-slate-600">No leads found</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Try adjusting your filters or search.</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 leads.map((l) => (
                   <tr
                     key={l._id}
-                    className={`transition-colors hover:bg-slate-50/80 cursor-pointer ${
-                      !l.isRead ? "bg-orange-50/40" : ""
-                    }`}
                     onClick={() => setSelectedLead(l)}
+                    className={`hover:bg-slate-50/70 cursor-pointer transition ${
+                      !l.isRead ? "bg-orange-50/30" : ""
+                    }`}
                   >
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2">
                         {!l.isRead && (
-                          <span className="h-2 w-2 rounded-full bg-orange-500 shrink-0" />
+                          <span
+                            className="h-2 w-2 rounded-full bg-orange-500 shrink-0"
+                            title="Unread"
+                          />
                         )}
                         <div>
-                          <span className="block font-bold text-slate-900 text-sm">{l.name}</span>
-                          <span className="text-xs text-slate-600 font-medium flex items-center gap-1 mt-0.5">
-                            <Phone size={11} className="text-slate-400" /> {l.phone}
-                          </span>
+                          <div className="font-bold text-slate-900">{l.name}</div>
+                          <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                            <Phone size={11} className="text-slate-400" />
+                            <span>{l.phone}</span>
+                          </div>
                           {l.email && (
-                            <span className="text-xs text-slate-400 font-normal block">
-                              {l.email}
-                            </span>
+                            <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                              <Mail size={11} className="text-slate-400" />
+                              <span className="truncate max-w-[180px]">{l.email}</span>
+                            </div>
                           )}
                         </div>
                       </div>
                     </td>
 
-                    <td className="px-4 py-3.5 text-sm font-medium text-slate-800">
-                      {l.service || "General Inquiry"}
+                    <td className="px-4 py-3.5">
+                      <span className="font-semibold text-slate-800 text-xs sm:text-sm">
+                        {l.service || "General Inquiry"}
+                      </span>
                     </td>
 
                     <td className="px-4 py-3.5">
-                      <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 capitalize border border-slate-200">
+                      <span className="inline-block rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 capitalize">
                         {l.source.replace("_", " ")}
                       </span>
                     </td>
 
                     <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <select
-                        value={l.status}
+                        value={l.status === "Won" ? "Converted" : l.status === "Lost" ? "Cancelled" : l.status}
                         onChange={(e) => handleStatusChange(l._id, e.target.value)}
-                        className={`rounded-lg px-2.5 py-1 text-xs font-bold border outline-none cursor-pointer ${
+                        className={`h-8 rounded-lg border px-2 text-xs font-bold outline-none cursor-pointer transition ${
                           l.status === "New"
                             ? "bg-blue-50 text-blue-700 border-blue-200"
                             : l.status === "In progress"
                             ? "bg-amber-50 text-amber-700 border-amber-200"
-                            : l.status === "Won"
+                            : l.status === "Converted" || l.status === "Won"
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : "bg-red-50 text-red-700 border-red-200"
+                            : "bg-rose-50 text-rose-700 border-rose-200"
                         }`}
                       >
                         {STATUSES.map((st) => (
-                          <option key={st} value={st}>
-                            {st}
+                          <option key={st.value} value={st.value}>
+                            {st.label}
                           </option>
                         ))}
                       </select>

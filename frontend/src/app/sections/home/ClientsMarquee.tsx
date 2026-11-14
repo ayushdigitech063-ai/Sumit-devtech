@@ -1,20 +1,42 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Marquee from "../../ui/Marquee";
 import Reveal from "../../animation/Reveal";
-import { clients } from "@/data/clients";
+import { fetchPublicClients, type ClientLogoItem } from "@/lib/clients-api";
+import { clients as fallbackClients } from "@/data/clients";
 
-function Logo({ name, logo }: { name: string; logo: string }) {
+function LogoCard({ name, logo }: { name: string; logo: string }) {
   return (
-    <div className="grid h-20 w-48 shrink-0 place-items-center rounded-2xl border border-line bg-white p-4 opacity-100 transition duration-300 hover:opacity-100">
-      <Image src={logo} alt={name} width={140} height={50} unoptimized className="max-h-12 w-auto object-contain" />
+    <div className="grid h-20 w-48 shrink-0 place-items-center rounded-2xl border border-line bg-white p-4 shadow-2xs transition duration-300 hover:border-orange-200 hover:shadow-md">
+      <Image
+        src={logo}
+        alt={name}
+        width={140}
+        height={50}
+        unoptimized
+        className="max-h-12 w-auto object-contain"
+      />
     </div>
   );
-} 
+}
 
 export default function ClientsMarquee() {
-  const half = Math.ceil(clients.length / 2);
+  const [list, setList] = useState<{ name: string; logo: string }[]>(fallbackClients);
+
+  useEffect(() => {
+    fetchPublicClients().then((items) => {
+      if (items && items.length > 0) {
+        setList(items.map((c) => ({ name: c.name, logo: c.logo })));
+      }
+    });
+  }, []);
+
+  const half = Math.ceil(list.length / 2);
+
   return (
-    <section className="overflow-hidden py-20 md:py-24">
+    <section className="overflow-hidden py-20 md:py-24 bg-white">
       <Reveal>
         <p className="mb-10 px-6 text-center text-sm font-semibold uppercase tracking-[0.16em] text-muted">
           Trusted by 500+ businesses across the world
@@ -22,10 +44,14 @@ export default function ClientsMarquee() {
       </Reveal>
       <div className="space-y-4">
         <Marquee>
-          {clients.slice(0, half).map((c) => <Logo key={c.name} {...c} />)}
+          {list.slice(0, half).map((c, i) => (
+            <LogoCard key={`${c.name}-${i}`} {...c} />
+          ))}
         </Marquee>
         <Marquee reverse>
-          {clients.slice(half).map((c) => <Logo key={c.name} {...c} />)}
+          {list.slice(half).map((c, i) => (
+            <LogoCard key={`${c.name}-${i}`} {...c} />
+          ))}
         </Marquee>
       </div>
     </section>

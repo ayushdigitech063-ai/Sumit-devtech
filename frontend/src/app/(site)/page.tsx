@@ -1,6 +1,5 @@
 import Hero from "../sections/Hero";
 import About from "../sections/home/About";
-import Articles from "../sections/home/Articles";
 import ClientsMarquee from "../sections/home/ClientsMarquee";
 import Faq from "../sections/home/Faq";
 import GlobalClient from "../sections/home/GlobalClient";
@@ -30,7 +29,6 @@ export default function Home() {
    <Technology />
    <Team />
    <GlobalClient />
-   <Articles />
    <Faq />
    </>
   );

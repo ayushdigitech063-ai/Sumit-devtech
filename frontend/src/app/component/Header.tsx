@@ -114,13 +114,13 @@ export default function Header() {
                   </button>
 
                   {/* Dropdown Menu */}
-                  <div className="invisible absolute left-0 top-full z-50 min-w-[200px] pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                    <div className="rounded-xl border border-white/15 bg-[#0b162c]/98 p-2 shadow-2xl backdrop-blur-2xl">
+                  <div className="invisible absolute right-0 top-full z-50 min-w-[220px] pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="rounded-2xl border border-white/15 bg-[#0b162c]/98 p-2.5 shadow-2xl backdrop-blur-2xl">
                       {knowledgeHub.map((k) => (
                         <Link
                           key={k.label}
                           href={k.href}
-                          className="block rounded-lg px-3 py-2 text-xs font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+                          className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-accent"
                         >
                           {k.label}
                         </Link>
@@ -301,13 +301,13 @@ export default function Header() {
                       </button>
 
                       {isExpanded && (
-                        <div className="mt-2 pl-3 space-y-1.5 border-l-2 border-accent/40">
+                        <div className="mt-2.5 pl-3.5 space-y-2 border-l-2 border-accent/40">
                           {knowledgeHub.map((k) => (
                             <Link
                               key={k.label}
                               href={k.href}
                               onClick={() => setOpen(false)}
-                              className="block py-1 text-xs text-white/80 hover:text-white"
+                              className="block py-1.5 text-sm font-semibold text-white/85 hover:text-accent"
                             >
                               {k.label}
                             </Link>

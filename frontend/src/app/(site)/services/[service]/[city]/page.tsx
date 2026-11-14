@@ -4,14 +4,39 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   supportedCities,
+  supportedCities as fallbackCities,
   supportedServices,
   type CityLocation,
   type ServiceDefinition,
 } from "@/data/locations-data";
+import { fetchCities } from "@/lib/cities-api";
+
+async function getCityBySlug(slug: string): Promise<CityLocation | null> {
+  try {
+    const dbCities = await fetchCities(true);
+    const found = dbCities.find((c) => c.slug === slug && c.isActive !== false);
+    if (found) {
+      return {
+        slug: found.slug,
+        name: found.name,
+        state: found.state,
+        country: found.country,
+        tagline: found.tagline || `Premier Web Design & Growth in ${found.name}`,
+        phone: found.phone || "+91 96765 43210",
+        popularAreas: found.popularAreas || [],
+        localKeywords: found.localKeywords || [],
+      };
+    }
+  } catch {
+    // fallback
+  }
+  return fallbackCities.find((c) => c.slug === slug) || null;
+}
 import { site } from "@/data/site";
 import Container from "@/app/ui/Container";
 import Reveal from "@/app/animation/Reveal";
 import Button from "@/app/ui/Button";
+import ScheduleConsultationButton from "@/app/component/ScheduleConsultationButton";
 import {
   CheckCircle2,
   Sparkles,
@@ -53,7 +78,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { service: serviceSlug, city: citySlug } = await params;
   const service = supportedServices.find((s) => s.slug === serviceSlug);
-  const city = supportedCities.find((c) => c.slug === citySlug);
+  const city = await getCityBySlug(citySlug);
 
   if (!service || !city) return {};
 
@@ -91,7 +116,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CityServiceLandingPage({ params }: PageProps) {
   const { service: serviceSlug, city: citySlug } = await params;
   const service = supportedServices.find((s) => s.slug === serviceSlug);
-  const city = supportedCities.find((c) => c.slug === citySlug);
+  const city = await getCityBySlug(citySlug);
 
   if (!service || !city) {
     notFound();
@@ -335,9 +360,10 @@ export default async function CityServiceLandingPage({ params }: PageProps) {
                   <p className="text-[11px] text-slate-500 mb-4">
                     Speak directly with our senior technology consultant today.
                   </p>
-                  <Button href="/contact-us" variant="primary" className="w-full justify-center text-xs py-2.5 font-bold">
-                    Schedule Free Consultation
-                  </Button>
+                  <ScheduleConsultationButton
+                    cityName={city.name}
+                    className="w-full justify-center text-xs py-2.5 font-bold"
+                  />
                 </div>
               </div>
             </div>

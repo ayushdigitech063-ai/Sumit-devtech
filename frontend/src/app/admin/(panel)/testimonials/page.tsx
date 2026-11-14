@@ -22,6 +22,7 @@ import {
   type TestimonialItem,
 } from "@/lib/testimonials-api";
 import { uploadImageFile } from "@/lib/upload-api";
+import { confirmAction, notify } from "@/lib/alerts";
 
 const CATEGORIES = [
   "Web Development",
@@ -141,24 +142,35 @@ export default function TestimonialsAdminPage() {
         if (editingItem && (editingItem._id || editingItem.id)) {
           const id = (editingItem._id || editingItem.id)!;
           await updateTestimonial(id, formData);
+          notify.success("Testimonial updated!");
         } else {
           await createTestimonial(formData);
+          notify.success("New testimonial added!");
         }
         setModalOpen(false);
         await loadData();
       } catch (err: any) {
         setErrorMsg(err.message || "Failed to save testimonial.");
+        notify.error(err.message || "Failed to save testimonial.");
       }
     });
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete the testimonial from "${name}"?`)) return;
+    const confirmed = await confirmAction({
+      title: `Delete testimonial from "${name}"?`,
+      text: "This client review will be permanently removed from the website review showcase.",
+      confirmButtonText: "Yes, Delete It",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteTestimonial(id);
       setItems((prev) => prev.filter((item) => (item._id || item.id) !== id));
+      notify.success("Testimonial deleted successfully!");
     } catch (err: any) {
-      alert(err.message || "Failed to delete");
+      notify.error(err.message || "Failed to delete");
     }
   };
 

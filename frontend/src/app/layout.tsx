@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 import { nunito } from "@/config/font";
 import { site } from "@/data/site";
 
@@ -149,7 +150,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <Toaster position="top-right" reverseOrder={false} />
+        {children}
+      </body>
     </html>
   );
 }

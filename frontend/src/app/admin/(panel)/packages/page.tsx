@@ -22,6 +22,7 @@ import {
   deleteAdminPackage,
   type PackagePlanItem,
 } from "@/lib/packages-api";
+import { confirmAction, notify } from "@/lib/alerts";
 
 const CATEGORIES = [
   "Web Development",
@@ -124,26 +125,36 @@ export default function AdminPackagesPage() {
 
       if (editingId) {
         await updateAdminPackage(editingId, payload);
+        notify.success("Package updated successfully!");
       } else {
         await createAdminPackage(payload);
+        notify.success("New package created successfully!");
       }
       setIsModalOpen(false);
       loadPackages();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to save package.");
+      notify.error(err.message || "Failed to save package.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Delete package "${name}"?`)) return;
+    const confirmed = await confirmAction({
+      title: `Delete package "${name}"?`,
+      text: "This package will be permanently removed from the website packages page.",
+      confirmButtonText: "Yes, Delete It",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteAdminPackage(id);
       setPackages((prev) => prev.filter((p) => p._id !== id));
-    } catch (err) {
-      console.error(err);
+      notify.success(`Package "${name}" deleted successfully!`);
+    } catch (err: any) {
+      notify.error(err.message || "Failed to delete package.");
     }
   };
 

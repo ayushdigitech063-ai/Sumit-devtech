@@ -31,6 +31,7 @@ import {
   type JobOpeningItem,
   type ApplicationItem,
 } from "@/lib/careers-api";
+import { confirmAction, notify } from "@/lib/alerts";
 
 export default function AdminCareersPage() {
   const [activeTab, setActiveTab] = useState<"applications" | "openings">("applications");
@@ -141,26 +142,36 @@ export default function AdminCareersPage() {
 
       if (editingJobId) {
         await updateAdminJobOpening(editingJobId, payload);
+        notify.success("Job opening updated!");
       } else {
         await createAdminJobOpening(payload);
+        notify.success("New job opening posted!");
       }
       setIsJobModalOpen(false);
       loadOpenings();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to save job opening.");
+      notify.error(err.message || "Failed to save job opening.");
     } finally {
       setSavingJob(false);
     }
   };
 
   const handleDeleteJob = async (id: string, title: string) => {
-    if (!window.confirm(`Delete job opening "${title}"?`)) return;
+    const confirmed = await confirmAction({
+      title: `Delete job opening "${title}"?`,
+      text: "This job position will be permanently removed from the careers page.",
+      confirmButtonText: "Yes, Delete Opening",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteAdminJobOpening(id);
       setOpenings((prev) => prev.filter((j) => j._id !== id));
-    } catch (err) {
-      console.error(err);
+      notify.success("Job opening deleted!");
+    } catch (err: any) {
+      notify.error(err.message || "Failed to delete");
     }
   };
 
@@ -173,19 +184,28 @@ export default function AdminCareersPage() {
       if (selectedApp?._id === id) {
         setSelectedApp((prev) => (prev ? { ...prev, status: status as any, isRead: true } : null));
       }
+      notify.success(`Application marked as ${status}!`);
     } catch (err) {
-      console.error(err);
+      notify.error("Failed to update status");
     }
   };
 
-  const handleDeleteApp = async (id: string) => {
-    if (!window.confirm("Delete this candidate application?")) return;
+  const handleDeleteApp = async (id: string, candidateName?: string) => {
+    const confirmed = await confirmAction({
+      title: `Delete application ${candidateName ? `from "${candidateName}"` : ""}?`,
+      text: "This applicant's record and attached resume will be permanently deleted.",
+      confirmButtonText: "Yes, Delete Application",
+    });
+
+    if (!confirmed) return;
+
     try {
       await deleteAdminApplication(id);
       setApplications((prev) => prev.filter((a) => a._id !== id));
       if (selectedApp?._id === id) setSelectedApp(null);
-    } catch (err) {
-      console.error(err);
+      notify.success("Application deleted!");
+    } catch (err: any) {
+      notify.error(err.message || "Failed to delete application");
     }
   };
 
