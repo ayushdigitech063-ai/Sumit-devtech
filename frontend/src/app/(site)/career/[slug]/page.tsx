@@ -13,7 +13,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 async function getJob(slug: string): Promise<JobOpening | null> {
   try {
     const res = await fetch(`${API_BASE}/careers/openings/${slug}`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
     const result = await res.json();
     if (result.success && result.data) {
@@ -33,7 +33,7 @@ async function getJob(slug: string): Promise<JobOpening | null> {
       };
     }
   } catch (err) {
-    console.error("Failed to fetch job opening from backend:", err);
+    // fallback
   }
 
   return careerData.openings.find((o) => o.slug === slug) || null;

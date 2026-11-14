@@ -13,7 +13,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 async function getPost(slug: string): Promise<BlogPost | null> {
   try {
     const res = await fetch(`${API_BASE}/blogs/detail/${slug}`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
     const result = await res.json();
     if (result.success && result.data) {

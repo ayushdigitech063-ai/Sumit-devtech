@@ -15,14 +15,16 @@ export interface CityLocationData {
 }
 
 export async function fetchCities(activeOnly = false): Promise<CityLocationData[]> {
+  if (typeof window === "undefined" && process.env.NEXT_PHASE === "phase-production-build") {
+    return [];
+  }
   try {
     const res = await fetch(`${API_BASE}/cities${activeOnly ? "?activeOnly=true" : ""}`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     return data.cities || [];
   } catch (error) {
-    console.error("Failed to fetch cities from backend:", error);
     return [];
   }
 }
