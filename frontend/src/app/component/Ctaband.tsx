@@ -34,17 +34,23 @@ export default function Ctaband() {
           <p className="mx-auto mb-9 mt-5 max-w-2xl text-base sm:text-lg text-muted font-normal leading-relaxed">
             Get a free personalized consultation, custom budget estimate &amp; technical blueprint for your business within 24 hours.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button href="#" onClick={openQuote} variant="primary" className="shadow-lg shadow-accent/25 hover:shadow-accent/40 gap-2">
-              Get Free Quote
-              <ArrowRight size={16} />
+          <div className="flex flex-row flex-nowrap items-center justify-center gap-2 sm:gap-4">
+            <Button
+              href="#"
+              onClick={openQuote}
+              variant="primary"
+              className="gap-1.5 sm:gap-2 px-3 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm md:text-base font-semibold shadow-lg shadow-accent/25 hover:shadow-accent/40 whitespace-nowrap"
+            >
+              <span>Get Free Quote</span>
+              <ArrowRight size={14} className="shrink-0 sm:w-4 sm:h-4" />
             </Button>
             <Button
               href={`tel:${site.phones[0].replace(/-/g, "")}`}
               variant="outline"
-              className="border-2 border-dark/30 bg-white text-dark shadow-sm hover:border-dark hover:bg-dark hover:text-white transition-all duration-300 font-semibold"
+              className="gap-1.5 sm:gap-2 border-2 border-dark/30 bg-white text-dark shadow-sm hover:border-dark hover:bg-dark hover:text-white transition-all duration-300 px-3 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap"
             >
-              <Phone size={17} className="text-accent" /> {site.phones[0]}
+              <Phone size={14} className="text-accent shrink-0 sm:w-[17px] sm:h-[17px]" />
+              <span>{site.phones[0]}</span>
             </Button>
           </div>
         </Reveal>
