@@ -36,9 +36,9 @@ export default function HeroVisualInteractive({ activeIndex }: HeroVisualProps) 
       {/* ========================================================
           DEVICE TOGGLE SWITCH (Switch between Laptop & Mobile View)
          ======================================================== */}
-      <div className="mb-3 flex items-center justify-between px-2">
+      <div className="mb-3 flex items-center justify-center lg:justify-between px-2">
         {/* Left: Active Service Badge */}
-        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-[#161926]/90 px-3 py-1 text-xs backdrop-blur-md">
+        <div className="hidden lg:flex items-center gap-2 rounded-full border border-white/20 bg-[#161926]/90 px-3 py-1 text-xs backdrop-blur-md">
           <span className="flex h-2 w-2 rounded-full bg-accent animate-ping" />
           <span className="font-semibold text-white">
             {sceneIdx === 0 && "Web & E-Commerce"}

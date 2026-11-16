@@ -201,6 +201,10 @@ export const submitApplicationForm = async (req: Request, res: Response) => {
     let resumeUrl = "";
     let resumeFileName = "resume.pdf";
     let payslipUrl = "";
+    let resumeBuffer: Buffer | undefined;
+    let resumeMimeType = "application/pdf";
+    let payslipBuffer: Buffer | undefined;
+    let payslipMimeType = "application/pdf";
 
     if (files && files.length > 0) {
       // Find resume file vs payslip file
@@ -209,19 +213,31 @@ export const submitApplicationForm = async (req: Request, res: Response) => {
 
       if (resumeFile) {
         resumeFileName = resumeFile.originalname || "resume.pdf";
-        const uploadedResume = await uploadToCloudinary(resumeFile.buffer, "career_resumes", "raw", resumeFileName);
-        resumeUrl = uploadedResume.url;
+        resumeBuffer = resumeFile.buffer;
+        resumeMimeType = resumeFile.mimetype || "application/pdf";
+        try {
+          const uploadedResume = await uploadToCloudinary(resumeFile.buffer, "career_resumes", "raw", resumeFileName);
+          resumeUrl = uploadedResume.url;
+        } catch {
+          // Cloudinary backup failed; buffer will be safely stored in MongoDB
+        }
       }
 
       if (payslipFile) {
-        const uploadedPayslip = await uploadToCloudinary(payslipFile.buffer, "career_payslips", "raw", payslipFile.originalname || "payslip.pdf");
-        payslipUrl = uploadedPayslip.url;
+        payslipBuffer = payslipFile.buffer;
+        payslipMimeType = payslipFile.mimetype || "application/pdf";
+        try {
+          const uploadedPayslip = await uploadToCloudinary(payslipFile.buffer, "career_payslips", "raw", payslipFile.originalname || "payslip.pdf");
+          payslipUrl = uploadedPayslip.url;
+        } catch {
+          // Payslip backup
+        }
       }
     } else if (req.body.resumeUrl) {
       resumeUrl = req.body.resumeUrl;
     }
 
-    if (!resumeUrl) {
+    if (!resumeUrl && !resumeBuffer) {
       return res.status(400).json({ success: false, message: "Resume file (.pdf, .doc, .docx) is required." });
     }
 
@@ -239,14 +255,26 @@ export const submitApplicationForm = async (req: Request, res: Response) => {
       expectedSalary: expectedSalary || "",
       noticePeriod: noticePeriod || "",
       payslipUrl: payslipUrl || "",
+      payslipData: payslipBuffer,
+      payslipMimeType,
       location: location || "",
       portfolioLink: link || "",
       coverNote: coverNote || "",
-      resumeUrl,
+      resumeUrl: resumeUrl || "",
       resumeFileName,
+      resumeData: resumeBuffer,
+      resumeMimeType,
       status: "Under Review",
       isRead: false,
     });
+
+    if (resumeBuffer) {
+      application.resumeUrl = `/api/careers/applications/${application._id}/resume`;
+      if (payslipBuffer) {
+        application.payslipUrl = `/api/careers/applications/${application._id}/payslip`;
+      }
+      await application.save();
+    }
 
     return res.status(201).json({
       success: true,
@@ -275,13 +303,66 @@ export const getApplications = async (req: Request, res: Response) => {
     }
 
     const [applications, unreadCount] = await Promise.all([
-      Application.find(query).sort({ createdAt: -1 }).lean(),
+      Application.find(query).select("-resumeData -payslipData").sort({ createdAt: -1 }).lean(),
       Application.countDocuments({ isRead: false }),
     ]);
 
     return res.json({ success: true, data: applications, unreadCount });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Public/Admin: Stream resume document
+export const getApplicationResume = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const application = await Application.findById(id);
+    if (!application) {
+      return res.status(404).send("Application not found.");
+    }
+
+    if (application.resumeData && application.resumeData.length > 0) {
+      const mime = application.resumeMimeType || "application/pdf";
+      const filename = application.resumeFileName || "resume.pdf";
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+      return res.send(application.resumeData);
+    }
+
+    if (application.resumeUrl && !application.resumeUrl.includes(`/applications/${id}/resume`)) {
+      return res.redirect(application.resumeUrl);
+    }
+
+    return res.status(404).send("Resume file not found.");
+  } catch (err: any) {
+    return res.status(500).send("Failed to retrieve resume: " + err.message);
+  }
+};
+
+// Public/Admin: Stream payslip document
+export const getApplicationPayslip = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const application = await Application.findById(id);
+    if (!application) {
+      return res.status(404).send("Application not found.");
+    }
+
+    if (application.payslipData && application.payslipData.length > 0) {
+      const mime = application.payslipMimeType || "application/pdf";
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Content-Disposition", `inline; filename="payslip.pdf"`);
+      return res.send(application.payslipData);
+    }
+
+    if (application.payslipUrl && !application.payslipUrl.includes(`/applications/${id}/payslip`)) {
+      return res.redirect(application.payslipUrl);
+    }
+
+    return res.status(404).send("Payslip file not found.");
+  } catch (err: any) {
+    return res.status(500).send("Failed to retrieve payslip: " + err.message);
   }
 };
 

@@ -43,10 +43,21 @@ export default function HeroSection({
   const shouldReduceMotion = useReducedMotion();
 
   const badge = data?.badge ?? badgeProp ?? "Website Design Service";
-  const title = data?.title ?? titleProp ?? (
-    <>
-      Modern Website Design That <span className="text-brand">Engages &amp; Converts</span>
-    </>
+  const title = titleProp ?? (
+    data ? (
+      data.highlight ? (
+        <>
+          {data.title}{" "}
+          <span className="text-brand">{data.highlight}</span>
+        </>
+      ) : (
+        data.title
+      )
+    ) : (
+      <>
+        Modern Website Design That <span className="text-brand">Engages &amp; Converts</span>
+      </>
+    )
   );
   const description =
     data?.description ??
@@ -119,7 +130,7 @@ export default function HeroSection({
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.05 }}
-            className="font-heading text-4xl sm:text-5xl md:text-5xl lg:text-[3.75rem] font-bold tracking-tight leading-[1.14] text-white max-w-4xl"
+            className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-semibold tracking-tight leading-[1.15] text-white max-w-4xl"
           >
             {title}
           </motion.h1>

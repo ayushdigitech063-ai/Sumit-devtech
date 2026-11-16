@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 
 interface ExperienceCelebrationProps {
   targetYears?: number;
@@ -154,18 +153,6 @@ export default function ExperienceCelebrationCard({
             <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
               {label}
             </p>
-            {/* Pop-in Celebration Badge on 12 */}
-            {isCelebrated && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.5, y: 4 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                className="inline-flex items-center gap-1 rounded-full bg-orange-50 border border-orange-200 px-2 py-0.5 text-[10px] font-bold text-orange-600 shadow-2xs shrink-0"
-              >
-                <Sparkles size={11} className="text-orange-500 animate-spin" style={{ animationDuration: "3s" }} />
-                <span>12 Years Completed! 🎉</span>
-              </motion.span>
-            )}
           </div>
 
           <p className="text-[11px] text-slate-500 font-normal mt-0.5">

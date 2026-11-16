@@ -19,6 +19,10 @@ export interface IApplication extends Document {
   coverNote?: string;
   resumeUrl: string;
   resumeFileName?: string;
+  resumeData?: Buffer;
+  resumeMimeType?: string;
+  payslipData?: Buffer;
+  payslipMimeType?: string;
   status: "Under Review" | "Shortlisted" | "Rejected" | "Hired";
   isRead: boolean;
   createdAt: Date;
@@ -49,6 +53,10 @@ const ApplicationSchema = new Schema<IApplication>(
     coverNote: { type: String, default: "" },
     resumeUrl: { type: String, required: true },
     resumeFileName: { type: String, default: "resume.pdf" },
+    resumeData: { type: Buffer },
+    resumeMimeType: { type: String, default: "application/pdf" },
+    payslipData: { type: Buffer },
+    payslipMimeType: { type: String, default: "application/pdf" },
     status: {
       type: String,
       enum: ["Under Review", "Shortlisted", "Rejected", "Hired"],

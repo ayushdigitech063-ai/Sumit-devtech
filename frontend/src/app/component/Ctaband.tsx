@@ -28,7 +28,7 @@ export default function Ctaband() {
           <span className="mb-4 inline-block text-xs font-bold uppercase tracking-[0.18em] text-accent">
             Let’s work together
           </span>
-          <h2 className="mx-auto max-w-3xl font-heading text-3xl font-bold md:text-5xl text-brand tracking-tight">
+          <h2 className="mx-auto max-w-3xl font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-brand tracking-tight leading-tight">
             Have a Project in Mind? Let’s Build Something Amazing!
           </h2>
           <p className="mx-auto mb-9 mt-5 max-w-2xl text-base sm:text-lg text-muted font-normal leading-relaxed">

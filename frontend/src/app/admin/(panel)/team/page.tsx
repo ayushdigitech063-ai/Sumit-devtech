@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   XCircle,
   Globe,
+  UploadCloud,
 } from "lucide-react";
 import { FaLinkedinIn, FaInstagram, FaXTwitter, FaGithub } from "react-icons/fa6";
 import {
@@ -22,7 +23,31 @@ import {
   updateTeamMember,
   deleteTeamMember,
 } from "@/lib/team-api";
+import { uploadImageFile } from "@/lib/upload-api";
 import { confirmAction, notify } from "@/lib/alerts";
+
+export const COMPANY_DESIGNATIONS = [
+  "Founder & CEO",
+  "Co-Founder & CTO",
+  "Managing Director",
+  "Chief Operating Officer (COO)",
+  "Project Manager",
+  "Lead Full Stack Developer",
+  "Senior Web Developer",
+  "Full Stack Developer",
+  "Frontend Developer (React / Next.js)",
+  "Backend Developer (Node.js / Express)",
+  "Mobile App Developer (Flutter / React Native)",
+  "WordPress & Shopify Developer",
+  "UI / UX Designer",
+  "DevOps & Cloud Engineer",
+  "QA & Testing Engineer",
+  "Digital Marketing Specialist",
+  "SEO Strategist & Executive",
+  "Business Development Manager",
+  "Content Strategist & Copywriter",
+  "HR & Operations Manager",
+];
 
 export default function AdminTeamPage() {
   const [members, setMembers] = useState<TeamMemberData[]>([]);
@@ -31,6 +56,8 @@ export default function AdminTeamPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMemberData | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isCustomRole, setIsCustomRole] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -64,9 +91,10 @@ export default function AdminTeamPage() {
 
   const openCreateModal = () => {
     setEditingMember(null);
+    setIsCustomRole(false);
     setFormData({
       name: "",
-      role: "",
+      role: COMPANY_DESIGNATIONS[0],
       image: "/images/teams/owner-sumit-kumar-mishra.png",
       bio: "",
       linkedin: "",
@@ -81,6 +109,8 @@ export default function AdminTeamPage() {
 
   const openEditModal = (member: TeamMemberData) => {
     setEditingMember(member);
+    const isStandard = COMPANY_DESIGNATIONS.includes(member.role);
+    setIsCustomRole(!isStandard && Boolean(member.role));
     setFormData({
       name: member.name,
       role: member.role,
@@ -94,6 +124,29 @@ export default function AdminTeamPage() {
       isActive: member.isActive ?? true,
     });
     setIsModalOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      notify.error("Please select a valid image file.");
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      const res = await uploadImageFile(file);
+      if (res.url) {
+        setFormData((prev) => ({ ...prev, image: res.url }));
+        notify.success("Team member photo uploaded successfully!");
+      }
+    } catch (err: any) {
+      notify.error(err.message || "Failed to upload photo. You can still enter an image URL.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -375,29 +428,98 @@ export default function AdminTeamPage() {
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Role / Designation *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    placeholder="e.g. Founder & CEO"
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  />
+                  <select
+                    value={isCustomRole ? "__custom__" : formData.role}
+                    onChange={(e) => {
+                      if (e.target.value === "__custom__") {
+                        setIsCustomRole(true);
+                        setFormData({ ...formData, role: "" });
+                      } else {
+                        setIsCustomRole(false);
+                        setFormData({ ...formData, role: e.target.value });
+                      }
+                    }}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer"
+                  >
+                    <option value="" disabled>-- Select Designation --</option>
+                    {COMPANY_DESIGNATIONS.map((desig) => (
+                      <option key={desig} value={desig}>
+                        {desig}
+                      </option>
+                    ))}
+                    <option value="__custom__">+ Other / Custom Designation...</option>
+                  </select>
+
+                  {isCustomRole && (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        required
+                        value={formData.role}
+                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                        placeholder="Type custom role (e.g. AI / ML Engineer)"
+                        className="w-full rounded-xl border border-orange-300 bg-orange-50/40 px-3.5 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                        autoFocus
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Photo URL / Path *
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Member Photo *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="/images/teams/member.png or https://..."
-                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                />
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                    {formData.image ? (
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-orange-500/30 bg-white shadow-xs">
+                        <img
+                          src={formData.image}
+                          alt="Member preview"
+                          className="h-full w-full object-cover object-top"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-dashed border-slate-300 bg-white text-slate-400">
+                        <Users size={22} />
+                      </div>
+                    )}
+
+                    <div className="flex flex-1 flex-wrap items-center gap-2">
+                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-orange-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-orange-700 disabled:opacity-50">
+                        <UploadCloud size={15} />
+                        <span>{uploadingImage ? "Uploading..." : "Upload Photo"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {formData.image && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: "" })}
+                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <input
+                    type="text"
+                    required
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="Or paste image path / URL (e.g. /images/teams/member.png or https://...)"
+                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs text-slate-700 placeholder:text-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  />
+                </div>
               </div>
 
               <div>
@@ -413,32 +535,7 @@ export default function AdminTeamPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    LinkedIn Profile URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.linkedin}
-                    onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                    placeholder="https://linkedin.com/in/..."
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Instagram Profile URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.instagram}
-                    onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                    placeholder="https://instagram.com/..."
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm text-slate-900 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  />
-                </div>
-              </div>
+
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

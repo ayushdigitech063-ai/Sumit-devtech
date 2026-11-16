@@ -54,4 +54,3 @@ export const whyChoose = [
   { title: "Always Available", image: `${IMG}/Client-Centric-Approach.webp`, text: "Call us, WhatsApp us, message us. We pick up. No ticket systems, no waiting 48 hours for a reply." },
   { title: "We Mean What We Say", image: `${IMG}/Proven-Quality-Delivery.webp`, text: "Deadlines, budgets, deliverables - we commit, and we deliver. No excuses, no ghosting after payment." },
 ];
-console.log(whyChoose[0].image);

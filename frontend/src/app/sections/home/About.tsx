@@ -60,9 +60,9 @@ export default function About() {
         }
       } catch (err) {
         if (err instanceof ApiError) {
-          console.error(`API Error (${err.status}):`, err.message);
+          console.warn(`About API (${err.status}):`, err.message);
         } else {
-          console.error("Failed to load about section:", err);
+          console.warn("Using fallback about section data:", err);
         }
       } finally {
         setLoading(false);
@@ -129,7 +129,7 @@ export default function About() {
             <span>{tagline}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-sans text-slate-900 tracking-normal leading-[1.25]">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
             {heading.includes("Jaipur") ? (
               <>
                 {heading.replace("Jaipur", "")}

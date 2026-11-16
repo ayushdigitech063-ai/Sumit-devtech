@@ -118,7 +118,7 @@ export default function HomeProcessSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white md:py-20 border-t border-line/60">
+    <section className="relative overflow-hidden bg-white py-14 sm:py-16 md:py-20 border-t border-line/60">
       {/* Faint grid */}
       <div
         aria-hidden="true"
@@ -126,12 +126,12 @@ export default function HomeProcessSection() {
       />
 
       <Container>
-        <div className="relative mx-auto w-full max-w-[1100px] max-h-[1100px]">
+        <div className="relative mx-auto w-full max-w-[1100px]">
           <SectionHeading
             center
             label={label}
             title={
-              <span className="whitespace-nowrap">
+              <span>
                 {title} <span className="text-brand">{highlight}</span>
               </span>
             }
@@ -320,7 +320,7 @@ export default function HomeProcessSection() {
 
           {/* ---------------- Mobile / Tablets: vertical steps ---------------- */}
           {n > 0 && (
-            <ol className="relative mx-auto mt-12 max-w-xl space-y-9 lg:hidden">
+            <ol className="relative mx-auto mt-10 sm:mt-12 max-w-xl space-y-7 sm:space-y-9 lg:hidden">
               <span
                 aria-hidden="true"
                 className="absolute bottom-4 left-[21px] top-4 border-l border-dashed border-slate-300"
@@ -336,16 +336,16 @@ export default function HomeProcessSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-40px" }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative flex gap-5"
+                    className="relative flex gap-4 sm:gap-5"
                   >
                     <span className="relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-sm font-bold text-brand shadow-md">
                       {i + 1}
                     </span>
-                    <div className="pt-1">
-                      <h3 className="font-heading text-2xl font-bold leading-tight text-slate-900">
+                    <div className="pt-1 min-w-0 flex-1">
+                      <h3 className="font-heading text-xl sm:text-2xl font-bold leading-tight text-slate-900 break-words">
                         {stepTitle}
                       </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+                      <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-500 break-words">
                         {stepDescription}
                       </p>
                     </div>

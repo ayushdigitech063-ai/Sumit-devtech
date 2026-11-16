@@ -27,7 +27,7 @@ const DYNAMIC_FONT_STYLES = [
   // 3: Marketing & Growth -> Bold Display
   {
     fontFamily: "'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif",
-    fontWeight: "700",
+    fontWeight: "600",
     letterSpacing: "0.01em",
   },
 ];
@@ -54,7 +54,7 @@ export default function WordReveal({
   const letters = Array.from(currentText);
 
   return (
-    <h1 className={cn("leading-[1.18]", className)}>
+    <h1 className={cn("leading-tight", className)}>
       {/* STATIC Headline: Left text "Everything you need to Grow Digitally" stays solid & fixed */}
       <span className="block font-medium tracking-normal text-white/95">
         {text}
@@ -63,7 +63,7 @@ export default function WordReveal({
       {/* DYNAMIC Text: Uses fluid responsive sizing so "Search Engine Optimization" never clips or overflows */}
       {dynamicTexts.length > 0 && (
         <span className={cn(
-          "mt-2 block min-h-[1.3em] overflow-visible pr-2 text-2xl sm:text-3xl md:text-[2.4rem] lg:text-[2.75rem]", 
+          "mt-2 block min-h-[1.3em] overflow-visible pr-2 text-2xl sm:text-3xl md:text-[2.4rem] lg:text-[2.75rem] font-semibold tracking-normal", 
           highlightClassName
         )}>
           <AnimatePresence mode="wait">

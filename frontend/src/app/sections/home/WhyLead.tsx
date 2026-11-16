@@ -218,14 +218,14 @@ export default function WhyLead() {
             )}
           </>
         }
-        text="Hover or click any card to inspect full capabilities in real time."
+        text="Click any card to inspect full capabilities in real time."
       />
 
       {/* ========================================================
           3D PERSPECTIVE AUTO-SCROLLING CAROUSEL WITH IMAGES
          ======================================================== */}
       <div 
-        className="relative mx-auto mt-10 w-full max-w-[1400px] px-4 overflow-hidden [perspective:1200px]"
+        className="relative mx-auto mt-6 sm:mt-10 w-full max-w-[1400px] px-2 sm:px-4 overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => {
           setIsPaused(false);
@@ -234,14 +234,11 @@ export default function WhyLead() {
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => setIsPaused(false)}
       >
-        {/* Soft edge blur vignettes */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-16 sm:w-28 bg-gradient-to-r from-white via-white/80 to-transparent" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-16 sm:w-28 bg-gradient-to-l from-white via-white/80 to-transparent" />
 
         {/* Scrollable Track with 3D tilt */}
         <div
           ref={sliderRef}
-          className="flex gap-5 overflow-x-hidden py-6 select-none scroll-smooth"
+          className="flex gap-5 overflow-x-auto py-5 select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {displayCards.map((card: any, idx: number) => {
@@ -255,16 +252,13 @@ export default function WhyLead() {
               <motion.div
                 key={`${cardTitle}-${idx}`}
                 whileHover={{
-                  scale: 1.05,
-                  rotateY: -4,
-                  rotateX: 4,
-                  z: 40,
-                  transition: { duration: 0.25, ease: "easeOut" },
+                  y: -6,
+                  transition: { duration: 0.2, ease: "easeOut" },
                 }}
                 onMouseEnter={() => handleCardMouseEnter(card, idx, displayCards.length)}
                 onMouseLeave={handleCardMouseLeave}
                 onClick={() => setSelectedCard(card)}
-                className="group relative flex-shrink-0 w-[300px] sm:w-[350px] cursor-pointer rounded-2xl border border-slate-200/90 bg-[#fafbfc] overflow-hidden shadow-sm transition-all duration-300 hover:border-brand/50 hover:bg-white hover:shadow-2xl hover:shadow-orange-500/15 [transform-style:preserve-3d]"
+                className="group relative flex-shrink-0 w-[300px] sm:w-[350px] cursor-pointer rounded-2xl border border-slate-200/90 bg-[#fafbfc] overflow-hidden shadow-sm transition-all duration-300 hover:border-brand/50 hover:bg-white hover:shadow-2xl hover:shadow-orange-500/15"
               >
                 {/* Visual Card Image Cover (Auto-displayed with subtle zoom on hover) */}
                 <div className="relative h-40 w-full overflow-hidden bg-slate-100">
@@ -304,7 +298,7 @@ export default function WhyLead() {
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-brand transition-colors">
                     <span className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span>Hover to View Details</span>
+                      <span>Click to View Details</span>
                     </span>
                     <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                   </div>
@@ -312,31 +306,6 @@ export default function WhyLead() {
               </motion.div>
             );
           })}
-        </div>
-
-        {/* Carousel Navigation Buttons */}
-        <div className="mt-4 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              if (sliderRef.current) sliderRef.current.scrollLeft -= 330;
-            }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:border-brand hover:text-brand shadow-xs transition-colors"
-            aria-label="Previous"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <span className="text-xs text-slate-400 font-medium">Auto-scrolling • Hover any card to open drawer</span>
-          <button
-            type="button"
-            onClick={() => {
-              if (sliderRef.current) sliderRef.current.scrollLeft += 330;
-            }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:border-brand hover:text-brand shadow-xs transition-colors"
-            aria-label="Next"
-          >
-            <ChevronRight size={18} />
-          </button>
         </div>
       </div>
 

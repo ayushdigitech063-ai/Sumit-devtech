@@ -5,13 +5,30 @@ import Button from "../ui/Button";
 import WordReveal from "../animation/WordReveal";
 import HeroVisualInteractive from "./HeroVisualInteractive";
 import HeroJourneyBar, { JOURNEY_STEPS } from "./HeroJourneyBar";
+import Countup from "../ui/Countup";
+import { apiFetch } from "@/lib/api";
 import { ArrowRight } from "lucide-react";
 
-const stats = [
+const DEFAULT_STATS = [
   { value: "500+", label: "Happy clients" },
   { value: "1000+", label: "Projects done" },
   { value: "4.9★", label: "Google rating" },
 ];
+
+function parseStatValue(raw: string) {
+  const cleaned = (raw || "").trim();
+  const numMatch = cleaned.match(/([\d]+(?:\.[\d]+)?)/);
+  if (!numMatch) {
+    return { isNumeric: false, raw: cleaned, num: 0, prefix: "", suffix: "", decimals: 0 };
+  }
+  const numStr = numMatch[0];
+  const num = parseFloat(numStr);
+  const parts = cleaned.split(numStr);
+  const prefix = parts[0] || "";
+  const suffix = parts.slice(1).join(numStr) || "";
+  const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
+  return { isNumeric: true, num, prefix, suffix, decimals, raw: cleaned };
+}
 
 const AUTO_ROTATE_INTERVAL = 4500; // 4.5 seconds per step
 
@@ -25,6 +42,26 @@ const ROTATING_SERVICES = [
 export default function Hero() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [statsData, setStatsData] = useState(DEFAULT_STATS);
+
+  // Fetch dynamic stats from backend
+  useEffect(() => {
+    let isMounted = true;
+    async function loadHeroStats() {
+      try {
+        const res = await apiFetch<any>("/home/hero");
+        if (isMounted && res?.data?.stats && Array.isArray(res.data.stats) && res.data.stats.length > 0) {
+          setStatsData(res.data.stats);
+        }
+      } catch {
+        // Silently use defaults if offline / not loaded
+      }
+    }
+    loadHeroStats();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Auto-scroll all elements in 100% sync
   useEffect(() => {
@@ -119,18 +156,32 @@ export default function Hero() {
               </Button>
             </div>
 
-            {/* Metrics Counters / Stats */}
+            {/* Metrics Counters / Dynamic Stats */}
             <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-6 sm:gap-8 border-t border-white/15 pt-5 sm:pt-6 md:gap-11">
-              {stats.map((s) => (
-                <div key={s.label}>
-                  <b className="block font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-                    {s.value}
-                  </b>
-                  <small className="text-[11px] sm:text-xs md:text-sm font-normal text-white/60">
-                    {s.label}
-                  </small>
-                </div>
-              ))}
+              {statsData.map((s, idx) => {
+                const parsed = parseStatValue(s.value);
+                return (
+                  <div key={s.label || idx}>
+                    <b className="block font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
+                      {parsed.isNumeric ? (
+                        <Countup
+                          to={parsed.num}
+                          prefix={parsed.prefix}
+                          suffix={parsed.suffix}
+                          decimals={parsed.decimals}
+                          margin="0px"
+                          duration={2}
+                        />
+                      ) : (
+                        s.value
+                      )}
+                    </b>
+                    <small className="text-[11px] sm:text-xs md:text-sm font-normal text-white/60">
+                      {s.label}
+                    </small>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

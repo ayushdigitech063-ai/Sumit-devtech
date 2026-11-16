@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ArrowUpRight, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
+import { ArrowUpRight, Building2, ShoppingBag, Laptop, Stethoscope, Factory } from "lucide-react";
 import { fetchProjects } from "@/lib/projects-api";
 
 // Default fallback projects if API is not yet loaded
@@ -95,13 +95,7 @@ export default function Projects() {
     return () => clearInterval(interval);
   }, [projectsList.length]);
 
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? projectsList.length - 1 : prev - 1));
-  };
 
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % projectsList.length);
-  };
 
   const total = projectsList.length;
 
@@ -116,37 +110,19 @@ export default function Projects() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-wider mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              <span>Our Projects</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-              Explore Our <span className="text-accent underline decoration-accent/30 underline-offset-8">Latest Work</span>
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-zinc-400 max-w-xl">
-              High-converting websites, complex enterprise portals, and SaaS platforms built with cutting-edge performance.
-            </p>
+        <div className="flex flex-col items-center text-center mb-12 sm:mb-16 gap-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span>Our Projects</span>
           </div>
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+            Explore Our <span className="text-accent underline decoration-accent/30 underline-offset-8">Latest Work</span>
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto">
+            High-converting websites, complex enterprise portals, and SaaS platforms built with cutting-edge performance.
+          </p>
 
-          {/* Navigation Controls */}
-          <div className="flex items-center gap-3 self-start md:self-end">
-            <button
-              onClick={handlePrev}
-              aria-label="Previous Project"
-              className="w-11 h-11 rounded-full border border-white/10 bg-white/5 hover:bg-accent hover:border-accent hover:text-white flex items-center justify-center transition-all duration-300 text-zinc-300"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={handleNext}
-              aria-label="Next Project"
-              className="w-11 h-11 rounded-full border border-white/10 bg-white/5 hover:bg-accent hover:border-accent hover:text-white flex items-center justify-center transition-all duration-300 text-zinc-300"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+
         </div>
 
         {/* 3D Rotational Carousel Track */}

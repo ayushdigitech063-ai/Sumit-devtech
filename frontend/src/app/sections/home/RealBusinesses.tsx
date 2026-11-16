@@ -129,7 +129,7 @@ export default function RealBusinesses() {
             <span className="h-px w-6 bg-orange-500" />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-sans text-slate-900 tracking-tight leading-[1.18]">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
             Real businesses. <span className="text-orange-500">Measurable results.</span>
           </h2>
 

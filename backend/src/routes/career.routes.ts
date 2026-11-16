@@ -9,6 +9,8 @@ import {
   getApplications,
   updateApplicationStatus,
   deleteApplication,
+  getApplicationResume,
+  getApplicationPayslip,
 } from "../controllers/career.controller";
 import { requireAuth } from "../middelwares/auth";
 import { handleResumeUpload } from "../middelwares/upload";
@@ -19,6 +21,8 @@ const router = Router();
 router.get("/openings", getJobOpenings);
 router.get("/openings/:slug", getJobOpeningBySlug);
 router.post("/apply", handleResumeUpload, submitApplicationForm);
+router.get("/applications/:id/resume", getApplicationResume);
+router.get("/applications/:id/payslip", getApplicationPayslip);
 
 // Admin-only: Job Openings
 router.post("/openings", requireAuth, createJobOpening);
