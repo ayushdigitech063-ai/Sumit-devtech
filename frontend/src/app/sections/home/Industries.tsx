@@ -63,10 +63,11 @@ export default function Industries() {
 
   return (
     <Section id="industries" className="font-sans">
-      <div className="mx-auto w-full max-w-[1100px] px-6">
+      <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6">
         <SectionHeading
           center
           label="Industries"
+          titleClassName="text-[20px] min-[360px]:text-[22px] min-[400px]:text-2xl sm:text-4xl md:text-5xl whitespace-nowrap"
           title={<span className="font-sans font-bold">We Serve <span className="text-orange-500 font-bold">All Industries</span></span>}
           text="We stay ahead in technology by understanding the unique challenges and goals of every industry we work with."
         />
