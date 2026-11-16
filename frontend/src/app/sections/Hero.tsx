@@ -139,7 +139,7 @@ export default function Hero() {
             </p>
 
             {/* Primary Action Buttons */}
-            <div className="flex flex-row flex-nowrap items-center gap-2.5 sm:gap-4">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-4">
               <Button 
                 href="/contact-us"
                 className="group px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 whitespace-nowrap"
