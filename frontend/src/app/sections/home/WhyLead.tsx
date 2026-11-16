@@ -187,10 +187,7 @@ export default function WhyLead() {
       <div 
         className="relative mx-auto mt-6 sm:mt-10 w-full max-w-[1400px] px-2 sm:px-4 overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => {
-          setIsPaused(false);
-          if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-        }}
+        onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => setIsPaused(false)}
       >
