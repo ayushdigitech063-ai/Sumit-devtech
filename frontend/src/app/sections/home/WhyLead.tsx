@@ -101,10 +101,8 @@ const DEFAULT_CARDS = [
 export default function WhyLead() {
   const [leadData, setLeadData] = useState<any>(null);
   const [selectedCard, setSelectedCard] = useState<any>(null);
-  const [drawerSide, setDrawerSide] = useState<"left" | "right">("right");
   const [isPaused, setIsPaused] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     async function loadWhyLead() {
@@ -147,44 +145,6 @@ export default function WhyLead() {
 
     return () => cancelAnimationFrame(animId);
   }, [isPaused, selectedCard]);
-
-  // Clean timer on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    };
-  }, []);
-
-  const handleCardMouseEnter = (card: any, indexOnTrack: number, totalCards: number) => {
-    setIsPaused(true);
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-
-    // Starting cards -> Drawer opens from LEFT
-    // Last 2 cards -> Drawer opens from RIGHT
-    const normalizedIdx = indexOnTrack % (totalCards / 2 || 6);
-    // If it's one of the last 2 cards in the series (e.g., 4 or 5 out of 6), open from RIGHT; else from LEFT
-    const side = normalizedIdx >= 4 ? "right" : "left";
-    setDrawerSide(side);
-    setSelectedCard(card);
-  };
-
-  const handleCardMouseLeave = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    // Card se mouse hat-te hi turant drawer band ho jaye
-    setSelectedCard(null);
-    setIsPaused(false);
-  };
-
-  const handleDrawerMouseEnter = () => {
-    // If mouse is inside drawer, keep open
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-  };
-
-  const handleDrawerMouseLeave = () => {
-    // When leaving drawer, close immediately
-    setSelectedCard(null);
-    setIsPaused(false);
-  };
 
   const label = leadData?.label || leadData?.tagline || "WHY PARTNER WITH US";
   const title = leadData?.title || leadData?.heading || "Top-tier Web Agency in Rajasthan";
@@ -255,9 +215,12 @@ export default function WhyLead() {
                   y: -6,
                   transition: { duration: 0.2, ease: "easeOut" },
                 }}
-                onMouseEnter={() => handleCardMouseEnter(card, idx, displayCards.length)}
-                onMouseLeave={handleCardMouseLeave}
-                onClick={() => setSelectedCard(card)}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                onClick={() => {
+                  setIsPaused(true);
+                  setSelectedCard(card);
+                }}
                 className="group relative flex-shrink-0 w-[300px] sm:w-[350px] cursor-pointer rounded-2xl border border-slate-200/90 bg-[#fafbfc] overflow-hidden shadow-sm transition-all duration-300 hover:border-brand/50 hover:bg-white hover:shadow-2xl hover:shadow-orange-500/15"
               >
                 {/* Visual Card Image Cover (Auto-displayed with subtle zoom on hover) */}
@@ -310,31 +273,33 @@ export default function WhyLead() {
       </div>
 
       {/* ========================================================
-          POP-OUT DRAWER / MODAL TRIGGERED ON HOVER & CLICK
+          POP-OUT MODAL TRIGGERED ON CLICK ONLY
          ======================================================== */}
       <AnimatePresence>
         {selectedCard && (
-          <div className={`fixed inset-0 z-50 flex items-center ${drawerSide === "left" ? "justify-start" : "justify-end"} pointer-events-none p-0 sm:p-4`}>
-            {/* Soft backdrop */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+            {/* Soft dark backdrop */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/40 backdrop-blur-2xs" 
+              onClick={() => {
+                setSelectedCard(null);
+                setIsPaused(false);
+              }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer" 
             />
 
-            {/* Slide-in Drawer from Left or Right based on card position */}
+            {/* Centered Modal Card */}
             <motion.div
-              initial={{ x: drawerSide === "left" ? "-100%" : "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: drawerSide === "left" ? "-100%" : "100%", opacity: 0 }}
-              transition={{ duration: 0.28, ease: "easeOut" }}
-              onMouseEnter={handleDrawerMouseEnter}
-              onMouseLeave={handleDrawerMouseLeave}
-              className="pointer-events-auto relative z-10 h-full sm:h-auto sm:max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-none sm:rounded-3xl border border-slate-200 bg-white shadow-2xl flex flex-col justify-between"
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl flex flex-col justify-between"
             >
               {/* Drawer Top Image Banner */}
-              <div className="relative h-48 w-full bg-slate-900 shrink-0">
+              <div className="relative h-44 sm:h-48 w-full bg-slate-900 shrink-0">
                 <Image
                   src={selectedCard.image || DEFAULT_CARDS[0].image}
                   alt={selectedCard.title}
@@ -346,8 +311,11 @@ export default function WhyLead() {
                 {/* Close Button on image */}
                 <button
                   type="button"
-                  onClick={() => setSelectedCard(null)}
-                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white hover:bg-orange-500 transition-colors"
+                  onClick={() => {
+                    setSelectedCard(null);
+                    setIsPaused(false);
+                  }}
+                  className="absolute right-3.5 top-3.5 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white hover:bg-orange-500 transition-colors shadow-md"
                 >
                   <X size={16} />
                 </button>
@@ -362,20 +330,20 @@ export default function WhyLead() {
               </div>
 
               {/* Drawer Body Content */}
-              <div className="p-6 sm:p-7 flex-1">
+              <div className="p-5 sm:p-7 flex-1">
                 {/* Title & Description */}
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900">
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
                     {selectedCard.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
                     {selectedCard.text || selectedCard.description}
                   </p>
                 </div>
 
                 {/* Detailed Deliverables List */}
-                <div className="mt-6 space-y-2.5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <div className="mt-5 sm:mt-6 space-y-2.5">
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     Key Deliverables & Guarantees
                   </h4>
                   {(selectedCard.details || DEFAULT_CARDS[0].details).map((item: string, i: number) => (
@@ -393,13 +361,16 @@ export default function WhyLead() {
               </div>
 
               {/* Drawer Footer CTA */}
-              <div className="p-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-slate-50/50">
+              <div className="p-5 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-slate-50/50">
                 <button
                   type="button"
-                  onClick={() => setSelectedCard(null)}
-                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-white transition-colors"
+                  onClick={() => {
+                    setSelectedCard(null);
+                    setIsPaused(false);
+                  }}
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-white transition-colors"
                 >
-                  Close Drawer
+                  Close
                 </button>
                 <a
                   href="/contact-us"

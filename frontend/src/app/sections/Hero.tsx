@@ -157,11 +157,11 @@ export default function Hero() {
             </div>
 
             {/* Metrics Counters / Dynamic Stats */}
-            <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-6 sm:gap-8 border-t border-white/15 pt-5 sm:pt-6 md:gap-11">
+            <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center sm:justify-start text-center sm:text-left gap-6 sm:gap-8 border-t border-white/15 pt-5 sm:pt-6 md:gap-11">
               {statsData.map((s, idx) => {
                 const parsed = parseStatValue(s.value);
                 return (
-                  <div key={s.label || idx}>
+                  <div key={s.label || idx} className="text-center sm:text-left">
                     <b className="block font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
                       {parsed.isNumeric ? (
                         <Countup
