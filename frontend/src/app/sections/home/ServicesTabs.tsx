@@ -91,6 +91,7 @@ export default function ServicesTabs() {
               <button
                 key={x.title}
                 type="button"
+                role="tab"
                 onMouseEnter={() => select(i)}
                 onClick={() => select(i)}
                 onFocus={() => select(i)}

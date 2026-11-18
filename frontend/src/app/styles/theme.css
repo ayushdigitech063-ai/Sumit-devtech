@@ -19,10 +19,10 @@
   background-image: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
 }
 @utility text-brand {
-  background-image: linear-gradient(90deg, var(--color-accent-2), var(--color-accent), var(--color-accent-2));
-  background-size: 250%;
+  background-image: linear-gradient(90deg, var(--color-accent-2), var(--color-accent));
+
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-shift 5s linear infinite;
+
 }

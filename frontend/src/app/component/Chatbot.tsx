@@ -113,8 +113,9 @@ function RobotIcon({ size = 32, className = "" }: { size?: number; className?: s
         alt="AI Assistant"
         width={size * 2}
         height={size * 2}
+        sizes={`${size * 2}px`}
         className="h-full w-full object-contain"
-        priority
+        loading="lazy"
       />
     </div>
   );

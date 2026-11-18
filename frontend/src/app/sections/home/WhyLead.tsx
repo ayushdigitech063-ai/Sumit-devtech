@@ -308,6 +308,7 @@ export default function WhyLead() {
                 {/* Close Button on image */}
                 <button
                   type="button"
+                  aria-label="Close details"
                   onClick={() => {
                     setSelectedCard(null);
                     setIsPaused(false);

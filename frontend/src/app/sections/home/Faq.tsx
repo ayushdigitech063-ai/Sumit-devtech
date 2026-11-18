@@ -54,7 +54,7 @@ export default function Faq() {
                 <span className="text-accent">✓</span> 500+ Successful Projects
               </div>
               <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-white/95 p-5 backdrop-blur">
-                <h4 className="font-heading text-lg font-bold">Still have questions?</h4>
+                <p className="font-heading text-lg font-bold text-ink">Still have questions?</p>
                 <p className="mb-3 text-sm text-muted">Speak directly with our technical team</p>
                 <Button href="/contact-us" className="!px-6 !py-2.5 text-sm">Talk to Us</Button>
               </div>

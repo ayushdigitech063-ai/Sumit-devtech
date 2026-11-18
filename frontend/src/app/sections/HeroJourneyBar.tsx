@@ -121,9 +121,9 @@ export default function HeroJourneyBar({
                       <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
                     )}
                   </div>
-                  <h4 className="truncate text-xs sm:text-sm font-semibold leading-tight text-white mt-0.5">
+                  <span className="block truncate text-xs sm:text-sm font-semibold leading-tight text-white mt-0.5">
                     {step.title}
-                  </h4>
+                  </span>
                   <p className="truncate text-[10.5px] font-normal text-white/60 leading-tight mt-0.5">
                     {step.subtitle}
                   </p>

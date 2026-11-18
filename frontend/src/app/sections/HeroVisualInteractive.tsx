@@ -52,6 +52,7 @@ export default function HeroVisualInteractive({ activeIndex }: HeroVisualProps) 
         <div className="flex items-center gap-1 rounded-full border border-white/20 bg-[#161926]/90 p-1 backdrop-blur-md shadow-lg">
           <button
             type="button"
+            aria-label="Switch to Desktop view"
             onClick={() => setViewMode("laptop")}
             className={cn(
               "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300",
@@ -65,6 +66,7 @@ export default function HeroVisualInteractive({ activeIndex }: HeroVisualProps) 
           </button>
           <button
             type="button"
+            aria-label="Switch to Desktop view"
             onClick={() => setViewMode("mobile")}
             className={cn(
               "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300",
@@ -82,7 +84,7 @@ export default function HeroVisualInteractive({ activeIndex }: HeroVisualProps) 
       {/* ========================================================
           FIXED-HEIGHT WRAPPER (Exact 330px so Hero Banner NEVER jumps/resizes!)
          ======================================================== */}
-      <div className="relative h-[330px] w-full flex items-center justify-center overflow-visible">
+      <div className="relative h-[330px] w-full flex items-center justify-center overflow-visible" aria-hidden="true">
         <AnimatePresence mode="wait">
           {/* STAGE 1: DESKTOP MACBOOK VIEW */}
           {viewMode === "laptop" && (

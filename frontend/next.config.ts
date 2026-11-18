@@ -18,9 +18,17 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "sumitdevtech.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
+  },
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "react-icons",
+      "framer-motion",
     ],
   },
   async rewrites() {
