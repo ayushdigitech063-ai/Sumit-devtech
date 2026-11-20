@@ -12,3 +12,10 @@
 
 @keyframes marquee { to { transform: translateX(-50%); } }
 @utility animate-marquee { animation: marquee 45s linear infinite; }
+
+@keyframes preloader-bar {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(20%); }
+  100% { transform: translateX(100%); }
+}
+@utility animate-preloader-bar { animation: preloader-bar 1.2s ease-in-out infinite; }

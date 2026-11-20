@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { nunito } from "@/config/font";
 import { site } from "@/data/site";
+import SmartPreloader from "@/app/component/SmartPreloader";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -151,6 +152,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans antialiased">
+        <SmartPreloader />
         <Toaster position="top-right" reverseOrder={false} />
         {children}
       </body>
