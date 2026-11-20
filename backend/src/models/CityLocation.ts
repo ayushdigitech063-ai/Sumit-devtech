@@ -1,5 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export interface ICityFaq {
+  question: string;
+  answer: string;
+}
+
 export interface ICityLocation extends Document {
   slug: string;
   name: string;
@@ -9,10 +14,19 @@ export interface ICityLocation extends Document {
   phone?: string;
   popularAreas: string[];
   localKeywords: string[];
+  faqs: ICityFaq[];
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const CityFaqSchema = new Schema<ICityFaq>(
+  {
+    question: { type: String, required: true, trim: true },
+    answer: { type: String, required: true, trim: true },
+  },
+  { _id: false }
+);
 
 const CityLocationSchema = new Schema<ICityLocation>(
   {
@@ -24,6 +38,7 @@ const CityLocationSchema = new Schema<ICityLocation>(
     phone: { type: String, default: "+91 96765 43210" },
     popularAreas: { type: [String], default: [] },
     localKeywords: { type: [String], default: [] },
+    faqs: { type: [CityFaqSchema], default: [] },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

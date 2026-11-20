@@ -16,6 +16,7 @@ const defaultCities = [
       "web design agency jaipur rajasthan",
       "ecommerce developers in jaipur",
     ],
+    faqs: [],
     isActive: true,
   },
   {
@@ -31,6 +32,7 @@ const defaultCities = [
       "web designers in noida",
       "custom ecommerce development delhi",
     ],
+    faqs: [],
     isActive: true,
   },
   {
@@ -46,6 +48,7 @@ const defaultCities = [
       "web designers in andheri bkc",
       "ecommerce portal developers mumbai",
     ],
+    faqs: [],
     isActive: true,
   },
   {
@@ -61,6 +64,7 @@ const defaultCities = [
       "b2b saas web development koramangala",
       "seo services bangalore",
     ],
+    faqs: [],
     isActive: true,
   },
   {
@@ -76,6 +80,7 @@ const defaultCities = [
       "custom software and web design pune",
       "wordpress development pune",
     ],
+    faqs: [],
     isActive: true,
   },
   {
@@ -91,6 +96,7 @@ const defaultCities = [
       "ecommerce development dubai",
       "custom portal development uae",
     ],
+    faqs: [],
     isActive: true,
   },
 ];
@@ -114,7 +120,7 @@ export async function getCityLocations(req: Request, res: Response) {
 
 export async function createCityLocation(req: Request, res: Response) {
   try {
-    const { name, state, country, slug, tagline, popularAreas, localKeywords } = req.body;
+    const { name, state, country, slug, tagline, phone, popularAreas, localKeywords, faqs } = req.body;
     if (!name || !state) {
       return res.status(400).json({ success: false, message: "City Name and State are required." });
     }
@@ -128,14 +134,20 @@ export async function createCityLocation(req: Request, res: Response) {
       return res.status(409).json({ success: false, message: `City with slug '${formattedSlug}' already exists.` });
     }
 
+    const parsedFaqs = Array.isArray(faqs)
+      ? faqs.filter((f: any) => f.question && f.answer)
+      : [];
+
     const newCity = await CityLocation.create({
       name,
       state,
       country: country || "India",
       slug: formattedSlug,
       tagline: tagline || `Premier Web Design & Digital Growth in ${name}`,
+      phone: phone || "+91 96765 43210",
       popularAreas: Array.isArray(popularAreas) ? popularAreas : (popularAreas ? String(popularAreas).split(",").map((s) => s.trim()) : []),
       localKeywords: Array.isArray(localKeywords) ? localKeywords : (localKeywords ? String(localKeywords).split(",").map((s) => s.trim()) : []),
+      faqs: parsedFaqs,
       isActive: true,
     });
 
@@ -148,7 +160,7 @@ export async function createCityLocation(req: Request, res: Response) {
 export async function updateCityLocation(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { name, state, country, tagline, popularAreas, localKeywords, isActive } = req.body;
+    const { name, state, country, tagline, phone, popularAreas, localKeywords, faqs, isActive } = req.body;
 
     const city = await CityLocation.findById(id);
     if (!city) {
@@ -159,12 +171,16 @@ export async function updateCityLocation(req: Request, res: Response) {
     if (state !== undefined) city.state = state;
     if (country !== undefined) city.country = country;
     if (tagline !== undefined) city.tagline = tagline;
+    if (phone !== undefined) city.phone = phone;
     if (isActive !== undefined) city.isActive = isActive;
     if (popularAreas !== undefined) {
       city.popularAreas = Array.isArray(popularAreas) ? popularAreas : String(popularAreas).split(",").map((s) => s.trim());
     }
     if (localKeywords !== undefined) {
       city.localKeywords = Array.isArray(localKeywords) ? localKeywords : String(localKeywords).split(",").map((s) => s.trim());
+    }
+    if (faqs !== undefined) {
+      city.faqs = Array.isArray(faqs) ? faqs.filter((f: any) => f.question && f.answer) : [];
     }
 
     await city.save();

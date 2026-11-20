@@ -12,6 +12,8 @@ import clientLogoRoutes from "./clientLogo.routes";
 import cityLocationRoutes from "./cityLocation.routes";
 import projectCategoryRoutes from "./projectCategory.routes";
 import teamRoutes from "./team.routes";
+import serviceRoutes from "./service.routes";
+import seoRoutes from "./seoMeta.routes";
 
 const router = Router();
 router.get("/health", (_req, res) => res.json({ ok: true }));
@@ -28,5 +30,7 @@ router.use("/testimonials", testimonialRoutes);
 router.use("/clients", clientLogoRoutes);
 router.use("/cities", cityLocationRoutes);
 router.use("/team", teamRoutes);
+router.use("/services", serviceRoutes);
+router.use("/seo", seoRoutes);
 
 export default router;
