@@ -7,8 +7,6 @@ const backendUrl =
     : "http://localhost:5000");
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {
