@@ -1,0 +1,72 @@
+export interface SeoMetaData {
+  _id?: string;
+  path: string;
+  pageName: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  canonicalUrl?: string;
+  robots: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: string;
+  customSchemaJson?: string;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+export async function fetchAllSeo(): Promise<SeoMetaData[]> {
+  try {
+    const res = await fetch(`${API_BASE}/seo`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.list || [];
+  } catch (error) {
+    console.error("fetchAllSeo error:", error);
+    return [];
+  }
+}
+
+export async function fetchSeoByPath(path: string): Promise<SeoMetaData | null> {
+  try {
+    const res = await fetch(`${API_BASE}/seo/by-path?path=${encodeURIComponent(path.toLowerCase())}`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.seo || null;
+  } catch (error) {
+    console.error("fetchSeoByPath error:", error);
+    return null;
+  }
+}
+
+export async function saveSeoMeta(payload: Partial<SeoMetaData>): Promise<{ success: boolean; seo?: SeoMetaData; message?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/seo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return { success: false, message: error.message || "Failed to save SEO config" };
+  }
+}
+
+export async function deleteSeoMeta(id: string): Promise<{ success: boolean; message?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/seo/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return { success: false, message: error.message || "Failed to delete SEO config" };
+  }
+}

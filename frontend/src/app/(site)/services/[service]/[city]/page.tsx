@@ -9,9 +9,13 @@ import {
   type CityLocation,
   type ServiceDefinition,
 } from "@/data/locations-data";
-import { fetchCities } from "@/lib/cities-api";
+import { fetchCities, type CityFaq } from "@/lib/cities-api";
 
-async function getCityBySlug(slug: string): Promise<CityLocation | null> {
+interface CityWithFaqs extends CityLocation {
+  customFaqs?: CityFaq[];
+}
+
+async function getCityBySlug(slug: string): Promise<CityWithFaqs | null> {
   try {
     const dbCities = await fetchCities(true);
     const found = dbCities.find((c) => c.slug === slug && c.isActive !== false);
@@ -25,6 +29,7 @@ async function getCityBySlug(slug: string): Promise<CityLocation | null> {
         phone: found.phone || "+91 96765 43210",
         popularAreas: found.popularAreas || [],
         localKeywords: found.localKeywords || [],
+        customFaqs: found.faqs && found.faqs.length > 0 ? found.faqs : undefined,
       };
     }
   } catch {
@@ -122,8 +127,8 @@ export default async function CityServiceLandingPage({ params }: PageProps) {
     notFound();
   }
 
-  // Dynamic FAQ specific to this service and city
-  const localFaqs = [
+  // Auto-generated fallback FAQs (used when admin hasn't added custom ones)
+  const autoFaqs = [
     {
       q: `Why should I hire a professional ${service.shortName} agency in ${city.name}?`,
       a: `Hiring an established agency like ${site.name} gives your ${city.name} business access to battle-tested engineers, custom modern tech stacks (Next.js, modern SEO funnels), and transparent communication without the risks of unreliable freelancers.`,
@@ -141,6 +146,12 @@ export default async function CityServiceLandingPage({ params }: PageProps) {
       a: `A custom design or high-impact landing project typically takes 2 to 4 weeks, while complex full-stack web platforms take 4 to 8 weeks depending on requirements and custom API integrations.`,
     },
   ];
+
+  // Use admin-defined custom FAQs if available, otherwise use auto-generated ones
+  const cityWithFaqs = city as CityWithFaqs;
+  const localFaqs = cityWithFaqs.customFaqs && cityWithFaqs.customFaqs.length > 0
+    ? cityWithFaqs.customFaqs.map((f) => ({ q: f.question, a: f.answer }))
+    : autoFaqs;
 
   // Local JSON-LD Schemas
   const pageSchema = {

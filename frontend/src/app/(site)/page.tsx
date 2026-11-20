@@ -1,20 +1,17 @@
-import dynamic from "next/dynamic";
 import Hero from "../sections/Hero";
 import About from "../sections/home/About";
-
-// Below-the-fold sections dynamically imported to maximize Mobile & Web performance
-const ServicesTabs = dynamic(() => import("../sections/home/ServicesTabs"));
-const HomeProcessSection = dynamic(() => import("../sections/home/SDLCProcessSection"));
-const WhyLead = dynamic(() => import("../sections/home/WhyLead"));
-const RealBusinesses = dynamic(() => import("../sections/home/RealBusinesses"));
-const Projects = dynamic(() => import("../sections/home/Projects"));
-const ClientsMarquee = dynamic(() => import("../sections/home/ClientsMarquee"));
-const Industries = dynamic(() => import("../sections/home/Industries"));
-const Testimonials = dynamic(() => import("../sections/home/Testimonials"));
-const Technology = dynamic(() => import("../sections/home/technology"));
-const Team = dynamic(() => import("../sections/home/Team"));
-const GlobalClient = dynamic(() => import("../sections/home/GlobalClient"));
-const Faq = dynamic(() => import("../sections/home/Faq"));
+import ServicesTabs from "../sections/home/ServicesTabs";
+import HomeProcessSection from "../sections/home/SDLCProcessSection";
+import WhyLead from "../sections/home/WhyLead";
+import RealBusinesses from "../sections/home/RealBusinesses";
+import Projects from "../sections/home/Projects";
+import ClientsMarquee from "../sections/home/ClientsMarquee";
+import Industries from "../sections/home/Industries";
+import Testimonials from "../sections/home/Testimonials";
+import Technology from "../sections/home/technology";
+import Team from "../sections/home/Team";
+import GlobalClient from "../sections/home/GlobalClient";
+import Faq from "../sections/home/Faq";
 
 export default function Home() {
   return (

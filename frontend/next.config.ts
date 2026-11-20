@@ -37,9 +37,64 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: `${backendUrl}/api/:path*`,
       },
+    ];
+  },
+  async redirects() {
+    return [
       {
-        source: "/services/:slug",
-        destination: "/:slug",
+        source: "/website-design",
+        destination: "/services/website-design",
+        permanent: true,
+      },
+      {
+        source: "/php-website-development",
+        destination: "/services/php-website-development",
+        permanent: true,
+      },
+      {
+        source: "/reactjs-website-development",
+        destination: "/services/reactjs-website-development",
+        permanent: true,
+      },
+      {
+        source: "/wordpress-website-development",
+        destination: "/services/wordpress-website-development",
+        permanent: true,
+      },
+      {
+        source: "/shopify-website-development",
+        destination: "/services/shopify-website-development",
+        permanent: true,
+      },
+      {
+        source: "/ecommerce-website-development",
+        destination: "/services/ecommerce-website-development",
+        permanent: true,
+      },
+      {
+        source: "/dynamic-website-design",
+        destination: "/services/dynamic-website-design",
+        permanent: true,
+      },
+      {
+        source: "/responsive-website-design",
+        destination: "/services/responsive-website-design",
+        permanent: true,
+      },
+      {
+        source: "/digital-marketing-services",
+        destination: "/services/digital-marketing-services",
+        permanent: true,
+      },
+      {
+        source: "/maintenance-hosting-support",
+        destination: "/services/maintenance-hosting-support",
+        permanent: true,
+      },
+      {
+        source: "/website-maintenance",
+        destination: "/services/website-maintenance",
+        permanent: true,
       },
     ];
   },

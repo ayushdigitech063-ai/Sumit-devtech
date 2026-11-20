@@ -1,4 +1,4 @@
-// All text and openings for the career page live here.
+ // All text and openings for the career page live here.
 // The roles, perks and process below are SAMPLE content - replace them with your real ones.
 
 export type Opening = {

@@ -10,6 +10,11 @@ const getApiBase = () => {
   return envUrl || "/api";
 };
 
+export interface CityFaq {
+  question: string;
+  answer: string;
+}
+
 export interface CityLocationData {
   _id?: string;
   slug: string;
@@ -20,6 +25,7 @@ export interface CityLocationData {
   phone?: string;
   popularAreas: string[];
   localKeywords: string[];
+  faqs?: CityFaq[];
   isActive?: boolean;
   createdAt?: string;
 }
