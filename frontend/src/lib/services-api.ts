@@ -130,11 +130,21 @@ export interface ServiceData {
   updatedAt?: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const getApiBase = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  if (typeof window === "undefined") {
+    if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+      return envUrl;
+    }
+    return "http://localhost:5000/api";
+  }
+  return envUrl || "/api";
+};
 
 export async function fetchServices(includeInactive = false): Promise<ServiceData[]> {
   try {
-    const res = await fetch(`${API_BASE}/services?includeInactive=${includeInactive}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/services?includeInactive=${includeInactive}`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return [];
@@ -148,7 +158,8 @@ export async function fetchServices(includeInactive = false): Promise<ServiceDat
 
 export async function fetchServiceBySlug(slug: string): Promise<ServiceData | null> {
   try {
-    const res = await fetch(`${API_BASE}/services/${encodeURIComponent(slug.toLowerCase())}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/services/${encodeURIComponent(slug.toLowerCase())}`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return null;
@@ -162,7 +173,8 @@ export async function fetchServiceBySlug(slug: string): Promise<ServiceData | nu
 
 export async function createService(payload: Partial<ServiceData>): Promise<{ success: boolean; service?: ServiceData; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/services`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/services`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -176,7 +188,8 @@ export async function createService(payload: Partial<ServiceData>): Promise<{ su
 
 export async function updateService(id: string, payload: Partial<ServiceData>): Promise<{ success: boolean; service?: ServiceData; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/services/${id}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/services/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -190,7 +203,8 @@ export async function updateService(id: string, payload: Partial<ServiceData>): 
 
 export async function deleteService(id: string): Promise<{ success: boolean; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/services/${id}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/services/${id}`, {
       method: "DELETE",
     });
     const data = await res.json();

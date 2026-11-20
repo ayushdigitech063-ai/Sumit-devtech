@@ -17,11 +17,21 @@ export interface SeoMetaData {
   updatedAt?: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const getApiBase = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  if (typeof window === "undefined") {
+    if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+      return envUrl;
+    }
+    return "http://localhost:5000/api";
+  }
+  return envUrl || "/api";
+};
 
 export async function fetchAllSeo(): Promise<SeoMetaData[]> {
   try {
-    const res = await fetch(`${API_BASE}/seo`, { cache: "no-store" });
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/seo`, { cache: "no-store" });
     if (!res.ok) return [];
     const data = await res.json();
     return data.list || [];
@@ -33,7 +43,8 @@ export async function fetchAllSeo(): Promise<SeoMetaData[]> {
 
 export async function fetchSeoByPath(path: string): Promise<SeoMetaData | null> {
   try {
-    const res = await fetch(`${API_BASE}/seo/by-path?path=${encodeURIComponent(path.toLowerCase())}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/seo/by-path?path=${encodeURIComponent(path.toLowerCase())}`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return null;
@@ -47,7 +58,8 @@ export async function fetchSeoByPath(path: string): Promise<SeoMetaData | null> 
 
 export async function saveSeoMeta(payload: Partial<SeoMetaData>): Promise<{ success: boolean; seo?: SeoMetaData; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/seo`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/seo`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -61,7 +73,8 @@ export async function saveSeoMeta(payload: Partial<SeoMetaData>): Promise<{ succ
 
 export async function deleteSeoMeta(id: string): Promise<{ success: boolean; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/seo/${id}`, {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/seo/${id}`, {
       method: "DELETE",
     });
     const data = await res.json();
