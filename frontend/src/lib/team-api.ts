@@ -27,13 +27,10 @@ const getApiBase = () => {
 };
 
 export async function fetchTeamMembers(activeOnly = false): Promise<TeamMemberData[]> {
-  if (typeof window === "undefined" && process.env.NEXT_PHASE === "phase-production-build") {
-    return [];
-  }
   try {
     const apiBase = getApiBase();
     const res = await fetch(`${apiBase}/team${activeOnly ? "?activeOnly=true" : ""}`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
     if (!res.ok) return [];
     const data = await res.json();
