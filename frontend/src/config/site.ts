@@ -2,9 +2,9 @@ export const site = {
   name: "Website Development Company 4U",
   brandName: "WebsiteDevelopmentCompany4u",
   url: "https://websitedevelopmentcompany4u.com",
-  phones: ["+91-6201533997", "+91-9521433997"],
+  phones: ["+91-9461560344", "+91-6201533997"],
   email: "info@websitedevelopmentcompany4u.com",
-  whatsapp: "https://wa.me/916201533997",
+  whatsapp: "https://wa.me/919461560344",
   parent: "A Unit of Sumit DigiTech Pvt Ltd",
   address: "F-1, 60/189, Heera Path, Ward 27, Mansarovar Sector 6, Jaipur, Rajasthan 302020",
   social: {

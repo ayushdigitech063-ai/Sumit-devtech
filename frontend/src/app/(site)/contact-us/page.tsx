@@ -576,7 +576,7 @@ export default function ContactUsPage() {
                       >
                         <div className="flex flex-col">
                           <span className="text-[10px] text-slate-400 font-medium">
-                            {idx === 0 ? "Founder & Tech Lead" : "Sales & Marketing Team"}
+                            {idx === 0 ? "Sales & Marketing Team" : "Founder Sumit Kumar Mishra"}
                           </span>
                           <span className="text-sm font-semibold text-slate-900 group-hover:text-orange-600">
                             {p}

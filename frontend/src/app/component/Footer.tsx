@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, Mail, MapPin, Phone } from "lucide-react";
 import {
@@ -14,6 +14,7 @@ import Ctaband from "./Ctaband";
 import { site } from "@/config/site";
 import { quickLinks, footerServices } from "@/config/navigations";
 import { usePathname } from "next/navigation";
+import { fetchPublicSettings } from "@/lib/settings-api";
 
 const socials = [
   { icon: FaFacebookF, href: site.social.facebook, label: "Facebook" },
@@ -40,6 +41,13 @@ export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
+  const [phone, setPhone] = useState(site.phones[0]);
+
+  useEffect(() => {
+    fetchPublicSettings().then((s) => {
+      if (s?.phone1Number) setPhone(s.phone1Number);
+    });
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!footerRef.current) return;
@@ -174,11 +182,11 @@ export default function Footer() {
             <h4 className="mb-3 text-base font-bold text-white">Contact Us</h4>
 
             <a
-              href={`tel:${site.phones[0].replace(/-/g, "")}`}
+              href={`tel:${phone.replace(/[^0-9+]/g, "")}`}
               className="mb-2 flex items-center gap-2 hover:text-accent text-white/90"
             >
               <Phone size={14} className="shrink-0 text-accent" />
-              {site.phones[0]}
+              {phone}
             </a>
 
             <a

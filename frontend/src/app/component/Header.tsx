@@ -11,7 +11,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [settings, setSettings] = useState<SiteSettingsData>({
-    phone1Number: "+91-8769668455",
+    phone1Number: "+91-9461560344",
     phone1Label: "Sales & Marketing Team",
     phone2Number: "+91-6201533997",
     phone2Label: "Founder Sumit Kumar Mishra",

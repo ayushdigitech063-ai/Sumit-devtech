@@ -40,11 +40,13 @@ export default function SettingsAdminPage() {
 
   // Header & Contact Settings Form
   const [headerSettings, setHeaderSettings] = useState<SiteSettingsData>({
-    phone1Number: "+91-8769668455",
+    phone1Number: "+91-9461560344",
     phone1Label: "Sales & Marketing Team",
     phone2Number: "+91-6201533997",
     phone2Label: "Founder Sumit Kumar Mishra",
     availabilityText: "Available Mon - Sat (9am - 8pm IST)",
+    companyEmail: "info@websitedevelopmentcompany4u.com",
+    whatsappNumber: "+919461560344",
   });
   const [headerSuccess, setHeaderSuccess] = useState<string | null>(null);
   const [headerError, setHeaderError] = useState<string | null>(null);
@@ -174,8 +176,8 @@ export default function SettingsAdminPage() {
                 <PhoneCall className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-slate-900">Header Contacts &amp; Topbar</h2>
-                <p className="text-xs text-slate-500">Configure phone numbers, team labels, and availability text shown in the website header</p>
+                <h2 className="text-base font-bold text-slate-900">Website Contacts &amp; Topbar</h2>
+                <p className="text-xs text-slate-500">Configure phone numbers, WhatsApp, email, team labels, and availability text shown across the website</p>
               </div>
             </div>
 
@@ -205,7 +207,7 @@ export default function SettingsAdminPage() {
                     required
                     value={headerSettings.phone1Number}
                     onChange={(e) => setHeaderSettings({ ...headerSettings, phone1Number: e.target.value })}
-                    placeholder="+91-8769668455"
+                    placeholder="+91-9461560344"
                     className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                   />
                 </div>
@@ -254,6 +256,34 @@ export default function SettingsAdminPage() {
                 </div>
               </div>
 
+              {/* WhatsApp & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    WhatsApp Number
+                  </label>
+                  <input
+                    type="text"
+                    value={headerSettings.whatsappNumber || ""}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, whatsappNumber: e.target.value })}
+                    placeholder="+919461560344"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Company Email
+                  </label>
+                  <input
+                    type="email"
+                    value={headerSettings.companyEmail || ""}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, companyEmail: e.target.value })}
+                    placeholder="info@websitedevelopmentcompany4u.com"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
               {/* Availability */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">
@@ -278,12 +308,12 @@ export default function SettingsAdminPage() {
                   {isHeaderPending ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Saving Header...
+                      Saving Settings...
                     </>
                   ) : (
                     <>
                       <Save className="w-4 h-4" />
-                      Update Header Contacts
+                      Save Contact & Header Settings
                     </>
                   )}
                 </button>

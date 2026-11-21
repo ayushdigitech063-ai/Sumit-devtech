@@ -22,13 +22,13 @@ const getApiBase = () => {
 
 export async function fetchPublicSettings(): Promise<SiteSettingsData> {
   const fallback: SiteSettingsData = {
-    phone1Number: "+91-8769668455",
+    phone1Number: "+91-9461560344",
     phone1Label: "Sales & Marketing Team",
     phone2Number: "+91-6201533997",
     phone2Label: "Founder Sumit Kumar Mishra",
     availabilityText: "Available Mon - Sat (9am - 8pm IST)",
     companyEmail: "info@websitedevelopmentcompany4u.com",
-    whatsappNumber: "+916201533997",
+    whatsappNumber: "+919461560344",
   };
 
   try {
