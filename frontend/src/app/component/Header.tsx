@@ -1,14 +1,28 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown, PhoneCall } from "lucide-react";
 import Button from "../ui/Button";
 import Logo from "./Logo";
-import { navLinks, serviceMenu, knowledgeHub } from "@/data/navigations";
+import { navLinks, serviceMenu, knowledgeHub } from "@/config/navigations";
+import { fetchPublicSettings, SiteSettingsData } from "@/lib/settings-api";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [settings, setSettings] = useState<SiteSettingsData>({
+    phone1Number: "+91-8769668455",
+    phone1Label: "Sales & Marketing Team",
+    phone2Number: "+91-6201533997",
+    phone2Label: "Founder Sumit Kumar Mishra",
+    availabilityText: "Available Mon - Sat (9am - 8pm IST)",
+  });
+
+  useEffect(() => {
+    fetchPublicSettings().then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
 
   const openQuote = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -23,32 +37,32 @@ export default function Header() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 transition-all duration-300">
       {/* Top Announcement Bar matching CEO screenshot */}
-      <div className="w-full bg-[#081226] border-b border-white/10 backdrop-blur-md py-1.5 px-4 text-xs text-white/90 shadow-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between flex-wrap gap-x-6 gap-y-1">
-          <div className="flex items-center gap-3 sm:gap-6 flex-wrap justify-center font-medium text-[11.5px] sm:text-[13px]">
+      <div className="w-full bg-[#081226] border-b border-white/10 backdrop-blur-md py-2 sm:py-2.5 px-4 text-xs text-white/90 shadow-sm">
+        <div className="mx-auto flex max-w-7xl items-center justify-center sm:justify-between flex-wrap gap-x-6 gap-y-1 min-h-[34px]">
+          <div className="flex items-center gap-3 sm:gap-6 flex-wrap justify-center font-medium text-[12px] sm:text-[13px]">
             <a
-              href="tel:+918769668455"
-              className="inline-flex items-center gap-1 text-white/90 hover:text-accent transition-colors"
+              href={`tel:${settings.phone1Number.replace(/[^0-9+]/g, "")}`}
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
             >
-              <PhoneCall size={12} className="text-accent shrink-0" />
-              <span className="font-bold tracking-tight text-white">+91-8769668455</span>
-              <span className="text-white/70 text-[10.5px] font-normal hidden sm:inline">- Sales &amp; Marketing Team</span>
+              <PhoneCall size={13} className="text-accent shrink-0" />
+              <span className="font-bold tracking-tight text-white">{settings.phone1Number}</span>
+              <span className="text-white/70 text-[11px] font-normal hidden sm:inline">- {settings.phone1Label}</span>
             </a>
             <span className="text-white/20">|</span>
             <a
-              href="tel:+916201533997"
-              className="inline-flex items-center gap-1 text-white/90 hover:text-accent transition-colors"
+              href={`tel:${settings.phone2Number.replace(/[^0-9+]/g, "")}`}
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-accent transition-colors"
             >
-              <PhoneCall size={12} className="text-accent-2 shrink-0" />
-              <span className="font-bold tracking-tight text-white">+91-6201533997</span>
-              <span className="text-white/70 text-[10.5px] font-normal hidden sm:inline">- Founder Sumit Kumar Mishra</span>
+              <PhoneCall size={13} className="text-accent-2 shrink-0" />
+              <span className="font-bold tracking-tight text-white">{settings.phone2Number}</span>
+              <span className="text-white/70 text-[11px] font-normal hidden sm:inline">- {settings.phone2Label}</span>
             </a>
           </div>
 
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-white/70">
-            <span className="inline-flex items-center gap-1.5 text-emerald-400 font-medium">
+          <div className="hidden md:flex items-center gap-4 text-[11.5px] text-white/70">
+            <span className="inline-flex items-center gap-2 text-emerald-400 font-medium">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Available Mon - Sat (9am - 8pm IST)
+              {settings.availabilityText}
             </span>
           </div>
         </div>

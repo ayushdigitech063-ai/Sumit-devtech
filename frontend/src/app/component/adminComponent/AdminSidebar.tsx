@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { adminNav } from "@/data/admin-navigation";
+import { adminNav } from "@/config/admin-navigation";
 
 type Props = { open: boolean; onClose: () => void };
 

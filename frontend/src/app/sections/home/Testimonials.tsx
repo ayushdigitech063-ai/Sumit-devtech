@@ -6,8 +6,46 @@ import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
 import Reveal from "../../animation/Reveal";
 import Button from "../../ui/Button";
-import { testimonials as defaultTestimonials, reviewSummary } from "@/data/testimonial";
 import { fetchTestimonials } from "@/lib/testimonials-api";
+
+const DEFAULT_TESTIMONIALS = [
+  {
+    id: "test-1",
+    initials: "VJ",
+    name: "Dr. Vilaksh Jain",
+    role: "Founder & Lead Dermatologist",
+    company: "Derma Pro Center",
+    projectType: "Medical & Healthcare",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-emerald-600",
+    text: "Sumit DevTech built our entire clinic appointment booking portal and patient management flow. Patient walk-ins and direct website bookings grew by 240% within the first 60 days.",
+  },
+  {
+    id: "test-2",
+    initials: "VS",
+    name: "Vikram Singhania",
+    role: "Managing Director",
+    company: "Bsix Engineering Works",
+    projectType: "Corporate & Industrial",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-blue-600",
+    text: "From technical machinery specifications to complex export quotation forms, their team understood our B2B industrial requirements instantly. Outstanding speed and communication.",
+  },
+  {
+    id: "test-3",
+    initials: "AM",
+    name: "Aakash Mehta",
+    role: "Co-Founder",
+    company: "Goddess Craft Global",
+    projectType: "E-Commerce & Retail",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-purple-600",
+    text: "Our Shopify and custom Next.js eCommerce store needed international payment gateways, currency conversion, and automated courier tracking. Sumit DevTech delivered ahead of schedule.",
+  },
+];
 
 function Stars({ rating = 5 }: { rating?: number }) {
   return (
@@ -24,7 +62,7 @@ function Stars({ rating = 5 }: { rating?: number }) {
 }
 
 export default function Testimonials() {
-  const [items, setItems] = useState<any[]>(defaultTestimonials);
+  const [items, setItems] = useState<any[]>(DEFAULT_TESTIMONIALS);
 
   useEffect(() => {
     async function loadLiveTestimonials() {
@@ -48,191 +86,74 @@ export default function Testimonials() {
             rating: t.rating || 5,
             text: t.text,
             featured: t.featured,
-            avatarBg: t.avatarBg || "bg-orange-500",
-            avatarUrl: t.avatarUrl,
+            avatarBg: t.avatarBg || "bg-orange-600",
           }));
           setItems(mapped);
         }
       } catch (err) {
-        console.error("Failed to load live testimonials:", err);
+        console.warn("Using default testimonials", err);
       }
     }
+
     loadLiveTestimonials();
   }, []);
 
   return (
-    <Section className="bg-light relative overflow-hidden py-20 sm:py-24">
-      {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+    <Section id="testimonials" className="bg-[#fcfbf9]">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 sm:mb-16 gap-6">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-orange-500">
+              Verified Client Stories
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mt-2 font-heading tracking-tight">
+              What Founders Say About <span className="text-brand">Sumit DevTech</span>
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base mt-3 max-w-xl">
+              Real results, genuine feedback, and long-term partnerships built with businesses across India and globally.
+            </p>
+          </div>
 
-      {/* Section Header */}
-      <Reveal>
-        <SectionHeading
-          center
-          label="Client Stories"
-          title={
-            <>
-              What Our Clients <span className="text-orange-500">Say About Us</span>
-            </>
-          }
-          text="Verified feedback from founders, surgeons, and enterprises who trust us with their digital growth."
-        />
-      </Reveal>
-
-      {/* Continuous Right-to-Left Marquee Carousel - Centered with Side Margin */}
-      <div className="relative mt-10 mx-auto w-full max-w-[1160px] overflow-hidden px-2 rounded-3xl [mask-image:linear-gradient(90deg,transparent,black_5%,black_95%,transparent)]">
-        <div className="group flex w-max animate-marquee gap-6 py-4 hover:[animation-play-state:paused]">
-          {/* First Set */}
-          {items.map((t) => (
-            <div
-              key={`row1-${t.id}`}
-              className="w-[300px] sm:w-[350px] md:w-[360px] shrink-0 rounded-2xl border border-line bg-card p-6 md:p-7 flex flex-col justify-between hover:border-orange-500/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          <div className="flex items-center gap-4">
+            <Link
+              href="/testimonial"
+              className="inline-flex items-center gap-2 rounded-xl bg-dark px-5 py-3 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-black transition"
             >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <Stars rating={t.rating} />
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-200/60">
-                    {t.projectType}
-                  </span>
-                </div>
-                <blockquote className="text-muted text-sm md:text-base leading-relaxed mb-6 italic">
-                  &ldquo;{t.text}&rdquo;
-                </blockquote>
-              </div>
+              <span>View All 120+ Reviews</span>
+              <ExternalLink size={15} />
+            </Link>
+          </div>
+        </div>
 
-              <div className="flex items-center gap-4 pt-4 border-t border-line">
-                {t.avatarUrl ? (
-                  <img
-                    src={t.avatarUrl}
-                    alt={t.name}
-                    className="w-12 h-12 rounded-full object-cover border border-line shrink-0"
-                  />
-                ) : (
-                  <div
-                    className={`w-12 h-12 rounded-full ${
-                      t.avatarBg ?? "bg-orange-500"
-                    } text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-md`}
-                  >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          {items.slice(0, 3).map((t, idx) => (
+            <Reveal key={t.id || idx}>
+              <div className="h-full flex flex-col justify-between rounded-3xl border border-line bg-white p-6 sm:p-8 shadow-xs hover:shadow-md transition duration-300">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <Stars rating={t.rating} />
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                      {t.projectType}
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed text-slate-700 italic">
+                    &ldquo;{t.text}&rdquo;
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-slate-100 flex items-center gap-3">
+                  <div className={`h-11 w-11 rounded-full ${t.avatarBg} text-white font-bold flex items-center justify-center text-sm shadow-xs`}>
                     {t.initials}
                   </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="font-heading font-bold text-dark text-sm md:text-base truncate">
-                    {t.name}
-                  </p>
-                  <p className="text-xs text-muted truncate">
-                    {t.role ? `${t.role}, ` : ""}
-                    <span className="font-medium text-dark/80">{t.company}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Second Set for Infinite Loop */}
-          {items.map((t) => (
-            <div
-              key={`row2-${t.id}`}
-              className="w-[300px] sm:w-[350px] md:w-[360px] shrink-0 rounded-2xl border border-line bg-card p-6 md:p-7 flex flex-col justify-between hover:border-orange-500/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <Stars rating={t.rating} />
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-200/60">
-                    {t.projectType}
-                  </span>
-                </div>
-                <blockquote className="text-muted text-sm md:text-base leading-relaxed mb-6 italic">
-                  &ldquo;{t.text}&rdquo;
-                </blockquote>
-              </div>
-
-              <div className="flex items-center gap-4 pt-4 border-t border-line">
-                {t.avatarUrl ? (
-                  <img
-                    src={t.avatarUrl}
-                    alt={t.name}
-                    className="w-12 h-12 rounded-full object-cover border border-line shrink-0"
-                  />
-                ) : (
-                  <div
-                    className={`w-12 h-12 rounded-full ${
-                      t.avatarBg ?? "bg-orange-500"
-                    } text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-md`}
-                  >
-                    {t.initials}
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.name}</h3>
+                    <p className="text-xs text-slate-500 font-normal">{t.role ? `${t.role}, ` : ""}{t.company}</p>
                   </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="font-heading font-bold text-dark text-sm md:text-base truncate">
-                    {t.name}
-                  </p>
-                  <p className="text-xs text-muted truncate">
-                    {t.role ? `${t.role}, ` : ""}
-                    <span className="font-medium text-dark/80">{t.company}</span>
-                  </p>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
-      </div>
-
-      {/* Trust Metric Banner */}
-      <div className="mt-14 mx-auto max-w-4xl rounded-2xl border border-line bg-card/60 backdrop-blur p-6 md:p-8 shadow-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <div className="font-heading text-3xl md:text-4xl font-extrabold text-orange-500">
-              {reviewSummary.rating}★
-            </div>
-            <div className="text-xs md:text-sm text-muted mt-1">
-              Average Rating
-            </div>
-          </div>
-          <div>
-            <div className="font-heading text-3xl md:text-4xl font-extrabold text-dark">
-              {reviewSummary.totalReviews}
-            </div>
-            <div className="text-xs md:text-sm text-muted mt-1">
-              Google Reviews
-            </div>
-          </div>
-          <div>
-            <div className="font-heading text-3xl md:text-4xl font-extrabold text-dark">
-              {reviewSummary.recommendationRate}
-            </div>
-            <div className="text-xs md:text-sm text-muted mt-1">
-              Recommendation Rate
-            </div>
-          </div>
-          <div>
-            <div className="font-heading text-3xl md:text-4xl font-extrabold text-orange-500">
-              {reviewSummary.projectsDelivered}
-            </div>
-            <div className="text-xs md:text-sm text-muted mt-1">
-              Projects Delivered
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 pt-6 border-t border-line text-center">
-          <Link
-            href={reviewSummary.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-orange-600 hover:text-orange-700 transition hover:underline"
-          >
-            <span>Read all reviews on Google Business Profile</span>
-            <ExternalLink size={14} />
-          </Link>
-        </div>
-      </div>
-
-      <div className="mt-8 text-center">
-        <Button href="/testimonial" variant="outline">
-          View All Client Stories
-        </Button>
       </div>
     </Section>
   );

@@ -5,7 +5,14 @@ import Image from "next/image";
 import Marquee from "../../ui/Marquee";
 import Reveal from "../../animation/Reveal";
 import { fetchPublicClients, type ClientLogoItem } from "@/lib/clients-api";
-import { clients as fallbackClients } from "@/data/clients";
+
+const DEFAULT_CLIENTS = [
+  { name: "The Murtiwala", logo: "https://sumitdevtech.com/assets/images/clients/themurtiwala.png" },
+  { name: "Bsix Engineering", logo: "https://sumitdevtech.com/assets/images/clients/bsix.png" },
+  { name: "Doctor Bawa", logo: "https://sumitdevtech.com/assets/images/clients/doctorbawa.png" },
+  { name: "Melet Foods", logo: "https://sumitdevtech.com/assets/images/clients/melet.png" },
+  { name: "Uss Pest Control", logo: "https://sumitdevtech.com/assets/images/clients/usspest.png" },
+];
 
 function LogoCard({ name, logo }: { name: string; logo: string }) {
   return (
@@ -23,7 +30,7 @@ function LogoCard({ name, logo }: { name: string; logo: string }) {
 }
 
 export default function ClientsMarquee() {
-  const [list, setList] = useState<{ name: string; logo: string }[]>(fallbackClients);
+  const [list, setList] = useState<{ name: string; logo: string }[]>(DEFAULT_CLIENTS);
 
   useEffect(() => {
     fetchPublicClients().then((items) => {

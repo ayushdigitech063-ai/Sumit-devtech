@@ -22,7 +22,7 @@ import {
 import { FaWhatsapp } from "react-icons/fa6";
 import Container from "@/app/ui/Container";
 import Reveal from "@/app/animation/Reveal";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import { z } from "zod";
 import { submitLead } from "@/lib/leads-api";
 

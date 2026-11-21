@@ -1,16 +1,52 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { 
+  ArrowRight,
+  ShoppingCart,
+  Plane,
+  HeartPulse,
+  Dumbbell,
+  Film,
+  GraduationCap,
+  Utensils,
+  Landmark,
+  BookOpen,
+  Building2,
+  type LucideIcon,
+} from "lucide-react";
 import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
-import { industries } from "@/data/industries";
 import { cn } from "@/lib/utils";
+import { fetchCommonIndustries, type IndustryItem } from "@/lib/common-api";
 
-// Opaque tints (cards overlap, so they must not be see-through).
-// They are built from theme tokens, so they follow the palette.
+const ICON_MAP: Record<string, LucideIcon> = {
+  ShoppingCart,
+  Plane,
+  HeartPulse,
+  Dumbbell,
+  Film,
+  GraduationCap,
+  Utensils,
+  Landmark,
+  BookOpen,
+  Building2,
+};
+
+const STATIC_FALLBACK_INDUSTRIES = [
+  { name: "Ecommerce", iconName: "ShoppingCart", image: "https://sumitdevtech.com/assets/images/Ecommerce.webp", text: "We build high-performing eCommerce websites that drive sales and enhance customer experience. From Shopify and WooCommerce to fully customized online stores, we focus on secure payments, mobile optimization, speed, and conversion-focused design to maximize revenue." },
+  { name: "Travel", iconName: "Plane", text: "Booking-ready travel and tourism websites that showcase destinations, packages and enquiries in a way that turns visitors into travelers." },
+  { name: "Healthcare", iconName: "HeartPulse", text: "Trustworthy, clear and easy-to-contact websites for clinics, doctors and hospitals, with appointment-friendly design." },
+  { name: "Fitness", iconName: "Dumbbell", text: "Energetic websites for gyms, studios and trainers, with class schedules, memberships and easy sign-ups." },
+  { name: "Entertainment", iconName: "Film", text: "Engaging, media-rich websites and platforms built to hold attention and grow your audience." },
+  { name: "Education", iconName: "GraduationCap", text: "Institute websites, course platforms and learning portals that make admissions and learning simple." },
+  { name: "Restaurant", iconName: "Utensils", text: "Appetizing websites with menus, online ordering and reservations that bring more people through the door." },
+  { name: "Finance", iconName: "Landmark", text: "Secure, credible and compliant-minded websites for financial services, advisors and fintech products." },
+  { name: "Blogging", iconName: "BookOpen", text: "Fast, SEO-friendly blogs with clean reading layouts and easy publishing tools." },
+];
+
 const tints = [
   "bg-[color-mix(in_srgb,var(--color-accent)_16%,white)]",
   "bg-[color-mix(in_srgb,var(--color-accent-2)_24%,white)]",
@@ -19,10 +55,18 @@ const tints = [
 ];
 
 export default function Industries() {
+  const [list, setList] = useState<IndustryItem[]>(STATIC_FALLBACK_INDUSTRIES);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const shouldReduceMotion = useReducedMotion();
 
-  // Depth effect: a card shrinks and dims a little as the next one covers it
+  useEffect(() => {
+    fetchCommonIndustries().then((data) => {
+      if (data && data.length > 0) {
+        setList(data);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (shouldReduceMotion) return;
     let ticking = false;
@@ -52,83 +96,69 @@ export default function Industries() {
       }
     };
 
-    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [shouldReduceMotion]);
+    update();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [shouldReduceMotion, list]);
 
   return (
-    <Section id="industries" className="font-sans">
-      <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6">
-        <SectionHeading
-          center
-          label="Industries"
-          titleClassName="text-[20px] min-[360px]:text-[22px] min-[400px]:text-2xl sm:text-4xl md:text-5xl whitespace-nowrap"
-          title={<span className="font-sans font-bold">We Serve <span className="text-orange-500 font-bold">All Industries</span></span>}
-          text="We stay ahead in technology by understanding the unique challenges and goals of every industry we work with."
-        />
+    <Section id="industries">
+      <SectionHeading
+        center
+        label="Industries"
+        title={<>Industries We <span className="text-brand">Serve</span></>}
+        text="From healthcare and education to retail and finance, we build digital solutions tailored to the needs of every sector."
+      />
 
-        <div className="relative">
-        {industries.map((ind, i) => {
-          const Icon = ind.icon;
+      <div className="relative mx-auto max-w-4xl space-y-6 pb-12">
+        {list.map((ind, i) => {
+          const Icon = ICON_MAP[ind.iconName] || Building2;
           return (
             <div
               key={ind.name}
-              ref={(el) => { cardRefs.current[i] = el; }}
-              style={{ top: 88 + i * 12 }}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
+              style={{ top: `${96 + i * 20}px` }}
               className={cn(
-                "group sticky mb-6 origin-top overflow-hidden rounded-3xl border border-line p-5 will-change-transform",
-                "shadow-[0_-12px_36px_-20px_rgba(0,0,0,0.3)] `md:min-h-[210px]` md:p-9",
+                "sticky rounded-3xl border border-line p-8 shadow-sm transition-transform duration-150 will-change-transform md:p-10",
                 tints[i % tints.length]
               )}
             >
-              {/* optional faded image on the right (only industries with an image) */}
-              {ind.image && (
-                <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 md:block">
-                  <Image
-                    src={ind.image}
-                    alt=""
-                    fill
-                    sizes="(min-width:768px) 340px, 0px"
-                    className="object-cover opacity-20 `[mask-image:linear-gradient(90deg,transparent,#000_60%)]`"
-                  />
-                </div>
-              )}
-
-              <motion.div
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative grid items-center gap-4 md:grid-cols-[auto_1fr_auto] md:gap-8"
-              >
-                <span className="grid h-16 w-16 place-items-center rounded-2xl bg-white/80 text-accent shadow-sm transition duration-300 group-hover:rotate-[-8deg] group-hover:scale-110 md:h-20 md:w-20">
-                  <Icon className="h-8 w-8 md:h-10 md:w-10" />
-                </span>
-
+              <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
                 <div>
-                  <h3 className="mb-2 text-xl font-bold font-sans text-ink md:text-3xl">{ind.name}</h3>
-                  <p className="max-w-2xl text-sm leading-relaxed text-muted md:text-base">{ind.text}</p>
+                  <div className="mb-4 inline-flex items-center gap-3">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-2xs">
+                      <Icon className="text-accent" size={24} />
+                    </span>
+                    <h3 className="text-2xl font-bold text-dark">{ind.name}</h3>
+                  </div>
+                  <p className="max-w-xl text-base leading-relaxed text-muted">
+                    {ind.text}
+                  </p>
                   <Link
-                    href="/contact"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-accent transition hover:gap-3"
+                    href="/contact-us"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent transition hover:gap-3"
                   >
-                    Explore More <ArrowRight size={16} />
+                    <span>Discuss Your {ind.name} Project</span>
+                    <ArrowRight size={16} />
                   </Link>
                 </div>
 
-                <span className="hidden select-none font-sans text-6xl font-bold font-sans text-ink/10 md:block lg:text-7xl">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </motion.div>
+                {ind.image ? (
+                  <div className="relative mx-auto h-44 w-full max-w-xs overflow-hidden rounded-2xl md:h-48 md:w-64">
+                    <Image
+                      src={ind.image}
+                      alt={ind.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : null}
+              </div>
             </div>
           );
         })}
-      </div>
       </div>
     </Section>
   );

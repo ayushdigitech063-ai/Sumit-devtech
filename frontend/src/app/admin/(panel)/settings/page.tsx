@@ -14,7 +14,10 @@ import {
   Lock,
   Mail,
   Fingerprint,
+  PhoneCall,
+  Save,
 } from "lucide-react";
+import { fetchPublicSettings, updateSiteSettings, SiteSettingsData } from "@/lib/settings-api";
 
 export default function SettingsAdminPage() {
   const [profile, setProfile] = useState<{ id: string; name: string; email: string; role: string } | null>(null);
@@ -35,9 +38,25 @@ export default function SettingsAdminPage() {
   const [pwdError, setPwdError] = useState<string | null>(null);
   const [isPwdPending, startPwdTransition] = useTransition();
 
+  // Header & Contact Settings Form
+  const [headerSettings, setHeaderSettings] = useState<SiteSettingsData>({
+    phone1Number: "+91-8769668455",
+    phone1Label: "Sales & Marketing Team",
+    phone2Number: "+91-6201533997",
+    phone2Label: "Founder Sumit Kumar Mishra",
+    availabilityText: "Available Mon - Sat (9am - 8pm IST)",
+  });
+  const [headerSuccess, setHeaderSuccess] = useState<string | null>(null);
+  const [headerError, setHeaderError] = useState<string | null>(null);
+  const [isHeaderPending, startHeaderTransition] = useTransition();
+
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
   useEffect(() => {
+    fetchPublicSettings().then((data) => {
+      if (data) setHeaderSettings(data);
+    });
+
     fetch(`${API_BASE}/auth/me`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) throw new Error("Not logged in");
@@ -113,6 +132,25 @@ export default function SettingsAdminPage() {
     });
   };
 
+  const handleUpdateHeader = (e: React.FormEvent) => {
+    e.preventDefault();
+    setHeaderSuccess(null);
+    setHeaderError(null);
+
+    startHeaderTransition(async () => {
+      try {
+        const res = await updateSiteSettings(headerSettings);
+        if (res.success) {
+          setHeaderSuccess("Header contacts & announcement updated successfully!");
+        } else {
+          setHeaderError(res.message || "Failed to update settings");
+        }
+      } catch (err: any) {
+        setHeaderError(err.message || "Something went wrong.");
+      }
+    });
+  };
+
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
@@ -129,6 +167,130 @@ export default function SettingsAdminPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Profile & Security (2 cols) */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Header Announcement & Phone Numbers Form */}
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+            <div className="flex items-center gap-3 pb-5 border-b border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+                <PhoneCall className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900">Header Contacts &amp; Topbar</h2>
+                <p className="text-xs text-slate-500">Configure phone numbers, team labels, and availability text shown in the website header</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleUpdateHeader} className="mt-5 space-y-4">
+              {headerSuccess && (
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                  <span>{headerSuccess}</span>
+                </div>
+              )}
+
+              {headerError && (
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{headerError}</span>
+                </div>
+              )}
+
+              {/* Phone 1 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Phone 1 (Sales / Main) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={headerSettings.phone1Number}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, phone1Number: e.target.value })}
+                    placeholder="+91-8769668455"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Phone 1 Label *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={headerSettings.phone1Label}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, phone1Label: e.target.value })}
+                    placeholder="Sales & Marketing Team"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Phone 2 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Phone 2 (Founder / Support) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={headerSettings.phone2Number}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, phone2Number: e.target.value })}
+                    placeholder="+91-6201533997"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Phone 2 Label *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={headerSettings.phone2Label}
+                    onChange={(e) => setHeaderSettings({ ...headerSettings, phone2Label: e.target.value })}
+                    placeholder="Founder Sumit Kumar Mishra"
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Availability / Timing Badge *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={headerSettings.availabilityText}
+                  onChange={(e) => setHeaderSettings({ ...headerSettings, availabilityText: e.target.value })}
+                  placeholder="Available Mon - Sat (9am - 8pm IST)"
+                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isHeaderPending}
+                  className="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm shadow-sm transition-colors disabled:opacity-50 inline-flex items-center gap-2 cursor-pointer"
+                >
+                  {isHeaderPending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Saving Header...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      Update Header Contacts
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
           {/* Admin Profile Form */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
             <div className="flex items-center gap-3 pb-5 border-b border-slate-100">

@@ -8,7 +8,7 @@ import {
   RotateCcw,
   Languages,
 } from "lucide-react";
-import { site, leadOptions } from "@/data/site";
+import { site, leadOptions } from "@/config/site";
 import { submitLead } from "@/lib/leads-api";
 import { motion, AnimatePresence } from "framer-motion";
 

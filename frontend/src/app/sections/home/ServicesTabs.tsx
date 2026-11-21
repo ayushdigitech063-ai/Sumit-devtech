@@ -3,22 +3,64 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Section from "@/app/ui/Section";
 import SectionHeading from "@/app/ui/SectionHeading";
-import { homeServices } from "@/data/home";
 import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { 
+  ChevronRight, 
+  Monitor, 
+  PanelsTopLeft, 
+  ShoppingCart, 
+  Smartphone, 
+  Palette, 
+  Search, 
+  AppWindow, 
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
+import { fetchServices, type ServiceData } from "@/lib/services-api";
 
-const DURATION = 3500; // ms each service tab stays active before advancing
+const IMG = "https://sumitdevtech.com/assets/images";
+
+const DEFAULT_SERVICES = [
+  { title: "Website Development", href: "/services/website-development-services", image: `${IMG}/services/website-development.png`, text: "From scratch to live - we code websites that load fast, look sharp, and don't break after a month.", icon: Monitor },
+  { title: "WordPress Website Development", href: "/services/wordpress-website-development", image: `${IMG}/services/wordpress-development.png`, text: "We build WordPress sites you can actually manage yourself. No dependency on us for every small change.", icon: PanelsTopLeft },
+  { title: "Ecommerce Website Development", href: "/services/ecommerce-website-development", image: `${IMG}/services/ecommerce-development.png`, text: "Selling online is more than just adding products. We build stores that make buying easy for your customers.", icon: ShoppingCart },
+  { title: "Responsive Web Design", href: "/services/responsive-website-design", image: `${IMG}/services/responsive-design.png`, text: "Your website should work on a 5-inch phone the same way it does on a 27-inch monitor. We make sure it does.", icon: Smartphone },
+  { title: "Shopify Website Development", href: "/services/shopify-website-development", image: `${IMG}/services/shopify-development.png`, text: "If you're serious about e-commerce, Shopify is worth it. We set it up the right way from day one.", icon: ShoppingCart },
+  { title: "UI UX Design", href: "/services/ui-ux-designing", image: `${IMG}/services/ui-ux-design.png`, text: "Good design isn't decoration. It's the reason people stay on your site instead of hitting the back button.", icon: Palette },
+  { title: "SEO Optimization", href: "/services/digital-marketing-services", image: `${IMG}/services/seo-optimization.png`, text: "Getting found on Google takes more than keywords. We handle the technical side that most agencies ignore.", icon: Search },
+  { title: "Web Applications", href: "/services/web-applications", image: `${IMG}/services/web-applications.png`, text: "Got a business process that wastes your team's time? We build tools that fix that.", icon: AppWindow },
+  { title: "Website Maintenance", href: "/services/website-maintenance", image: `${IMG}/services/website-maintenance.png`, text: "Sites break, get hacked, and go slow. We keep an eye on yours, so you don't have to worry about it.", icon: Wrench },
+];
+
+const DURATION = 3500;
 const TICK = 80;
 const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
 export default function ServicesTabs() {
+  const [services, setServices] = useState(DEFAULT_SERVICES);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [progress, setProgress] = useState(0); // 0 to 1
+  const [progress, setProgress] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const elapsed = useRef(0);
   const reduce = useReducedMotion();
-  const total = homeServices.length;
+  const total = services.length;
+
+  useEffect(() => {
+    fetchServices().then((data) => {
+      if (data && data.length > 0) {
+        setServices(
+          data.slice(0, 9).map((s, idx) => ({
+            title: s.title,
+            href: `/services/${s.slug}`,
+            image: DEFAULT_SERVICES[idx % DEFAULT_SERVICES.length].image,
+            text: s.description || DEFAULT_SERVICES[idx % DEFAULT_SERVICES.length].text,
+            icon: DEFAULT_SERVICES[idx % DEFAULT_SERVICES.length].icon,
+          }))
+        );
+      }
+    });
+  }, []);
 
   const select = (i: number) => {
     setActive(i);
@@ -26,9 +68,8 @@ export default function ServicesTabs() {
     elapsed.current = 0;
   };
 
-  // Smooth Auto-advance carousel loop across services
   useEffect(() => {
-    if (paused || reduce) return;
+    if (paused || reduce || total === 0) return;
     const id = setInterval(() => {
       elapsed.current += TICK;
       if (elapsed.current >= DURATION) {
@@ -42,7 +83,6 @@ export default function ServicesTabs() {
     return () => clearInterval(id);
   }, [paused, reduce, total]);
 
-  // Keep active pill centered on horizontal scroll without jumping
   useEffect(() => {
     const list = listRef.current;
     const btn = list?.children[active] as HTMLElement | undefined;
@@ -53,79 +93,47 @@ export default function ServicesTabs() {
     });
   }, [active]);
 
-  return (
-    <Section id="services" className="relative overflow-hidden bg-[#f7f6f3] border-t border-line/60 py-16 sm:py-20 font-sans">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <SectionHeading
-          label="Our Services"
-          center={true}
-          title={
-            <>
-              Smart IT Solutions That Power Your{" "}
-              <span className="text-brand">Digital Success.</span>
-            </>
-          }
-          text="We started Sumit DevTech with one goal - to help businesses in Jaipur and across India get online properly, not just cheaply."
-        />
+  const current = services[active] || services[0];
+  const IconComponent = current?.icon || Monitor;
 
-        {/* TOP: Horizontal Row of Category Pills (Centered & Horizontal) */}
+  return (
+    <Section id="services" light>
+      <SectionHeading
+        center
+        label="Our Services"
+        title={
+          <>
+            End-to-End <span className="text-brand">Web & Tech Solutions</span>
+          </>
+        }
+        text="From intuitive design to robust development and high-converting marketing, we deliver full-cycle digital transformation."
+      />
+
+      <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6">
         <div
           ref={listRef}
-          role="tablist"
-          aria-label="Our services"
-          className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => {
-            setPaused(false);
-            elapsed.current = 0;
-          }}
-          onTouchStart={() => setPaused(true)}
-          onTouchEnd={() => {
-            setPaused(false);
-            elapsed.current = 0;
-          }}
+          onMouseLeave={() => setPaused(false)}
+          className="no-scrollbar flex gap-2 overflow-x-auto pb-4 pt-2"
         >
-          {homeServices.map((x, i) => {
-            const on = i === active;
+          {services.map((s, i) => {
+            const isCurrent = i === active;
             return (
               <button
-                key={x.title}
-                type="button"
-                role="tab"
-                onMouseEnter={() => select(i)}
+                key={s.title + i}
                 onClick={() => select(i)}
-                onFocus={() => select(i)}
-                aria-selected={on}
                 className={cn(
-                  "relative flex shrink-0 items-center gap-2 sm:gap-2.5 overflow-hidden rounded-full px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 focus-visible:outline-none cursor-pointer",
-                  on
-                    ? "text-ink shadow-md bg-white border border-slate-200"
-                    : "text-muted hover:bg-black/5 hover:text-ink border border-transparent bg-black/[0.03]",
+                  "relative flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200",
+                  isCurrent
+                    ? "bg-dark text-white shadow-md"
+                    : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                 )}
               >
-                {on && (
-                  <motion.span
-                    layoutId="svc-row-pill"
-                    className="absolute inset-0 rounded-full border border-accent/40 bg-white shadow-sm -z-0"
-                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                  />
-                )}
-                <span
-                  className={cn(
-                    "relative z-10 font-sans text-xs font-bold",
-                    on ? "text-accent" : "text-muted/60",
-                  )}
-                >
-                  {pad(i + 1)}
-                </span>
-                <span className="relative z-10 whitespace-nowrap leading-snug font-sans">
-                  {x.title}
-                </span>
-
-                {/* Active progress bar filling up underneath active pill */}
-                {on && (
-                  <span
-                    className="absolute bottom-0 left-0 h-[2.5px] bg-gradient-to-r from-accent to-accent-2 transition-[width] duration-75 ease-linear z-20 rounded-full"
+                <span>{pad(i + 1)}</span>
+                <span>{s.title}</span>
+                {isCurrent && (
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-0.5 bg-brand rounded-full"
                     style={{ width: `${progress * 100}%` }}
                   />
                 )}
@@ -134,90 +142,45 @@ export default function ServicesTabs() {
           })}
         </div>
 
-        {/* BOTTOM: Horizontal Cards Grid (Responsive Multi-Column Row Layout) */}
-        <div
-          className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => {
-            setPaused(false);
-            elapsed.current = 0;
-          }}
-          onTouchStart={() => setPaused(true)}
-          onTouchEnd={() => {
-            setPaused(false);
-            elapsed.current = 0;
-          }}
-        >
-          {homeServices.map((x, i) => {
-            const on = i === active;
-            const Icon = x.icon;
+        <div className="mt-8 overflow-hidden rounded-3xl border border-line bg-white shadow-xs">
+          <div className="grid grid-cols-1 items-center gap-8 p-8 md:grid-cols-2 md:p-12">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-orange-50 border border-orange-100 px-3.5 py-1 text-xs font-semibold text-brand">
+                <IconComponent size={14} />
+                <span>Specialized Domain Service</span>
+              </div>
+              <h3 className="font-heading text-2xl font-bold text-dark sm:text-3xl">
+                {current?.title}
+              </h3>
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted font-normal">
+                {current?.text}
+              </p>
 
-            return (
-              <button
-                key={x.title}
-                type="button"
-                onMouseEnter={() => select(i)}
-                onClick={() => select(i)}
-                onFocus={() => select(i)}
-                className={cn(
-                  "group relative flex min-h-[160px] sm:min-h-[175px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition-all duration-300 overflow-hidden cursor-pointer",
-                  on
-                    ? "border-accent bg-white shadow-xl shadow-accent/15 -translate-y-1.5 ring-1 ring-accent/30"
-                    : "border-line bg-white/80 hover:-translate-y-1 hover:border-accent/40 hover:bg-white hover:shadow-lg hover:shadow-black/5",
-                )}
-              >
-                {/* Metallic light sheen sweep effect on hover */}
-                <span className="pointer-events-none absolute -inset-y-full -left-[100%] w-[120%] -skew-x-[25deg] bg-gradient-to-r from-transparent via-white/80 to-transparent transition-all duration-700 ease-out group-hover:left-[150%]" />
-
-                {/* Icon Bubble */}
-                <span
-                  className={cn(
-                    "mb-3 flex h-13 w-13 items-center justify-center rounded-2xl border transition-all duration-300",
-                    on
-                      ? "border-accent/40 bg-accent/10 shadow-sm scale-110"
-                      : "border-line bg-[#f7f6f3] group-hover:border-accent/30 group-hover:bg-accent/5",
-                  )}
+              <div className="mt-6 flex flex-wrap gap-4">
+                <a
+                  href={current?.href}
+                  className="inline-flex items-center gap-2 rounded-xl bg-dark px-5 py-3 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-black transition"
                 >
-                  {Icon ? (
-                    <Icon
-                      size={24}
-                      strokeWidth={1.8}
-                      className={cn(
-                        "transition-transform duration-300 group-hover:scale-110",
-                        on ? "text-accent" : "text-slate-700"
-                      )}
-                    />
-                  ) : (
-                    <ChevronRight
-                      size={24}
-                      strokeWidth={1.8}
-                      className="text-accent"
-                    />
-                  )}
-                </span>
+                  <span>Explore Service Overview</span>
+                  <ChevronRight size={16} />
+                </a>
+                <a
+                  href="/contact-us"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <span>Request Custom Quote</span>
+                </a>
+              </div>
+            </div>
 
-                {/* Service Title */}
-                <span className="font-sans text-base sm:text-lg font-bold text-ink leading-snug">
-                  {x.title}
-                </span>
-
-                {/* Short Description */}
-                <p className="mt-1.5 font-sans text-xs sm:text-[13px] font-medium text-muted leading-relaxed line-clamp-2">
-                  {x.text}
-                </p>
-
-                {/* Active progress indicator line at bottom */}
-                {on && (
-                  <span className="absolute inset-x-0 bottom-0 h-[3px] overflow-hidden rounded-b-2xl bg-black/5">
-                    <span
-                      className="block h-full bg-gradient-to-r from-accent to-accent-2 transition-[width] duration-75 ease-linear"
-                      style={{ width: `${progress * 100}%` }}
-                    />
-                  </span>
-                )}
-              </button>
-            );
-          })}
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-line bg-slate-50 flex items-center justify-center p-6">
+              <img
+                src={current?.image}
+                alt={current?.title}
+                className="max-h-full max-w-full object-contain drop-shadow-md"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </Section>

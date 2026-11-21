@@ -1,18 +1,95 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote, ExternalLink, MessageSquarePlus } from "lucide-react";
 import Container from "@/app/ui/Container";
-import { testimonials, testimonialCategories, reviewSummary } from "@/data/testimonial";
+import { fetchTestimonials, type TestimonialItem } from "@/lib/testimonials-api";
+
+export const TESTIMONIAL_CATEGORIES = [
+  "All Stories",
+  "Web Development",
+  "E-Commerce",
+  "Medical & Healthcare",
+  "Corporate & Industrial",
+  "Booking & Logistics",
+] as const;
+
+const DEFAULT_ITEMS: any[] = [
+  {
+    id: "test-1",
+    initials: "VJ",
+    name: "Dr. Vilaksh Jain",
+    role: "Founder & Lead Dermatologist",
+    company: "Derma Pro Center",
+    projectType: "Medical & Healthcare",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-emerald-600",
+    text: "Sumit DevTech built our entire clinic appointment booking portal and patient management flow. Patient walk-ins and direct website bookings grew by 240% within the first 60 days.",
+  },
+  {
+    id: "test-2",
+    initials: "VS",
+    name: "Vikram Singhania",
+    role: "Managing Director",
+    company: "Bsix Engineering Works",
+    projectType: "Corporate & Industrial",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-blue-600",
+    text: "From technical machinery specifications to complex export quotation forms, their team understood our B2B industrial requirements instantly. Outstanding speed and communication.",
+  },
+  {
+    id: "test-3",
+    initials: "AM",
+    name: "Aakash Mehta",
+    role: "Co-Founder",
+    company: "Goddess Craft Global",
+    projectType: "E-Commerce",
+    rating: 5,
+    featured: true,
+    avatarBg: "bg-purple-600",
+    text: "Our Shopify and custom Next.js eCommerce store needed international payment gateways, currency conversion, and automated courier tracking. Sumit DevTech delivered ahead of schedule.",
+  },
+];
 
 export default function TestimonialGrid() {
+  const [items, setItems] = useState<any[]>(DEFAULT_ITEMS);
   const [activeCategory, setActiveCategory] = useState<string>("All Stories");
 
+  useEffect(() => {
+    fetchTestimonials().then((data) => {
+      if (data && data.length > 0) {
+        setItems(
+          data.map((t) => ({
+            id: t._id || t.id,
+            name: t.name,
+            initials: t.name
+              ? t.name
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
+              : "SD",
+            role: t.role,
+            company: t.company,
+            projectType: t.projectType || "Web Development",
+            rating: t.rating || 5,
+            text: t.text,
+            featured: t.featured,
+            avatarBg: t.avatarBg || "bg-orange-600",
+          }))
+        );
+      }
+    });
+  }, []);
+
   const filteredTestimonials = useMemo(() => {
-    if (activeCategory === "All Stories") return testimonials;
-    return testimonials.filter((t) => t.projectType === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === "All Stories") return items;
+    return items.filter((t) => t.projectType === activeCategory);
+  }, [activeCategory, items]);
 
   return (
     <section className="relative bg-light py-16 md:py-24">
@@ -25,7 +102,7 @@ export default function TestimonialGrid() {
         <div className="mx-auto w-full max-w-[1140px]">
           {/* Category Filter Tabs */}
           <div className="mb-12 flex flex-wrap items-center justify-center gap-2">
-            {testimonialCategories.map((category) => {
+            {TESTIMONIAL_CATEGORIES.map((category) => {
               const isActive = activeCategory === category;
               return (
                 <button
@@ -48,50 +125,41 @@ export default function TestimonialGrid() {
             <AnimatePresence mode="popLayout">
               {filteredTestimonials.map((t, idx) => (
                 <motion.div
-                  key={t.id}
+                  key={t.id || idx}
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.45, delay: idx * 0.05 }}
-                  className="group relative h-full flex flex-col justify-between rounded-3xl border border-line bg-white p-7 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-accent/40 hover:-translate-y-1.5"
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col justify-between rounded-3xl border border-line bg-white p-7 shadow-xs hover:shadow-md transition-all duration-300"
                 >
                   <div>
-                    {/* Header: Stars & Project Tag */}
-                    <div className="flex items-center justify-between gap-3 mb-6">
-                      <div className="flex gap-1">
-                        {Array.from({ length: t.rating }).map((_, i) => (
-                          <Star key={i} size={15} className="fill-accent-2 text-accent-2" />
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex gap-1 text-amber-500">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={i < (t.rating || 5) ? "fill-amber-500 text-amber-500" : "text-slate-300"}
+                          />
                         ))}
                       </div>
-
-                      <span className="rounded-full bg-light border border-line/80 px-2.5 py-1 text-[11px] font-bold text-muted">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
                         {t.projectType}
                       </span>
                     </div>
-
-                    {/* Quote mark icon */}
-                    <Quote size={28} className="text-accent/20 mb-3" />
-
-                    {/* Review text */}
-                    <p className="text-sm sm:text-base leading-relaxed text-ink/80 italic font-medium mb-6">
+                    <p className="text-sm leading-relaxed text-slate-700 italic">
                       &ldquo;{t.text}&rdquo;
                     </p>
                   </div>
 
-                  {/* Author footer */}
-                  <div className="border-t border-line/70 pt-5 flex items-center gap-3.5">
-                    <div
-                      className={`h-11 w-11 rounded-2xl ${
-                        t.avatarBg || "bg-accent"
-                      } flex items-center justify-center font-heading font-black text-sm text-white shadow-sm shrink-0`}
-                    >
+                  <div className="mt-6 pt-6 border-t border-slate-100 flex items-center gap-3">
+                    <div className={`h-11 w-11 rounded-full ${t.avatarBg} text-white font-bold flex items-center justify-center text-sm shadow-xs`}>
                       {t.initials}
                     </div>
                     <div>
-                      <h3 className="font-heading text-sm font-extrabold text-ink leading-tight">{t.name}</h3>
-                      <div className="text-xs font-medium text-muted mt-0.5">{t.company}</div>
-                      {t.role && <div className="text-[11px] text-muted/70">{t.role}</div>}
+                      <h3 className="text-sm font-bold text-slate-900">{t.name}</h3>
+                      <p className="text-xs text-slate-500 font-normal">{t.role ? `${t.role}, ` : ""}{t.company}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -103,4 +171,3 @@ export default function TestimonialGrid() {
     </section>
   );
 }
-

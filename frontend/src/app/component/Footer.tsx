@@ -11,8 +11,8 @@ import {
 import Container from "../ui/Container";
 import Logo from "./Logo";
 import Ctaband from "./Ctaband";
-import { site } from "@/data/site";
-import { quickLinks, footerServices } from "@/data/navigations";
+import { site } from "@/config/site";
+import { quickLinks, footerServices } from "@/config/navigations";
 import { usePathname } from "next/navigation";
 
 const socials = [

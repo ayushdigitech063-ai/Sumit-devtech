@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { nunito } from "@/config/font";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import SmartPreloader from "@/app/component/SmartPreloader";
 
 export const metadata: Metadata = {

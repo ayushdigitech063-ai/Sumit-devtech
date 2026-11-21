@@ -1,4 +1,4 @@
-import { site } from "./site";
+import { site } from "@/config/site";
 
 export type ProjectCategory = "See All" | "Technology" | "Helpdesk" | "Analysis" | "Marketing";
 

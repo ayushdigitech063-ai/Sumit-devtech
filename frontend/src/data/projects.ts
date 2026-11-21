@@ -1,4 +1,4 @@
-import { IMG } from "./home";
+const IMG = "https://sumitdevtech.com/assets/images";
 
 export const projects = [
   { title: "The Murtiwala", category: "E-Commerce Website", url: "https://www.themurtiwala.com/", image: `${IMG}/the-murtiwala.webp` },

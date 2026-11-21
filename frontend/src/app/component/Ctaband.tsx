@@ -2,7 +2,7 @@ import { Phone, ArrowRight } from "lucide-react";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import Reveal from "../animation/Reveal";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import { useState } from "react";
 
 export default function Ctaband() {

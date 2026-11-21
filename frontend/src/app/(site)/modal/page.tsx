@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X, Loader2 } from "lucide-react";
-import { leadOptions } from "@/data/site";
-import { IMG } from "@/data/home";
+import { leadOptions } from "@/config/site";
+const IMG = "https://sumitdevtech.com/assets/images";
 import { submitLead } from "@/lib/leads-api";
 
 const perks = ["Custom Development Blueprint", "Personalized Budget Estimate", "Accurate Time-to-Market Projection"];

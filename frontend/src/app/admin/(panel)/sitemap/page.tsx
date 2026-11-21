@@ -21,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { supportedCities as fallbackCities, supportedServices } from "@/data/locations-data";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import {
   CityLocationData,
   fetchCities,

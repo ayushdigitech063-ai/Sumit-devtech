@@ -37,7 +37,7 @@ async function getCityBySlug(slug: string): Promise<CityWithFaqs | null> {
   }
   return fallbackCities.find((c) => c.slug === slug) || null;
 }
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import Container from "@/app/ui/Container";
 import Reveal from "@/app/animation/Reveal";
 import Button from "@/app/ui/Button";

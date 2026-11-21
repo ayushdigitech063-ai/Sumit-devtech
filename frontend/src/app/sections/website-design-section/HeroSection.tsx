@@ -112,18 +112,8 @@ export default function HeroSection({
       <Container className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[960px] text-center flex flex-col items-center">
           
-          {/* Top Pill Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2"
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              {badge}
-            </span>
-          </motion.div>
+          {/* Spacing preserved where pill badge was */}
+          <div className="h-8 mb-6" aria-hidden="true" />
 
           {/* Centered Main H1 Heading */}
           <motion.h1

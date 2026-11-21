@@ -1,6 +1,6 @@
 import { Phone, Mail } from "lucide-react";
 import Container from "../ui/Container";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 
 export default function Topbar() {
   return (

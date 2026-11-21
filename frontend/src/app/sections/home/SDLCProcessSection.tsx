@@ -6,8 +6,6 @@ import Container from "@/app/ui/Container";
 import SectionHeading from "@/app/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { apiFetch, ApiError } from "@/lib/api";
-import { homeProcessData } from "@/data/home-process-data";
-
 const STAGE_W = 920;
 const STAGE_H = 680;
 const CX = STAGE_W / 2;
@@ -20,10 +18,9 @@ const AUTOPLAY_MS = 3200;
 
 const toRad = (deg: number) => (deg * Math.PI) / 180;
 
-// Where step i sits on the ring. Step 1 is just right of the top, then clockwise.
 function place(i: number, n: number) {
   const safeN = n > 0 ? n : 1;
-  const angle = 180 / safeN + (i * 360) / safeN; // degrees, clockwise from the top
+  const angle = 180 / safeN + (i * 360) / safeN;
   const sin = Math.sin(toRad(angle));
   const cos = Math.cos(toRad(angle));
   const vertical: "top" | "middle" | "bottom" =
@@ -33,7 +30,7 @@ function place(i: number, n: number) {
     angle,
     x: CX + R * sin,
     y: CY - R * cos,
-    right: sin > 0, // text goes to the right on right half, left on left half
+    right: sin > 0,
     vertical,
   };
 }
@@ -53,6 +50,17 @@ function labelStyle(p: ReturnType<typeof place>): React.CSSProperties {
   return style;
 }
 
+const DEFAULT_PROCESS_STEPS = [
+  { stepNumber: 1, title: "Plan & Research", description: "We learn your business, your goals and your customers first. Only then do we start." },
+  { stepNumber: 2, title: "Wireframe & Prototyping", description: "Before any code, we map the layout and show you how the site will look and flow." },
+  { stepNumber: 3, title: "UI/UX Design", description: "Clean, easy-to-use screens that fit your brand and keep visitors on your site." },
+  { stepNumber: 4, title: "Development", description: "Solid code that loads fast, works on every screen and has on-page SEO built in." },
+  { stepNumber: 5, title: "Testing & QA", description: "We check every page on every device and screen size before anything goes live." },
+  { stepNumber: 6, title: "Launch", description: "Once you approve, we launch the site and stay available if anything needs fixing." },
+  { stepNumber: 7, title: "Training & Handover", description: "We walk you through the admin, so you can update text, images and blogs yourself." },
+  { stepNumber: 8, title: "Support & Growth", description: "Bug fixes, updates and 24/7 support, plus SEO work to help your site keep growing." },
+];
+
 export default function HomeProcessSection() {
   const [processData, setProcessData] = useState<any>(null);
 
@@ -64,7 +72,6 @@ export default function HomeProcessSection() {
           setProcessData(res.data);
         }
       } catch (err) {
-        // Fallback gracefully to hardcoded 8-step data
         console.warn("Using default process data");
       }
     }
@@ -72,15 +79,14 @@ export default function HomeProcessSection() {
     loadProcess();
   }, []);
 
-  // Guarantee high-converting fallback to prevent empty/blank section on live
-  const activeData = processData || homeProcessData;
-  const label = activeData?.label || "SUMIT DEV TECH";
-  const title = activeData?.title || "How We Build";
-  const highlight = activeData?.highlight || "High-Impact Digital Products";
-  const text = activeData?.text || "Our battle-tested, end-to-end agile development methodology.";
-  const centerLabel = activeData?.centerLabel || "Sumit DevTech";
-  const rawSteps = activeData?.steps || activeData?.items || [];
-  const steps: any[] = rawSteps.length > 0 ? rawSteps : homeProcessData.steps;
+  const activeData = processData;
+  const label = activeData?.tagline || "WORK PROCESS";
+  const title = activeData?.heading || "Our Proven Process to";
+  const highlight = "Deliver Successful Digital Solutions";
+  const text = activeData?.description || "We don't jump straight into designing. Every project goes through a proper process - so nothing gets missed, and you know what's happening at every step.";
+  const centerLabel = "Sumit DevTech";
+  const rawSteps = activeData?.steps || [];
+  const steps: any[] = rawSteps.length > 0 ? rawSteps : DEFAULT_PROCESS_STEPS;
 
   const n = steps.length;
 

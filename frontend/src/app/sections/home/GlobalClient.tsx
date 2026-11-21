@@ -1,11 +1,18 @@
 import Image from "next/image";
 import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
-import { countries } from "@/data/countries";
+const COUNTRIES = [
+  { name: "United States", code: "us" },
+  { name: "United Kingdom", code: "gb" },
+  { name: "United Arab Emirates", code: "ae" },
+  { name: "Canada", code: "ca" },
+  { name: "Germany", code: "de" },
+  { name: "India", code: "in" },
+];
 
 export default function GlobalClient() {
   // Symmetrically duplicate items for an endless, seamless right-to-left marquee loop (translateX -50%)
-  const halfSet = [...countries, ...countries];
+  const halfSet = [...COUNTRIES, ...COUNTRIES];
   const marqueeCountries = [...halfSet, ...halfSet];
 
   return (

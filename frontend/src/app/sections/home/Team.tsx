@@ -2,13 +2,33 @@ import Image from "next/image";
 import Section from "../../ui/Section";
 import SectionHeading from "../../ui/SectionHeading";
 import Reveal from "../../animation/Reveal";
-import { team as fallbackTeam } from "@/data/team";
 import { fetchTeamMembers } from "@/lib/team-api";
 import Button from "@/app/ui/Button";
 
+const DEFAULT_TEAM_MEMBERS = [
+  {
+    name: "Sumit Kumar Mishra",
+    role: "CEO & Founder",
+    image: "https://sumitdevtech.com/assets/images/team/sumit-mishra.webp",
+    bio: "10+ years driving digital architectures, full-stack engineering, and client growth solutions.",
+  },
+  {
+    name: "Abhishek Sharma",
+    role: "Senior Full Stack Engineer",
+    image: "https://sumitdevtech.com/assets/images/team/team-member-1.webp",
+    bio: "Specialist in React, Next.js, and high-performance backend microservices.",
+  },
+  {
+    name: "Pooja Verma",
+    role: "Lead UI/UX Designer",
+    image: "https://sumitdevtech.com/assets/images/team/team-member-2.webp",
+    bio: "Crafting intuitive digital interfaces, user flows, and brand design systems.",
+  },
+];
+
 export default async function Team() {
   const dynamicTeam = await fetchTeamMembers(true);
-  const teamList = dynamicTeam.length > 0 ? dynamicTeam : fallbackTeam;
+  const teamList = dynamicTeam.length > 0 ? dynamicTeam : DEFAULT_TEAM_MEMBERS;
   const displayTeam = teamList.slice(0, 3);
 
   // Separate CEO / Founder from other team members

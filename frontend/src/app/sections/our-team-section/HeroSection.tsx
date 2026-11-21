@@ -6,7 +6,6 @@ import { motion, useInView, useReducedMotion, animate } from "framer-motion";
 import { Users, ArrowRight } from "lucide-react";
 import Container from "@/app/ui/Container";
 import Button from "@/app/ui/Button";
-import { team } from "@/data/team";
 
 export interface HeroSectionProps {
   memberCount: number;

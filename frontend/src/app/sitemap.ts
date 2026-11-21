@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { site } from "@/data/site";
+import { site } from "@/config/site";
 import { blogPosts } from "@/data/blog-data";
 import { projectDetails } from "@/data/projects-data";
 import { supportedCities as fallbackCities, supportedServices } from "@/data/locations-data";

@@ -3,7 +3,14 @@
 import React from "react";
 import { Star, ShieldCheck, Award, ThumbsUp, ArrowUpRight } from "lucide-react";
 import Container from "@/app/ui/Container";
-import { reviewSummary } from "@/data/testimonial";
+
+const REVIEW_SUMMARY = {
+  rating: "4.9",
+  totalReviews: "120+",
+  link: "https://share.google/mFDBvfMog5fKrtZrt",
+  recommendationRate: "99%",
+  projectsDelivered: "500+",
+};
 
 export default function TestimonialHero() {
   return (
@@ -48,36 +55,44 @@ export default function TestimonialHero() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-center">
               <div className="flex justify-center gap-1 mb-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={15} className="fill-accent-2 text-accent-2" />
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={18} className="fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-white">{reviewSummary.rating} / 5</div>
-              <div className="text-xs font-semibold text-white/60 mt-1">Google Rating</div>
+              <div className="font-heading text-3xl font-extrabold text-white">
+                {REVIEW_SUMMARY.rating} <span className="text-lg font-normal text-white/60">/ 5.0</span>
+              </div>
+              <p className="mt-1 text-xs text-white/70">Average Google Rating</p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-center">
-              <div className="flex justify-center text-accent mb-2">
-                <ShieldCheck size={20} />
+              <div className="flex justify-center mb-2">
+                <ShieldCheck className="text-emerald-400" size={22} />
               </div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-white">{reviewSummary.projectsDelivered}</div>
-              <div className="text-xs font-semibold text-white/60 mt-1">Projects Delivered</div>
+              <div className="font-heading text-3xl font-extrabold text-white">
+                {REVIEW_SUMMARY.totalReviews}
+              </div>
+              <p className="mt-1 text-xs text-white/70">Verified Reviews</p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-center">
-              <div className="flex justify-center text-accent-2 mb-2">
-                <Award size={20} />
+              <div className="flex justify-center mb-2">
+                <ThumbsUp className="text-blue-400" size={22} />
               </div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-white">99%</div>
-              <div className="text-xs font-semibold text-white/60 mt-1">Satisfaction Rate</div>
+              <div className="font-heading text-3xl font-extrabold text-white">
+                {REVIEW_SUMMARY.recommendationRate}
+              </div>
+              <p className="mt-1 text-xs text-white/70">Client Retention</p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-center">
-              <div className="flex justify-center text-emerald-400 mb-2">
-                <ThumbsUp size={20} />
+              <div className="flex justify-center mb-2">
+                <Award className="text-purple-400" size={22} />
               </div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-white">85%+</div>
-              <div className="text-xs font-semibold text-white/60 mt-1">Repeat Clients</div>
+              <div className="font-heading text-3xl font-extrabold text-white">
+                {REVIEW_SUMMARY.projectsDelivered}
+              </div>
+              <p className="mt-1 text-xs text-white/70">Websites Launched</p>
             </div>
           </div>
         </div>

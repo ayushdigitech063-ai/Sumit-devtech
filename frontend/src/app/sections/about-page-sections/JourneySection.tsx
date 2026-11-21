@@ -2,9 +2,36 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { Lightbulb, Rocket, Globe, Award } from "lucide-react";
 import Container from "@/app/ui/Container";
 import SectionHeading from "@/app/ui/SectionHeading";
-import { OurJourney } from "@/data/about";
+
+export const OUR_JOURNEY = [
+  {
+    title: "Digital Openers",
+    year: "2016",
+    icon: Lightbulb,
+    text: "The journey began as a web development setup in Jaipur with one straightforward goal: build websites that actually work for businesses.",
+  },
+  {
+    title: "Sumit Digitech",
+    year: "2021",
+    icon: Rocket,
+    text: "A dedicated SEO company was added. Because getting a website built and getting that website found on Google are both essential.",
+  },
+  {
+    title: "Sumit DevTech",
+    year: "2025",
+    icon: Globe,
+    text: "Launched as the complete package - development, SEO, eCommerce, web applications, UI/UX design, all under one roof.",
+  },
+  {
+    title: "Ownership & Trust",
+    year: "Present",   
+    icon: Award,
+    text: "Founder Sumit Kumar Mishra has been part of every stage, leading a 50+ member team delivering 1000+ projects globally.",
+  },
+];
 
 export default function JourneySection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -36,7 +63,7 @@ export default function JourneySection() {
             {/* Vertical progress line for desktop / tablet */}
             <div
               aria-hidden="true"
-              className="hidden md:block absolute left-1/2 top-8 bottom-8 -translate-x-1/2 w-0.5 bg-white/10"
+              className="hidden md:block absolute left-1/2 top-8 bottom-8 -translate-x-1/2 w-0.5 bg-slate-200"
             >
               <motion.div
                 style={{ scaleY, originY: 0 }}
@@ -45,54 +72,39 @@ export default function JourneySection() {
             </div>
 
             <div className="space-y-12 md:space-y-16">
-              {OurJourney.map((item, index) => {
+              {OUR_JOURNEY.map((item, index) => {
                 const isEven = index % 2 === 0;
                 const Icon = item.icon;
 
                 return (
                   <div
-                    key={`journey-${item.title}`}
-                    className="relative flex flex-col items-center md:grid md:grid-cols-2 md:gap-14"
+                    key={item.year + item.title}
+                    className={`relative flex flex-col md:flex-row items-center gap-8 ${
+                      isEven ? "md:flex-row-reverse" : ""
+                    }`}
                   >
-                    {/* Card: staggered left/right on alternating rows */}
-                    <motion.div
-                      initial={{ opacity: 0, x: shouldReduceMotion ? 0 : isEven ? -40 : 40 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-60px" }}
-                      transition={{
-                        duration: 0.7,
-                        delay: shouldReduceMotion ? 0 : 0.1,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className={`w-full text-left ${
-                        isEven ? "md:col-start-1" : "md:col-start-2"
-                      }`}
-                    >
-                      <div className="rounded-3xl border border-white/10 bg-dark-2 p-8 backdrop-blur-xl shadow-xl transition duration-300 hover:border-accent/40 hover:bg-dark-2">
-                        <div className="flex items-center gap-3 mb-4 justify-start">
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold text-accent-2">
-                            <Icon size={14} />
-                            {item.year}
-                          </span>
-                        </div>
-
-                        <h3 className="text-2xl font-bold tracking-tight text-white mb-3">
+                    {/* Content Box */}
+                    <div className="w-full md:w-1/2">
+                      <div className="rounded-3xl border border-line bg-[#fcfbf9] p-7 sm:p-8 shadow-xs hover:shadow-md transition duration-300">
+                        <span className="text-xs font-bold uppercase tracking-wider text-orange-500">
+                          {item.year}
+                        </span>
+                        <h3 className="text-xl font-bold text-slate-900 mt-1 mb-3">
                           {item.title}
                         </h3>
-
-                        <p className="text-sm leading-relaxed text-white/70">
+                        <p className="text-sm leading-relaxed text-slate-600 font-normal">
                           {item.text}
                         </p>
                       </div>
-                    </motion.div>
-
-                    {/* Center Node / Year Badge on desktop */}
-                    <div
-                      aria-hidden="true"
-                      className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center h-12 w-12 rounded-full border-2 border-accent bg-dark shadow-lg shadow-accent/20 z-10 font-heading font-black text-xs text-accent-2"
-                    >
-                      {item.year}
                     </div>
+
+                    {/* Timeline Center Node */}
+                    <div className="z-10 grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white border-2 border-orange-500 text-orange-500 shadow-md">
+                      <Icon size={20} />
+                    </div>
+
+                    {/* Spacer */}
+                    <div className="hidden md:block w-1/2" />
                   </div>
                 );
               })}
