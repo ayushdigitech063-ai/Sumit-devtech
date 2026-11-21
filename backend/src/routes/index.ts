@@ -14,6 +14,8 @@ import projectCategoryRoutes from "./projectCategory.routes";
 import teamRoutes from "./team.routes";
 import serviceRoutes from "./service.routes";
 import seoRoutes from "./seoMeta.routes";
+import settingsRoutes from "./siteSettings.routes";
+import commonRoutes from "./common.routes";
 
 const router = Router();
 router.get("/health", (_req, res) => res.json({ ok: true }));
@@ -32,5 +34,7 @@ router.use("/cities", cityLocationRoutes);
 router.use("/team", teamRoutes);
 router.use("/services", serviceRoutes);
 router.use("/seo", seoRoutes);
+router.use("/settings", settingsRoutes);
+router.use("/common", commonRoutes);
 
 export default router;
